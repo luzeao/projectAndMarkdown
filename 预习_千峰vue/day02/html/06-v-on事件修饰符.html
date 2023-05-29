@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+
+  <style>
+    .wrap {
+      width: 200px;
+      height: 200px;
+      background-color: pink;
+    }
+
+    .sub {
+      width: 100px;
+      height: 100px;
+      background-color: skyblue;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div>
+      <h2>默认冒泡</h2>
+      <div class="wrap" @click="wrapHander">
+        <div class="sub" @click="subHander"></div>
+      </div>
+    </div>
+
+    <div>
+      <h2>.stop修饰符(阻止冒泡)</h2>
+      <div class="wrap" @click="wrapHander">
+        <div class="sub" @click.stop="subHander"></div>
+      </div>
+    </div>
+
+    <div>
+      <h2>.capture修饰符(捕获阶段执行)</h2>
+      <div class="wrap" @click.capture="wrapHander">
+        <div class="sub" @click.capture="subHander"></div>
+      </div>
+    </div>
+
+    <div>
+      <h2>.self修饰符(只有自己可以触发)</h2>
+      <!-- e.target == this  事件源必须是元素本身 -->
+      <div class="wrap" @click.self="wrapHander">
+        <div class="sub"></div>
+      </div>
+    </div>
+
+    <div>
+      <h2>.once修饰符(事件触发一次之后就被移除了)</h2>
+      <!-- 绑定的事件触发一次之后就被移除了 -->
+      <div class="wrap" @click.once="wrapHander">
+        <div class="sub"></div>
+      </div>
+    </div>
+
+    <div>
+      <h2>.prevent修饰符(阻止默认行为)</h2>
+      <a href="https://www.baidu.com" @click.prevent>百度</a>
+      <form action="" @submit.prevent>
+        <button>提交</button>
+      </form>
+    </div>
+
+  </div>
+</body>
+<script>
+
+  /* 
+    指令的常见用法
+      1. v-指令名称 = '指令值'
+        => v-html  v-text  v-pre
+      2. v-指令名称:参数 = '指令值'
+        => v-bind:id  v-bind:class  v-on:click
+      3. v-指令名称:参数.修饰符.修饰符.修饰符 = '指令值'
+        => v-on:click.stop
+  */
+
+  new Vue({
+    el: '#app',
+    data: {
+
+    },
+    methods: {
+      wrapHander() {
+        console.log("wrap被点击了")
+      },
+      subHander() {
+        console.log("sub被点击了")
+      },
+    },
+  })
+
+</script>
+
+</html>

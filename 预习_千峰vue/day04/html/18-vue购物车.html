@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <script src="../js/vue.js"></script>
+  <style>
+    .name {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+    }
+  </style>
+</head>
+
+<body>
+  <div class="catbox" id="app">
+    <table id="cartTable">
+      <thead>
+        <tr>
+          <th><label>
+              <input class="check-all check" type="checkbox" v-model="checkedAll" />&nbsp;&nbsp;全选</label></th>
+          <th>商品</th>
+          <th>单价</th>
+          <th>数量</th>
+          <th>小计</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in list" :key="item.goodsId">
+          <td class="checkbox"><input class="check-one check" type="checkbox" v-model="item.isChecked" /></td>
+          <td class="goods"><img :src="item.goodsImg" alt="" /><span class="name">{{item.goodsName}}</span></td>
+          <td class="price">{{item.goodsPrice}}</td>
+          <td class="count"><span class="reduce"></span>
+            <input class="count-input" type="text" :value="item.buyNum" />
+            <span class="add">+</span>
+          </td>
+          <td class="subtotal">{{(item.buyNum * item.goodsPrice).toFixed(2)}}</td>
+          <td class="operation"><span class="delete">删除</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="foot" id="foot">
+      <a class="fl" id="deleteAll" href="javascript:;">删除</a>
+      <div class="fr closing" onclick="getTotal();">结 算</div>
+      <input type="hidden" id="cartTotalPrice" />
+      <div class="fr total">合计：￥<span id="priceTotal">0.00</span></div>
+      <div class="fr selected" id="selected">已选商品<span id="selectedTotal">0</span>件<span class="arrow up">︽</span><span
+          class="arrow down">︾</span></div>
+      <div class="selected-view">
+        <div id="selectedViewList" class="clearfix">
+          <div><img src="../images/1.jpg"><span>取消选择</span></div>
+        </div>
+        <span class="arrow">◆<span>◆</span></span>
+      </div>
+    </div>
+  </div>
+
+
+
+</body>
+<script>
+  new Vue({
+    el: '#app',
+    data: {
+      list: [],
+    },
+    methods: {
+      getData() {
+        var xhr = new XMLHttpRequest()
+        xhr.open('get', '../data/shoppingCar.json')
+        xhr.send()
+        xhr.onreadystatechange = () => {
+          if (xhr.readyState == 4 && xhr.status == 200) {
+            var res = JSON.parse(xhr.responseText)
+            this.list = res
+            console.log(this.list)
+          }
+        }
+      }
+    },
+    computed: {
+      checkedAll: {
+        get() {
+          var flag = this.list.every(v => v.isChecked)
+          return this.list.length ? flag : false
+        },
+        set(val) {
+          this.list.forEach(v => {
+            v.isChecked = val
+          })
+        }
+      }
+    },
+    mounted() {
+      this.getData()
+    },
+  })
+</script>
+
+</html>

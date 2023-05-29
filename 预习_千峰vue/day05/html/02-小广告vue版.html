@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
+    .adver {
+      width: 230px;
+      height: 500px;
+      background-color: grey;
+      position: fixed;
+      right: 5px;
+      bottom: 5px;
+      /* display: none; */
+    }
+
+    .adver-top {
+      font-size: 14px;
+      line-height: 30px;
+    }
+
+    .adver-top .adver-title {
+      text-indent: 10px;
+    }
+
+    .adver-top .adver-close {
+      padding: 0 5px;
+      position: absolute;
+      right: 0;
+      top: 0;
+      cursor: pointer;
+    }
+
+    .adver-detail {
+      width: 230px;
+      height: 500px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div class="adver" v-if="isShow">
+      <div class="adver-top">
+        <div class="adver-title">距离广告关闭还有{{countTime}}秒</div>
+        <div class="adver-close" @click="closeHandler">X</div>
+      </div>
+      <div class="adver-detail">
+        <a href="http://ggttk.com">
+          <img src="../images/e75a115bgy1ffjrnb6jggg206e0e57wj.gif" alt="">
+        </a>
+      </div>
+    </div>
+  </div>
+</body>
+<script>
+  // 动态操作小广告(默认隐藏)
+
+  // 1. 延迟5s显示小广告
+  // 2. 倒计时10秒后关闭小广告
+  // 3. 重复 1 - 2 两步
+  // 4. 点击 x  关闭小广告
+  // 5. 重复 1 - 2 两步
+
+  var vm = new Vue({
+    el: "#app",
+    data: {
+      isShow: false,
+      delayTime: 5000,
+      countTime: 10, // 倒计时事件
+      loop: true,
+      timeoutTimer: null,
+      intervalTime: null
+
+    },
+    methods: {
+      showAdver() {
+        this.timeoutTimer = setTimeout(() => {
+          this.isShow = true
+          this.intervalTime = setInterval(() => {
+            this.countTime--
+            if (this.countTime <= 0) {
+              clearInterval(this.intervalTime)
+              this.countTime = 10
+              this.isShow = false
+              if (this.loop) {
+                this.showAdver()
+              }
+            }
+          }, 1000)
+        }, this.delayTime)
+      },
+      closeHandler() {
+
+        this.isShow = false,
+          clearTimeout(this.timeoutTimer)
+        clearInterval(this.intervalTime)
+        this.countTime = 10
+        if (this.loop) {
+          this.showAdver()
+        }
+
+      }
+    },
+    mounted() {
+      this.showAdver()
+    },
+  })
+
+
+</script>
+
+</html>

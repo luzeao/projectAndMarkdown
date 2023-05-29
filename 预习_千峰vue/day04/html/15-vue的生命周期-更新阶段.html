@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <p ref="p"> {{count}}</p>
+    <p>{{doubleCount}}</p>
+    <button @click="addCount">count++</button>
+  </div>
+</body>
+<script>
+  /* 
+    vue生命周期分为三个阶段
+      1. 初始化阶段
+        => beforeCreate
+          -> 第一个执行的生命周期钩子函数,在实例初始化之后,进行数据侦听和事件/侦听器的配置之前同步调用(此时new Vue(options)中的选项配置还未解析 => 只能使用实例)
+        => create
+          -> 在实例创建完成后被立即同步调用,此时new Vue(options)中的选项配置已经被解析了,已经配置完毕:在实例创建完成后被立即同步调用,此时new Vue(options)中的选项配置已经被解析了,然而，挂载阶段还没开始，且 $el property 目前尚不可用
+        => 模版编译阶段
+          -> 如果使用了template属性,会将template当做编译模版渲染
+          -> 如果没有使用template属性,会查找是否绑定了el元素
+          -> 如果el元素也没有找到,就会查找是否调用了vm.$mount(el)方法
+        => beforeMount
+          -> 在挂载开始之前被调用：相关的 render 函数首次被调用 (将template解析为虚拟DOM)
+        => mounted
+          -> 挂载完毕,此时虚拟DOM已经解析为真实DOM,视图已经被更新
+          -> 一般情况下喜欢在组件/vue实例挂载之后 在做数据处理
+      2. 更新阶段
+        => beforeUpdate
+          -> 在数据发生改变后，DOM 被更新之前被调用。这里适合在现有 DOM 将要被更新之前访问它，比如移除手动添加的事件监听器
+        => updated
+          -> 在数据更改导致的虚拟 DOM 重新渲染和更新完毕之后被调用,此时可以访问更新之后的dom,然而在大多数情况下，你应该避免在此期间更改状态。如果要相应状态改变，通常最好使用计算属性或 watcher 取而代之
+          -> 注意，updated 不会保证所有的子组件也都被重新渲染完毕。如果你希望等到整个视图都渲染完毕，可以在 updated 里使用 vm.$nextTick
+      3. 销毁阶段(卸载)
+        => beforeDestroy
+        => destroy
+
+    生命周期钩子函数不是必须的(有没有钩子函数生命周期都会正常进行) => 钩子函数的目的可以帮助我们在不同的阶段,可以查看数据变化,或者执行一系列操作
+  */
+
+  // vue特征: 
+  // 1. 声明式渲染
+  // 2. 响应式
+  var vm = new Vue({
+    el: '#app',
+
+    data: {
+      count: 1
+    },
+
+    // template:``,
+
+    methods: {
+      addCount() {
+        console.log("addCount执行了");
+        this.count++
+      }
+    },
+
+    computed: {
+      doubleCount() {
+        console.log("计算属性执行了");
+        return this.count * 2;
+      }
+    },
+
+    watch: {
+      // count(newVal, oldVal) {
+      //   console.log('count发生改变', newVal, oldVal);
+      // }
+    },
+    // 在数据发生改变后，DOM 被更新之前被调用。这里适合在现有 DOM 将要被更新之前访问它，比如移除手动添加的事件监听器
+    beforeUpdate() {
+      // console.log('5. beforeUpdate 阶段 实例', this);
+      // console.log('5. beforeUpdate 阶段 $data', this.$data);
+      // console.log('5. beforeUpdate 阶段 count', this.count);
+      // console.log('5. beforeUpdate 阶段 方法', this.addCount);
+      // console.log('5. beforeUpdate 阶段 计算属性', this.doubleCount);
+      // console.log('5. created 阶段 虚拟DOM', this._vnode);
+      // console.log('5. beforeUpdate 阶段 $el', this.$el);
+      console.log('5.数据发生了改变 视图还未更新', this.count, this.$refs.p.textContent);
+      console.log("---------------------------------------------------");
+    },
+    // 在数据更改导致的虚拟 DOM 重新渲染和更新完毕之后被调用,此时可以访问更新之后的dom,然而在大多数情况下，你应该避免在此期间更改状态。如果要相应状态改变，通常最好使用计算属性或 watcher 取而代之,注意，updated 不会保证所有的子组件也都被重新渲染完毕。如果你希望等到整个视图都渲染完毕，可以在 updated 里使用 vm.$nextTick
+    updated() {
+      // console.log('6. updated 阶段 实例', this);
+      // console.log('6. updated 阶段 $data', this.$data);
+      // console.log('6. updated 阶段 count', this.count);
+      // console.log('6. updated 阶段 方法', this.addCount);
+      // console.log('6. updated 阶段 计算属性', this.doubleCount);
+      // console.log('6. updated 阶段 虚拟DOM', this._vnode);
+      // console.log('6. updated 阶段 $el', this.$el);
+      console.log('6.数据发生了改变 视图已经更新', this.count, this.$refs.p.textContent);
+      console.log("---------------------------------------------------");
+    },
+  })
+
+  // vm.$mount('#app')
+</script>
+
+</html>

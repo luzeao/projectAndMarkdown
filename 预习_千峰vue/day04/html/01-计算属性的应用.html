@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <div class="input-group">
+      <label>firstName:</label>
+      <input type="text" v-model="firstName">
+      <span>{{firstName}}</span>
+    </div>
+    <div class="input-group">
+      <label>lastName:</label>
+      <input type="text" v-model="lastName">
+      <span>{{lastName}}</span>
+    </div>
+    <div>
+      <label>fullName:</label>
+      <input type="text" v-model="fullName">
+      <span>{{fullName}}</span>
+    </div>
+  </div>
+</body>
+<script>
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      firstName: '',
+      lastName: ''
+    },
+    computed: {
+      // fullName() {
+      //   return this.firstName + (this.lastName ? ' ' + this.lastName : '')
+      // }
+      fullName: {
+        get() {
+          return this.firstName + (this.lastName ? ' ' + this.lastName : '')
+        },
+        set(val) {
+          if (val) {
+            var list = val.split(' ')
+            this.firstName = list[0]
+            this.lastName = list[1] || ''
+          }
+        }
+      }
+    },
+    methods: {
+      changeHandler() {
+
+      },
+      clickHandler() {
+
+      }
+    },
+  })
+</script>
+
+</html>

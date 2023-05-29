@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+  <style>
+    #one {
+      width: 100px;
+      height: 100px;
+      background-color: pink;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <!-- 静态绑定属性 -->
+    <div class="box" id="one"></div>
+    <!-- 动态绑定多class名 => 绑定的是data中对应属性名的值 -->
+    <div v-bind:class="list" id="one"></div>
+    <div v-bind:class="obj" id="one"></div>
+    <div v-bind:class="comb" id="one"></div>
+    <div v-bind:class="{one:true,active:count%2==0}" id="one"></div>
+  </div>
+</body>
+
+<script>
+  /* 
+    v-bind
+      1. 一般情况下 v-bind指令的结果要求是字符串类型,如果不是字符串会隐式转换为字符串(如果属性的值是 null 和 undefined 该属性不会动态绑定)
+      2. 操作元素的 class 列表和内联样式是数据定的一个常见需求, v-bind 用于 class 和 style 时,vue.js做了专门的增强,表达式的结果的类型除了字符串之外,可以是数组或者对象
+  */
+
+  new Vue({
+    el: '#app',
+    data: {
+      count: 2,
+      cls1: 'one',
+      list: ['one', 'two', 'three'], // 如果属性值是数组会自动用空格拼接成字符串
+      obj: {
+        // 对象的键名就是要拼接的class名,键值表示是否拼接(true拼接,false拼接)
+        "one": true,
+        "two": false,
+        "three": true
+      },
+      comb: ['one', { two: true }, 'three'] // 组合版
+    }
+  })
+
+</script>
+
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+</head>
+
+<body>
+
+</body>
+<script>
+  /*
+    如何使用组件
+      1. 对应组件名称使用组件 => 可以在其他组件中使用对应组件的标签来引用该组件
+
+    子组件什么时候会被初始化
+      1. 父组件解析template过程中,遇到子组件
+      2. 触发子组件的初始化渲染
+
+    根组件/父组件先经过初始化阶段
+      1. 进入模版编译阶段
+      2. 解析template为 虚拟DOM
+      3. 此时会遇到子组件(自定义标签)
+      4. 触发子组件的初始化
+      5. 子组件根据option选项内的template生成虚拟DOM,并解析为真实DOM(父组件还在等待子组件解析)
+      6. 将解析得到的真实DOM传递给父组件
+      7. 替换子组件的自定义标签
+      8. 等所有的子组件解析完毕
+      9. 父组件再将虚拟DOM解析为真实DOM
+  */
+</script>
+
+</html>

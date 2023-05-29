@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.global.js"></script>
+</head>
+
+<body>
+
+  <div id="app">
+    <p>{{count}}</p>
+    <p>
+      <button @click="count++">count++</button>
+    </p>
+
+    <p>{{zhang.name}}</p>
+    <p>{{zhang.age}}</p>
+    <p>
+      <button @click="zhang.name='李四'">改名</button>
+      <br>
+      <button @click="zhang.age++">年龄++</button>
+    </p>
+  </div>
+
+</body>
+<script>
+
+  const { createApp } = Vue
+  const { ref, reactive, readonly, computed, watch } = Vue
+
+  const app = Vue.createApp({
+
+    setup(props) {
+
+      let count = ref(100)
+      let addCount = () => {
+        count.value++
+      }
+
+      let zhang = reactive({
+        name: '张三',
+        age: 18
+      })
+
+      // watch监听(默认是惰性的,只有监听的数据发生改变时,才会触发监听函数)
+      // 1. 监听ref对象(ref 计算属性)
+      // watch(count, function (newVal, oldVal) {
+      //   console.log('count发生改变', newVal, oldVal);
+      // })
+
+      // 计算属性可以简写为箭头函数
+      // watch(() => count.value * 3, (newVal, oldVal) => {
+      //   console.log('三倍的count改变了', newVal, oldVal);
+      // })
+
+      // 2. 监听代理对象(当直接侦听一个响应式对象时,侦听器会自动调用深层模式;如果是ref对象.value中存储的也是一个对象,不会自动启用深度监听)
+
+      // 2-1 直接监听对象,新值和旧值引用同一片内存空间,所以打印内容是一样的
+      // watch(zhang, (newVal, oldVal) => {
+      //   console.log('zhang的值发生改变', newVal, oldVal);
+      // })
+
+      // 解决办法:
+      // 2-1 监听对象某个属性改变(方法1)
+      // watch(() => JSON.parse(JSON.stringify(zhang)), (newVal, oldVal) => {
+      //   console.log('zhang的值发生改变', newVal, oldVal);
+      // })
+
+      // 2-2 监听对象某个属性的改变(方法2)
+      // watch(() => zhang.age, (newVal, oldVal) => {
+      //   console.log('zhang.age改变了', newVal, oldVal);
+      // })
+
+      // 3  监听对象某些属性的变化 => 传入一个数组,数组中存有多个计算属性
+      // watch([() => zhang.name, () => zhang.age], ([newName, newAge], [oldName, oldAge]) => {
+      //   console.log('zhang的属性发生改变', newName, oldName);
+      //   console.log('zhang的属性发生改变', newAge, oldAge);
+      // })
+
+      return {
+        count,
+        zhang,
+      }
+    },
+
+    // 依旧可以使用选项式
+    mounted() {
+      console.log('this代理对象', this);
+    },
+
+  }).mount('#app')  // 需要使用实例的mount方法来挂载到对应的元素上
+
+
+
+</script>
+
+</html>

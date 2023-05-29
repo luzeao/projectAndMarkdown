@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <p>
+      <input type="text" :value="message" @input="message=$event.target.value">
+      <!-- <input type="text" :value="message" @input="($event)=>{message=$event.target.value}"> -->
+    </p>
+    <p>message:{{ message }}</p>
+    <p><button @click="message='hello'">修改message</button></p>
+
+    <hr>
+
+    <!-- vue中提供的v-model指令 -->
+    <!-- 只有input:text,textarea 会通过v-model将value和数据进行双向绑定-->
+    <p>
+      <input type="text" v-model="msg">
+    </p>
+    <p>message:{{ msg }}</p>
+    <p><button @click="msg='hello'">修改msg</button></p>
+  </div>
+</body>
+<script>
+
+  /* 
+    v-model 双向数据绑定 => 数据发生改变会更新视图 => 修改视图中的内容,数据也会更新
+      1. 将data中的message数据和input框中的value绑定,数据发生变化,会更新视图
+      2. 监听input框内容改变,当input内容发生改变时,将对应的value值赋值给message => 修改视图中的内容,数据也会更新
+  */
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      message: '',
+      msg:''
+    }
+  })
+
+</script>
+
+</html>

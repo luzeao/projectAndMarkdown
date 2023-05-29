@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.global.js"></script>
+</head>
+
+<body>
+
+  <div id="app">
+
+    <p>{{zhang.name}}</p>
+    <p>{{zhang.age}}</p>
+    <p>{{zhang.info.height}}</p>
+    <p>{{zhang.info.width}}</p>
+    <p>
+      <button @click="zhang.age++">年龄++</button>
+      <button @click="zhang.info.height++">height++</button>
+      <button @click="zhang.info.width++">width++</button>
+    </p>
+
+  </div>
+
+</body>
+<script>
+
+  const { createApp } = Vue
+  const { ref, reactive, readonly, computed, watch } = Vue
+  const { shallowRef, shallowReactive } = Vue
+
+  const app = Vue.createApp({
+
+    setup(props) {
+
+      // shallowReactive()
+      // 和reactive() 不同，这里没有深层级的转换：一个浅层响应式对象里只有根级别的属性是响应式的。属性的值会被原样存储和暴露，这也意味着值为 ref 的属性不会被自动解包了
+
+      // zhang => proxy对象 => 有深层的监听和转换
+      // let zhang = reactive({
+      //   name: '张三',
+      //   age: 18,
+      //   info: {
+      //     height:180,
+      //     width:60
+      //   }
+      // })
+
+      // shallowReactive() => 只监听根属性的变化(name,age,info) => 根属性下的子对象不会监听
+      let zhang = shallowReactive({
+        name: '张三',
+        age: 18,
+        info: {
+          height:180,
+          width:60
+        }
+      })
+
+      return {
+        count,
+        zhang,
+      }
+    },
+
+    // 依旧可以使用选项式
+    mounted() {
+      console.log('this代理对象', this);
+    },
+
+  }).mount('#app')  // 需要使用实例的mount方法来挂载到对应的元素上
+
+
+
+</script>
+
+</html>

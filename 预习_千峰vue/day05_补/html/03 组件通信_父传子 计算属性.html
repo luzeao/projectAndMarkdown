@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+  <style>
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none !important;
+    }
+
+    input[type='number'] {
+      -moz-appearance: textfield;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+
+    <input type="number" v-model.number="val">
+    <!-- <p><button>给朋友转账</button></p> -->
+
+    <p>{{handlerMoney}}</p>
+
+  </div>
+</body>
+
+<script>
+
+  var vm = new Vue({
+    el: "#app",
+    data: {
+      val: '',
+      // result: /(?=\B(\d{3})+$)/g,
+    },
+    computed: {
+      handlerMoney() {
+        // return this.val.toString().replace(this.result, ',')
+        return new Intl.NumberFormat().format(this.val)
+      }
+    },
+  })
+
+</script>
+
+</html>

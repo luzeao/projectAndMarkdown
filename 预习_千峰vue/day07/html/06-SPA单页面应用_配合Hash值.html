@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
+    html,
+    body,
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+
+    .page {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <!-- 组件切换配合Hash值 -->
+    <div>
+      <!-- 通过锚点实现同页面不同位置跳转 -->
+      <a href="#/home">首页</a>
+      <a href="#/list">列表</a>
+      <a href="#/car">购物车</a>
+      <a href="#/mine">我的</a>
+    </div>
+    <component :is="showPage"></component>
+
+  </div>
+</body>
+<script>
+
+  /*
+    以前的案例是多页面应用 => 一个页面有一个根实例
+  
+    SPA单页面应用(single page Application)
+      + 多个页面依赖于同一个根实例进行展示
+      + 页面之间可以根据url地址进行切换 => 前端路由
+
+    路由:
+      后端路由 => 站点(对应url地址显示站点中的页面 css js images)
+              => 接口(接收前端发送过来的请求(请求方式,地址,携带数据) => 处理请求
+              => 返回响应数据 /根路由 /user(一级路由) /user/add(二级路由))
+        
+      前端路由 => 对应不同的url路径显示不同的页面(渲染不同的页面)
+        + 一般有两种实现方式 => History / Hash值
+      
+      Hash值 => 锚点
+        1. 可以实现同页面不同位置的跳转
+        2. 当Hash值发生改变,并不会触发页面刷新
+        3. Hash值也不会随着请求传递给后端
+  */
+
+  // 局部组件
+  let Home = {
+    template: "<div class='page'>这是主页</div>"
+  }
+
+  let List = {
+    template: "<div class='page'>这是列表页</div>"
+  }
+
+  let Car = {
+    template: "<div class='page'>这是购物车页</div>"
+  }
+
+  let Mine = {
+    template: "<div class='page'>这是我的页</div>"
+  }
+
+  // 所有组件整合到一起,和路由相关联
+  var router = [{
+    path: "/home",  // 路由路径 => url地址
+    name: 'Home',   // 路由的名称
+    component: Home // 路由的template
+  }, {
+    path: "/list",
+    name: 'List',
+    component: List
+  }, {
+    path: "/car",
+    name: 'Car',
+    component: Car
+  }, {
+    path: "/mine",
+    name: 'Mine',
+    component: Mine
+  }]
+
+
+  var vm = new Vue({
+    el: "#app",
+    data: {
+      path: null,
+      showPage: null,
+    },
+    methods: {
+      getHash() {
+        // console.log(location.hash)
+        // console.log(location.hash.replace('#', ''))
+
+        // 组件挂载完毕获取hash值作为 路由路径(如果没有,默认显示主页)
+        this.path = location.hash.replace('#', '') || '/home'
+        // console.log(this.path);
+        // 从所有配置中找到和path匹配的数据
+        let route = router.find(v => v.path === this.path)
+        // console.log(route);
+        this.showPage = route.name
+      }
+    },
+    mounted() {
+      this.getHash()
+      // 如果hash值发生改变 重新存储新的路径
+      window.addEventListener('hashchange', () => {
+        this.getHash()
+      })
+    },
+    components: {
+      Home,
+      List,
+      Car,
+      Mine
+    }
+  })
+</script>
+
+</html>

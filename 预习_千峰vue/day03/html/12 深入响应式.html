@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../js/vue.js"></script>
+    <style>
+        li {
+            list-style: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <!-- <div>
+            <button @click="list.sort((a,b)=>a-b)">排序</button>
+            <button @click="list.push(Math.round(Math.random()*10))">生成(push)</button>
+        </div>
+        <br>
+        <div>
+            <button @click="addEle">新增</button>
+        </div>
+        <br>
+        <div>
+            <button @click="editFn">edit</button>
+            <button @click="delFn">del</button>
+        </div>
+
+
+        <ul>
+            <li v-for="(item,index) in list" :key="index">{{item}}</li>
+        </ul> -->
+
+
+        <!-- 对象相关 -->
+        <button @click="addProp">点击新增属性</button>
+        <ul>
+            <li>{{zhang.name}}</li>
+            <li @click="zhang.age++">{{zhang.age}}</li>
+            <li>{{zhang.height}}</li>
+            <li>{{zhang.weight}}</li>
+            <li>{{zhang.sex}}</li>
+        </ul>
+    </div>
+</body>
+<script>
+    // 由于 JavaScript 的限制，Vue不能检测数组和对象的变化(对数组和对象的某些操作无法检测)。深入响应式原理中有相关的讨论。
+
+
+    for (let key in data) {
+        let initValue = data[key]; // 存储初始值
+        Object.defineProperty(data, key, {
+            get: function () {  // 对data进行取值时 => 触发此拦截函数
+                return initValue;
+            },
+            set: function (val) {   // 对data进赋值时  => 触发此拦截函数
+                console.log("监听到" + key + "发生改变");
+                initValue = val;
+                render();
+            }
+        })
+    }
+
+
+
+
+    // Vue不能检测数组和对象的变化
+    // Vue封装过程中主要借助 Object.defineProperty() 对data上的属性进行取值拦截和赋值拦截
+
+    // 由于数组和对象是引用类型, 此时修改数组中的元素和对象中的数据,数据改变,但是data中对应属性名称引用的内存地址没有改变  -> 不会触发赋值拦截
+
+    // Vue为了解决这些问题:做了优化处理
+
+    // 数组:
+    // 变更方法 => 会影响原数组的方法 ,  Vue 将被侦听的数组的变更方法进行了包裹,所以它们也将会触发视图更新 
+    // 非变更方法(替换数组)  => 不会影响原数组的方法 ,而是返回新数组  =>  直接使用新数组覆盖原数组
+    // this.list = [1,2,3]
+
+    // Vue不能监听数组以下问题
+    // this.list[0] = 1     =>   强制视图更新  Vue.set  this.$set
+    // this.list.length--   
+
+
+    // 对象:
+    // 如果要监听的data的属性的属性值也是一个对象, 也对该对象添加Object.defineProperty()拦截 => 如果子对象下的属性改变 => 也会触发视图更新
+
+    // Vue不能监听对象以下问题
+    // Vue 无法检测 property 的添加或移除。由于 Vue 会在初始化实例时对 property 执行 getter/setter 转化，
+
+    // 解决方法: 
+    // 已经创建的实例，Vue 不允许动态添加根级别的响应式 property,可以使用 Vue.set(object, propertyName, value) 方法向嵌套对象添加响应式 property  => 不能给data新增数组(但是data下的子对象可以)
+    // Vue.set(this.zhang,"sex","男")
+
+
+
+
+
+
+
+    new Vue({
+        el: "#app",
+        data: {
+            list: [1, 40, 7, 2, 5, 8, 3, 6, 9],
+            zhang: { name: "张三", age: 18, height: "177", weight: "70kg" },
+
+        },
+        methods: {
+            addEle: function () {
+                var num = Math.round(Math.random() * 100);
+                // this.list.push(num);   // 影响原数组 => 数组的变更方法
+                this.list = this.list.concat(num);  // concat方法返回新数组
+
+            },
+            editFn: function () {
+                // 数组对应下标赋值
+                this.list[1] = 40;
+                // console.log(this.list);
+
+                // 解决方法1: 
+                // this.list.splice(1,1,40);
+
+                // 方法2: 
+                var arr = this.list.slice();
+                arr[1] = 40;
+                this.list = arr;
+
+                // 方法3:
+                // Vue.set(obj,key,val)   构造函数Vue的静态方法  => 可以修改Vue中的对象的数据 (可以被vue检测到)
+                // vm.$set()   实例化对象上也有此方法 (Vue.prototype.$set)
+
+                Vue.set(this.list,1,40);  
+                this.$set(this.list,1,40);  
+
+                // 方法4:
+                vm.$forceUpdate()   // 强制更新视图 
+                this.list[1] = 40;
+                this.$forceUpdate();
+
+            },
+            delFn: function () {
+                // this.list.length--;
+                // console.log(this.list);
+
+                // 方法1:
+                this.list.pop();
+
+                // 方法2:
+                this.list.length--;
+                this.$forceUpdate();
+            },
+            addProp: function () {
+                // this.zhang.sex = "男";
+                // console.log(this.zhang);
+
+                // 方法1:
+                // Vue.set(obj,key,val) 
+                Vue.set(this.zhang, "sex", "男");
+                console.log(this.zhang);
+
+                // 方法2
+                this.zhang.sex = "男";
+                this.$forceUpdate();
+            }
+        }
+    })
+
+
+</script>
+
+</html>

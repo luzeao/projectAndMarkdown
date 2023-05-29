@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
+    .adver {
+      width: 230px;
+      height: 500px;
+      background-color: grey;
+      position: fixed;
+      right: 5px;
+      bottom: 5px;
+      /* display: none; */
+    }
+
+    .adver-top {
+      font-size: 14px;
+      line-height: 30px;
+    }
+
+    .adver-top .adver-title {
+      text-indent: 10px;
+    }
+
+    .adver-top .adver-close {
+      padding: 0 5px;
+      position: fixed;
+      right: 0;
+      top: 0;
+      cursor: pointer;
+    }
+
+    .adver-detail {
+      width: 230px;
+      height: 500px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="app">
+    <button @click="count++">按钮</button>
+    <!-- 注意: 子组件接收的数据(属性),是由父组件传入的 -->
+    <!-- 当前案例传入的属性是静态属性(属性值都是字符串类型) => 传入之后不可更改 => 更习惯作为子组件的初始值 -->
+    <!-- 静态属性: 测试 => 组件内接收数据时,属性名全都是字符串-->
+    <prop-test num="1" str="hello" bool="true" a="null" b="undefined" arr="[1,2,3]" obj="{a:1,b:2,c:3}"></prop-test>
+    <!-- 动态属性: 测试 
+      优点:
+        1. 组件接收数据时,得到原本的类型 
+        2. 可以使用父组件的数据 -->
+    <prop-test :num="count" :str="'hello'" :bool="true" :a="null" :b="undefined" :arr="[1,2,3]" :obj="{a:1,b:2,c:3}"></prop-test>
+  </div>
+</body>
+
+<script>
+
+  /*   
+    全局组件 => 缺点(倒计时时间 是否重复广告 广告的图片 点击广告时跳转的地址都是定死的)
+
+    希望其他组件(父组件)在使用此组件时也可以传递一些数据(数据是父组件给子组件传入的)
+
+    父组件传数据,子组件接收数据 
+
+    单向数据流 => 子组件不能直接修改父组件传入的数据
+      直接修改会报错 => void mutating a prop directly since the value will be overwritten whenever the parent component re-renders. Instead, use a data or computed property based on the prop's value. Prop being mutated: "countTime"
+      避免直接更改属性，因为每当父组件重新渲染时，该值都会被覆盖。相反，使用基于属性值的数据或计算属性。正在变异的属性：“countTime”
+  */
+
+
+  Vue.component('prop-test', {
+    // props可以是一个数组,对应属性名接收数据(被接收的数据才会绑定到当前实例,存放到this.$props) => 但是并没有限制接收数据的类型
+    props: ['num', 'str', 'bool', 'a', 'b', 'arr', 'obj'],
+    data() {
+      return {
+
+      }
+    },
+    template: `<div></div>`,
+    watch: {
+      num(newVal,oldVal) {
+        console.log("num接受的数据发生改变",newVal,oldVal);
+      }
+    },
+    mounted() {
+      console.log("接受的数据", this.$props);
+    },
+  })
+
+  // 根组件/根实例 (初始化渲染)
+  var vm = new Vue({
+    el: "#app",
+    data: {
+      count: 1,
+    }
+  })
+
+
+</script>
+
+</html>

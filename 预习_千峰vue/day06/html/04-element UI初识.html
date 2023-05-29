@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <!-- 引入样式 -->
+  <link rel="stylesheet" href="../css/elementui.css">
+  <!-- 引入vue2 -->
+  <script src="../js/vue.js"></script>
+  <!-- 引入组件库 -->
+  <script src="../js/elementul.js"></script>
+
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
+    .col {
+      line-height: 40px;
+      border: 1px solid;
+    }
+
+    .el-row {
+      margin-bottom: 20px;
+    }
+
+    .el-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .el-col {
+      border-radius: 4px;
+    }
+
+    .bg-purple-dark {
+      background: #99a9bf;
+    }
+
+    .bg-purple {
+      background: #d3dce6;
+    }
+
+    .bg-purple-light {
+      background: #e5e9f2;
+    }
+
+    .grid-content {
+      border-radius: 4px;
+      min-height: 36px;
+    }
+
+    .row-bg {
+      padding: 10px 0;
+      background-color: #f9fafc;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div>
+      <el-button>默认按钮</el-button>
+      <el-button type="primary">主要按钮</el-button>
+      <el-button type="success">成功按钮</el-button>
+      <el-button type="info">信息按钮</el-button>
+      <el-button type="warning">警告按钮</el-button>
+      <el-button type="danger">危险按钮</el-button>
+    </div>
+
+    <el-row>
+      <el-col class="col" :span="2">1</el-col>
+      <el-col class="col" :span="4">2</el-col>
+      <el-col class="col" :span="6">3</el-col>
+      <el-col class="col" :span="12">4</el-col>
+    </el-row>
+
+    <el-row :gutter="20">
+      <el-col :span="6">
+        <div class="grid-content bg-purple"></div>
+      </el-col>
+      <el-col :span="6">
+        <div class="grid-content bg-purple"></div>
+      </el-col>
+      <el-col :span="6">
+        <div class="grid-content bg-purple"></div>
+      </el-col>
+      <el-col :span="6">
+        <div class="grid-content bg-purple"></div>
+      </el-col>
+    </el-row>
+
+  </div>
+</body>
+<script>
+  /*
+    网站快速成型工具
+    Element，一套为开发者、设计师和产品经理准备的基于 Vue 2.0 的桌面端组件库 
+  */
+
+  var vm = new Vue({
+    el: '#app',
+    data: {
+
+    }
+  })
+</script>
+
+</html>

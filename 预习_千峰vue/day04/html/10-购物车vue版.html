@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <script src="../js/vue.js"></script>
+  <script src="../js/axios.min.js"></script>
+  <style>
+    .name {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+    }
+  </style>
+</head>
+
+<body>
+  <div class="catbox">
+    <table id="cartTable">
+      <thead>
+        <tr>
+          <th><label>
+              <input class="check-all check" type="checkbox" v-model="checkedAll" />&nbsp;&nbsp;全选</label></th>
+          <th>商品</th>
+          <th>单价</th>
+          <th>数量</th>
+          <th>小计</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in list" :key="item.goodsId">
+          <td class="checkbox"><input class="check-one check" type="checkbox" v-model="item.isChecked" /></td>
+          <td class="goods">
+            <img :src="item.goodsImg" alt="" />
+            <span class="name">{{item.goodsName}}</span>
+          </td>
+          <td class="price">{{item.goodsPrice}}</td>
+          <td class="count">
+            <span class="reduce" :style="{cursor:item.buyNum>1?'pointer':'no-drop'}"
+              @click="item.buyNum>1&&item.buyNum--">
+              {{item.buyNum > 1 ?'-':''}}
+            </span>
+            <input class="count-input" type="text" :value="item.buyNum" />
+            <span class="add" @click="item.buyNum++">+</span>
+          </td>
+          <td class="subtotal">{{(item.goodsPrice * item.buyNum).toFixed(2)}}</td>
+          <td class="operation"><span class="delete" @click="deleteOneHandler(item)">删除</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+
+    <div class="foot" id="foot">
+      <a class="fl" id="deleteAll" href="javascript:;" @click="deleteAllHandler">删除</a>
+      <div class="fr closing" onclick="getTotal();">结 算</div>
+      <input type="hidden" id="cartTotalPrice" />
+      <div class="fr total">合计：￥<span id="priceTotal">{{selectedPrice}}</span></div>
+      <div class="fr selected" id="selected">
+        已选商品<span id="selectedTotal">{{selectedTotal}}</span>
+        件<span class="arrow up">︽</span><span class="arrow down">︾</span></div>
+      <div class="selected-view">
+        <div id="selectedViewList" class="clearfix">
+          <div><img src="../images/1.jpg"><span>取消选择</span></div>
+        </div>
+        <span class="arrow">◆<span>◆</span></span>
+      </div>
+    </div>
+  </div>
+
+
+
+</body>
+<script>
+  new Vue({
+    el: '.catbox',
+    data: {
+      list: []
+    },
+    methods: {
+      getData() {
+        axios({
+          method: 'get',
+          url: '../data/shoppingCar.json',
+        }).then(res => {
+          return res.data
+        }).then(data => {
+          console.log(data)
+          this.list = data
+        })
+      },
+      deleteOneHandler(item) {
+        var index = this.list.indexOf(item) // 找到商品的下标
+        this.list.splice(index, 1)
+      },
+      deleteAllHandler() {
+        // 全删从list中找到所有isChecked为true的商品删除 => 剩余的所有商品都是isChecked为false
+        this.list = this.list.filter(v => v.isChecked != true)
+      }
+    },
+    computed: {
+      checkedAll: { // 是否全选
+        get() {
+          // 全选的状态依赖于单选
+          var flag = this.list.every(v => v.isChecked)
+          return this.list.length > 0 ? flag : false
+        },
+        set(bool) {
+          // 所有的单选跟随全选的状态
+          if (this.list.length) {
+            this.list.forEach(v => {
+              v.isChecked = bool
+            })
+          }
+        }
+      },
+      selectedTotal() {
+        return this.list.reduce((prev, item) => {
+          if (item.isChecked) {
+            return prev + item.buyNum
+          } else {
+            return prev
+          }
+        }, 0)
+
+        // return this.list.reduce((prev, item) => item.isChecked ? prev + item.buyNum : prev, 0)
+      },
+      selectedPrice() {
+        // return this.list.reduce((prev, item) => item.isChecked ? prev + (item.buyNum * item.goodsPrice) : prev, 0).toFixed(2)
+        return this.list.reduce((prev, item) => {
+          if (item.isChecked) {
+            return prev + (item.buyNum * item.goodsPrice)
+          } else {
+            return prev
+          }
+        }, 0).toFixed(2)
+      }
+    },
+    watch: {
+      list: {
+        handler() {
+          console.log('list修改了');
+        },
+        deep: true
+      }
+    },
+    mounted() {
+      this.getData()
+    },
+    
+  })
+</script>
+
+</html>

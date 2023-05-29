@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.global.js"></script>
+</head>
+
+<body>
+
+  <div id="app">
+    <p>count: {{count}}</p>
+    <p><button @click="count++">addCount</button></p>
+    <p><button @click="addCount">addCount</button></p>
+  </div>
+
+</body>
+<script>
+
+  const { createApp } = Vue
+  const { ref, reactive, readonly, watch, computed } = Vue
+
+  let { onBeforeMount, onBeforeUnmount, onBeforeUpdate, onUpdated, onMounted, onUnmounted } = Vue
+
+  // onBeforeMount 注册一个回调函数，在组件挂载之前执行
+  // onMounted  注册一个回调函数，在组件挂载完成后执行
+  // onBeforeUpdate 注册一个钩子，在组件即将因为响应式状态变更而更新其 DOM 树之前调用
+  // onUpdated 注册一个回调函数，在组件因为响应式状态变更而更新其 DOM 树之后调用
+  // onBeforeUnmount 注册一个钩子，在组件实例被卸载之前调用
+  // onUnmounted 注册一个回调函数，在组件实例被卸载之后调用
+
+  // 组合式可以注册多个回调函数 => 按顺序执行
+  // 选项式后面的同名钩子函数会覆盖前面的
+
+
+  const app = Vue.createApp({
+
+    setup(props) {
+
+      let count = ref(10)
+
+      let addCount = () => {
+        count.value++  // 在组合式中修改数据要通过ref对象的 .value 语法
+      }
+
+      let dobuleCount = computed(() => {
+        return count.value * 2
+      })
+
+      watch(count, (newVal, oldVal) => {
+        console.log('count发生改变', newVal, oldVal);
+      })
+
+
+
+
+      
+      onMounted(() => {
+        console.log('组件挂载完毕11');
+      })
+
+      onMounted(() => {
+        console.log('组件挂载完毕22');
+      })
+
+      
+
+      // 原理 -> 闭包
+      return {
+        count,
+        addCount,
+        dobuleCount
+      }
+
+    },
+
+    // 选项式写法
+    // beforeCreate() {
+
+    // },
+
+    // created() {
+
+    // },
+
+    // beforeMount() {
+
+    // },
+
+    // 依旧可以使用选项式
+    mounted() {
+      // console.log('this代理对象', this);
+      console.log('组件挂载完毕33');
+    },
+
+  })  // 需要使用实例的mount方法来挂载到对应的元素上
+
+  app.mount('#app')
+
+
+</script>
+
+</html>

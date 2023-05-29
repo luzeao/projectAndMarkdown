@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+
+</head>
+
+<body>
+  <div id="app">
+
+    <my-count-down :times="15 * 60 * 60 * 1000" format="DD天HH时mm分ss秒"></my-count-down>
+
+    <my-count-down :times="15 * 60 * 60 * 1000">
+      <!-- slotScope 对应接收组件内传出的对象数据 -->
+      <template #default="slotScope">
+        <!-- {{slotScope}} -->
+        距离秒杀结束还有{{slotScope.day}}天{{slotScope.hour}}时{{slotScope.min}}分{{slotScope.sec}}秒
+      </template>
+    </my-count-down>
+
+    <my-count-down :times="15 * 60 * 60 * 1000">
+      <!-- 可以对插槽内容进行解构 -->
+      <template #default="{day,hour,min,sec}">
+        <!-- {{slotScope}} -->
+        距离秒杀结束还有{{day}}天{{hour}}时{{min}}分{{sec}}秒
+      </template>
+    </my-count-down>
+
+  </div>
+</body>
+
+<template id="demo">
+  <div class="countDown">
+    <template v-if="format">{{formatStr}}</template>
+
+    <!-- 
+      子组件可以通过特殊手段,将组件内的某些数据通过插槽传递到组件外
+      传递的数据会自动整合为一个对象(属性名作为对象的键名) => {day,hour,min,sec}
+      父组件可以借助v-slot对应插槽名称,用指令值接收数据,可以在template标签中v-slot:name="指令值"
+
+      可以理解为: 
+        1. 父组件传入插槽内容时,默认先解析一次(此时可以使用父组件中的数据)
+        2. 子组件接收传入插槽内容时,也会解析一次(此时可以使用slot组件中动态绑定的数据)
+     -->
+    <template v-else>
+      <slot name="default" :day="day" :hour="hour" :min="min" :sec="sec">{{hour}}:{{min}}:{{sec}}</slot>
+    </template>
+
+
+  </div>
+</template>
+
+<script>
+  /* 
+    1. 组件内的按钮内容是死的 => 想变成活的 => 传入一个属性来定义按钮内容
+    2. 父组件传入的内容可能是 text html结构 其他组件 => 通过属性接收后期不好解析
+ 
+      官方提供了插槽功能 => 在组件内<slot></slot>标签 作为占位符
+        -> 父组件使用子组件时可以在组件的标签对内,传入一些文本 html结构 组件 => 被子组件接收之后 => 会替换子组件原本的插槽标签
+
+      编译作用域
+        -> 虽然标签对内的内容最终会放到子组件中,但是他是属于父组件给子组件传入的
+        -> 父级模板里的所有内容都是在父级作用域中编译的；子模板里的所有内容都是在子作用域中编译的
+
+      后备内容(默认值)
+        -> slot标签对中的内容会作为后备内容(默认值)
+        -> 组件被调用时传入内容,就使用传入的,否则就使用后备内容(默认的)
+
+      具名插槽
+        -> 可以在组件内定义多个插槽 分别赋予不同的名字
+        -> 父组件向子组件传递插槽内容时,也要对应名字区分
+      
+      插槽作用域
+        -> 子组件可以通过特殊手段,将组件内的某些数据通过插槽传递到组件外
+        -> 传递的数据会自动整合为一个对象(属性名作为对象的键名)=> {day,hour,min,sec}
+        -> 父组件可以借助v-slot对应插槽名称,用指令值接收数据,可以在template标签中v-slot:name="指令值"
+
+  */
+
+  Vue.component('my-count-down', {
+    props: {
+      times: {
+        type: Number,
+        required: true
+      },
+      format: {
+        type: String,
+        default: ''
+      }
+
+    },
+    data() {
+      return {
+        // time: 4 * 60 * 60 * 1000, // 定值 
+        time: this.times, // 单位ms 从父组件接收 作为time的初始值
+        timer: null
+      }
+    },
+    template: `#demo`,
+    methods: {
+      beauty(val) {
+        return val.toString().padStart(2, '0')
+      },
+      timeDown() {
+        clearInterval(this.timer)
+        this.timer = setInterval(() => {
+          this.time -= 1000
+          if (this.time <= 0) {
+            clearInterval(this.timer)
+          }
+        }, 1000);
+      }
+    },
+    computed: {
+      day() {
+        return this.beauty(parseInt(this.time / (24 * 60 * 60 * 1000)))
+      },
+      hour() {
+        return this.beauty(parseInt(this.time / (60 * 60 * 1000)) % 24)
+      },
+      min() {
+        return this.beauty(parseInt(this.time / (60 * 1000)) % 60)
+      },
+      sec() {
+        // 总的时间(ms)/1000 => xxx秒(总秒数) % 60  
+        return this.beauty(parseInt(this.time / 1000) % 60)
+      },
+      formatStr() {
+        return this.format.replace('DD', this.day).replace('HH', this.hour).replace('mm', this.min).replace('ss', this.sec)
+      }
+    },
+    mounted() {
+      this.timeDown()
+    },
+    // 组件准备销毁
+    beforeDestroy() {
+      clearInterval(this.timer)
+    },
+  })
+
+  var vm = new Vue({
+    el: "#app",
+
+  })
+
+</script>
+
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.global.js"></script>
+</head>
+
+<body>
+
+  <div id="app">
+    <p>count: {{count}}</p>
+    <p><button @click="count++">addCount</button></p>
+    <p><button @click="addCount">addCount</button></p>
+  </div>
+
+</body>
+<script>
+  /* 
+    组合式
+      1. 可以在setup函数中定义数据 方法 计算属性 生命周期钩子函数
+      2. 定义的数据 方法 计算属性 通过return值返回 => 返回的数据和方法和计算属性,就是代理对象接收的
+
+    如何定义数据
+      + ref() => 常用于定义值类型的数据(引用类型也可以)
+        => 方法返回一个ref对象 => 对象中存在value属性(取值拦截和赋值拦截)存储传入的数据
+        => 监听到value值发生改变,更新视图
+        => ref对象 在template和选项式语法中使用时,默认会被解包 => 取值时会自动获ref对象的value值,存出到porxy对象 => 可以在模版中直接使用
+                                                            => 赋值时,将对应的数据存储到ref对象中
+      reactive() => 常用于定义引用类型的数据
+      readonly()
+  */
+
+  const { createApp } = Vue
+  const { ref, reactive, readonly } = Vue
+
+  const app = Vue.createApp({
+
+    setup(props) {
+
+      // 此写法可以定义死数据 -> 但是无法监听到数据改变(同步到视图)
+      // let count = 10
+      // let addCount = () => {
+      //   console.log('this',this);  // 指向window
+      //   count++
+      // }
+
+      let count = ref(10)
+      console.log(count);
+      let addCount = () => {
+        count.value++  // 在组合式中修改数据要通过ref对象的 .value 语法
+      }
+
+      // 原理 -> 闭包
+      return {
+        count: count,
+        addCount: addCount
+      }
+    },
+
+    // 依旧可以使用选项式
+    mounted() {
+      console.log('this代理对象', this);
+    },
+
+  }).mount('#app')  // 需要使用实例的mount方法来挂载到对应的元素上
+
+
+
+</script>
+
+</html>

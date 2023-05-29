@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <p>{{a}}</p>
+    <p>
+      <button @click="a++">add</button>
+    </p>
+    <p>{{info.b}}</p>
+    <p>
+      <button @click="info.b++">add</button>
+    </p>
+  </div>
+</body>
+<script>
+
+  var vm = new Vue({
+    el: "#app",
+    data: {
+      // 初始化渲染过程中,对data中的属性a 绑定了数据监听,当a的值发生变化以后会触发视图更新
+      a: 1,
+      // b: 2,  提前将数据挂载到data中(可以监听到数据的变化)
+      info: {
+        // b:2
+      }
+    },
+    // 钩子函数
+    mounted() {
+      // 但是有的时候希望在某些异步操作结束之后 => 自己定义数据挂载到data上
+      // this.b = 20 // 通过实例化对象新增属性b => 等价于对 data.b 进行赋值 => 但是data中没有定义b属性
+
+      // this.$set(this.$data, 'b', 2) // 对于已经创建的实例，Vue 不允许动态添加根级别(data)的响应式 property(属性)
+
+      // 但是，可以使用 Vue.$set(object, propertyName, value) 方法向嵌套对象添加响应式 property(属性)
+      // 当被添加的属性发生改变时 => 也会被数据监听捕获到,触发视图更新
+      this.$set(this.info, 'b', 2)
+    },
+  })
+</script>
+
+</html>

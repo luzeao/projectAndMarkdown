@@ -1,0 +1,183 @@
+
+* {
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    list-style: none;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+img {
+    vertical-align: top;
+}
+
+.main {
+    width: 1226px;
+    margin: 0 auto;
+    margin-top: 50px;
+}
+
+.grade-list {
+    margin-top: 20px;
+    min-height: 246px;
+}
+
+.grade-list table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    font-size: 13px;
+    line-height: 40px;
+    table-layout: fixed;
+}
+
+.grade-list table td,
+.grade-list table th {
+    border: 1px solid #666;
+}
+
+.grade-list table td input {
+    width: 100%;
+}
+
+/* 遮罩层 */
+.shadow {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: none;
+}
+
+.shadow .edit-box {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    background-color: #fff;
+    font-size: 13px;
+}
+
+.shadow .edit-box .input-group+.input-group {
+    margin-top: 10px;
+}
+
+.shadow .edit-box .input-group input[type='text'] {
+    width: 250px;
+    height: 30px;
+    vertical-align: middle;
+    border: 1px solid #000;
+    border-radius: 2px;
+    outline: none;
+    font-size: 13px;
+    margin-left: 5px;
+    text-indent: 5px;
+}
+
+.shadow .edit-box .input-group input:disabled {
+    border: 0;
+    /* color: gray; */
+    background-color: transparent;
+}
+
+/* 搜索 */
+/* 搜索 */
+
+.searchGrade {
+    display: flex;
+    margin-bottom: 10px;
+    /* justify-content: space-between; */
+}
+
+.searchGrade>* {
+    margin-right: 20px;
+    line-height: 30px;
+}
+
+.searchGrade .searchBar {
+    width: 300px;
+    height: 29px;
+    border: 1px solid #333;
+    display: flex;
+    overflow: hidden;
+}
+
+.searchGrade .searchBar .searchCon {
+    border: none;
+    outline: none;
+    flex: 1;
+    padding: 0;
+    text-indent: 5px;
+}
+
+.searchGrade .searchBar .searchBtn {
+    width: 60px;
+    height: 30px;
+    display: block;
+    background-color: #999;
+}
+
+.searchGrade .orderColBar,
+.searchGrade .orderTypeBar {
+    border: 1px dashed #999;
+    padding: 0 20px;
+}
+
+.searchGrade label {
+    margin-right: 10px;
+}
+
+.searchGrade select {
+    height: 30px;
+}
+
+.searchGrade input[type="reset"] {
+    height: 30px;
+    width: 45px;
+}
+
+.pageBox {
+    text-align: center;
+    margin-top: 10px;
+}
+
+/* header */
+.header {
+    width: 1226px;
+    margin: 0 auto;
+}
+
+.header .leftNav {
+    background-color: grey;
+    height: 40px;
+    font-size: 13px;
+    color: #fff;
+    line-height: 40px;
+    display: flex;
+}
+
+.header .leftNav li {
+    padding: 0 10px;
+}
+
+.header .leftNav li a:nth-child(2) {
+    margin-left: 10px;
+}
+
+.hide {
+    display: none;
+}
+
+[v-cloak] {
+    display: none;
+}

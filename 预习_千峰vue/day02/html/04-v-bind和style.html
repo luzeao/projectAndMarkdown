@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+  <style>
+    #one {
+      width: 100px;
+      height: 100px;
+      background-color: pink;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <!-- 动态绑定style样式 -->
+    <div id="one" style="color: blueviolet;">111</div>
+    <div id="one" :style="styleStr">111</div>
+    <div id="one" :style="styleObj">111</div>
+    <div id="one" :style="styleList">111</div>
+  </div>
+</body>
+
+<script>
+  /* 
+    v-bind
+      1. 一般情况下 v-bind指令的结果要求是字符串类型,如果不是字符串会隐式转换为字符串(如果属性的值是 null 和 undefined 该属性不会动态绑定)
+      2. 操作元素的 class 列表和内联样式是数据定的一个常见需求, v-bind 用于 class 和 style 时,vue.js做了专门的增强,表达式的结果的类型除了字符串之外,可以是数组或者对象
+  */
+
+  new Vue({
+    el: '#app',
+    data: {
+      styleStr: 'color: blueviolet;',
+      styleObj: {
+        color: "red",
+        fontSize: '20px'
+      },
+      styleList: [{
+        color: "red",
+        fontSize: '20px'
+      }, {
+        lineHeight: "100px"
+      }]
+    }
+  })
+
+</script>
+
+</html>

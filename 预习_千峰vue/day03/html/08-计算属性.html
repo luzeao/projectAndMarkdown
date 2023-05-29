@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+
+    <div>
+      <h2>计算属性</h2>
+      <button @click="sortList">点击排序</button>
+      <button @click="addList">点击新增</button>
+    </div>
+
+    <ul>
+      <li v-for="(item,index) of list" :key="index">
+        {{ item }}
+      </li>
+    </ul>
+
+    <!-- 从数组中筛选出所有的偶数 => 展示偶数数组 => 写起来比较麻烦 -->
+    <div>获取偶数集合(普通写法):{{ list.filter(v =>v % 2 == 0) }}</div>
+    <!-- 函数版写法没有问题 => 性能上不好 => 每次视图更新都会调用方法 -->
+    <div>获取偶数集合(methods方法内):{{ getOu() }}</div>
+    <div>获取偶数集合(computed计算属性):{{ getEven }}</div>
+
+  </div>
+</body>
+<script>
+
+  /* 
+    methods 用于存放方法
+      1. 每次对应名称调用函数,函数都会执行一次(在一个视图中,如果同一个方法多次使用)
+      2. 数据更新后,为了对比前后虚拟DOM的变化,函数还要在执行一次
+    computed 计算属性(派生值 衍生值)
+      + 是根据data中绑定的数据(一个或多个)得到的数据(派生值 衍生值),计算属性可以依赖data中的一个或者多个数据
+        并在data绑定完之后默认执行一次对应的函数,将函数的执行结果作为计算属性的属性值,并缓存计算的结果,只有该计算属性依赖的数据发生改变时,绑定的函数才会重新执行,并缓存新的结果
+      + 计算属性的初始值会在vue把模版编译为虚拟dom之前默认先执行一次,
+    注意: 不建议在计算属性中使用异步代码(不能执行异步操作)
+
+  */
+
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      list: [1, 4, 7, 2, 5, 8, 3, 6, 9]
+    },
+    methods: {
+      sortList() {
+        this.list.sort((a, b) => a - b)
+      },
+      addList() {
+        var num = Math.round(Math.random() * 100) // 随机一个数
+        var index = Math.floor(Math.random() * this.list.length) // 随机一个下标
+        this.list.splice(index, 0, num)
+      },
+      getOu() {
+        console.log(1);
+        return this.list.filter(v => v % 2 == 0)
+      }
+    },
+    computed: {
+      getEven() {
+        // 键名: 计算属性的属性名(如果需要使用此计算属性 通过vue实例获取)
+        // 键值: 依赖于函数执行结果(计算属性绑定的函数会在data数据挂载完毕之后默认执行一次,并将函数的执行结果作为计算属性的值,函数中的this指向当前实例)
+        console.log(2);
+        return this.list.filter(v => v % 2 == 0)
+      }
+    }
+  })
+
+</script>
+
+</html>

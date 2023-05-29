@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <!-- 本地下载,下载后引入使用 -->
+  <script src="../js/vue.js"></script>
+
+</head>
+
+<body>
+  <!-- 在没有使用vue之前 => 他就是一个普通的文本 -->
+  <div id="app">
+    <p>
+      message:{{message}}
+    </p>
+    <p>
+      count:{{count}}
+    </p>
+    <p>
+      say:{{say()}}
+    </p>
+  </div>
+</body>
+<script>
+  function MyVue(options) {
+
+    // el 挂载的元素 => 是一个字符串
+    // data 挂载的数据
+    // methods 挂载的方法
+    let { el, data, methods } = options
+
+    // 给data绑定拦截器
+    for (let key in data) {
+
+      let defaultVal = data[key]
+      Object.defineProperty(data, key, {
+        get() {
+          console.log('取值拦截', key)
+          return defaultVal
+        },
+
+        set(val) {
+          console.log('赋值拦截', key)
+          defaultVal = val
+          render() // 数据改变重新渲染
+        }
+
+      })
+
+    }
+
+    // 将数据再vue实例上也对应属性名绑定一份 => 修改实例的属性相当于修改data中的属性
+    // 给实例化对象绑定同名拦截器
+    for (let key in data) {
+      Object.defineProperty(this, key, {
+        get() { // 实例化对象对应属性取值时,依赖于daat[key]
+          return data[key]
+        },
+        set(val) {
+          data[key] = val
+        }
+      })
+    }
+
+    // methods中绑定的函数,也会再实例化对象上挂载一份
+    for (let key in methods) {
+
+      this[key] = methods[key]
+
+    }
+
+    // 通过选择器获取挂载的元素
+    this.$el = document.querySelector(el)
+
+    let template = this.$el.innerHTML // 获取元素本身及其内部的html结构
+    console.log(template)
+
+    this.$data = data
+
+    var _this = this
+
+    render()
+
+    function render() {
+
+      let reg = /\{\{.+\}\}/g
+      let result = null
+
+      // 每次循环时先将匹配的结果赋值给result => 成功返回[],继续循环 => 失败返回null,跳出循环
+      // 成功后再将解析的结果作为while循环的表达式
+
+      // template 需要重复利用,所以不能直接使用template,需要中间变量
+      var html = template
+      while (result = reg.exec(html)) {
+
+        let isFun = false
+        var key = result[0].slice(2, -2)
+
+
+        if (key.endsWith('()')) {
+          isFun = true
+          key = key.slice(0, -2)
+        }
+
+
+
+        let val = null
+        if (key in data) { // 数据再data中挂载了
+          val = _this[key]
+        } else if (key in methods && isFun == true) { // 数据再methods中挂载了,且是一个函数
+          val = _this[key]()
+        } else { // 不考虑计算属性 => 既不是data中的数据也不是method中的方法
+          throw '没有挂载这个数据或方法'
+        }
+
+        html = html.replace(result[0], val) // 替换为返回的新字符串
+        _this.$el.innerHTML = html
+
+      }
+
+    }
+
+  }
+
+  var app = new MyVue({ // vue中的绝大部分功能都是依赖于options(选项)参数实现的
+    el: '#app', // 挂载的元素(css选择器) => #app
+    data: {     // 挂载的数据 => 可以有多条(对象) => 可以在挂载的元素内使用(对应数据名称使用)
+      message: 'Hello Wrold',
+      count: 1,
+      msg: "你好"
+    },
+    methods: {  // 挂载的方法 => 执行既定的内容 => 可以在挂载的元素内使用(对应函数名称使用)
+      say: function () {
+        return "你好"
+      }
+    }
+  })
+
+  console.log(app)
+
+  document.onclick = function () {
+    // 通过$data访问挂载的数据
+    // app.$data.message = "hello vue"
+    // app.$data.count = 100
+    // app.$data.msg = "我不好"
+
+    // 通过实例化对象访问数据 => 写法更简单 => 将数据再vue实例上也对应属性名绑定一份 => 修改实例的属性相当于修改data中的属性
+    app.message = '你好'
+    app.count = 10
+    app.msg = "ok"
+
+  }
+</script>
+
+</html>

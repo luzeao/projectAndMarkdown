@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.global.js"></script>
+</head>
+
+<body>
+
+  <div id="app">
+
+    <p>count: {{count}}</p>
+    <p><button @click="count++">addCount</button></p>
+    <p><button @click="addCount">addCount</button></p>
+
+    <p>{{zhang.name}}</p>
+    <p>{{zhang.age}}</p>
+    <p>
+      <button @click="zhang.name='李四'">改名</button>
+      <br>
+      <button @click="changeAge">年龄++</button>
+      <br>
+      <!-- 修改zhang的value值 -->
+      <button @click="zhang={name: '张三',age: 18}">重置</button>
+    </p>
+
+  </div>
+
+</body>
+<script>
+
+  const { createApp, getCurrentInstance } = Vue
+  const { ref, reactive, readonly, computed, watch } = Vue
+  const { shallowRef, triggerRef } = Vue
+  const { isRef, isReactive, isProxy, isReadonly } = Vue
+
+  const app = Vue.createApp({
+
+    setup(props) {
+
+      let count = ref(10)
+
+      let doubleCount = computed(() => {
+        return count.value * 2
+      })
+
+      let addCount = () => {
+        count.value++  // 在组合式中修改数据要通过ref对象的 .value 语法
+      }
+
+      // getCurrentInstance 方法 获取当前实例 app
+      var app = getCurrentInstance()  // 当前实例(app)
+      let { ctx } = app  // 获取当前实例的 proxy对象(存储数据,方法,计算属性)
+
+      
+      // zhang => ref对象
+      let zhang = shallowRef({
+        name: '张三',
+        age: 18
+      })
+
+      // isRef => 判断某个值是否是ref对象
+      console.log('isRef', isRef(count));
+      console.log('isRef', isRef(doubleCount));
+      console.log('isRef', isRef(zhang));
+
+
+      return {
+        zhang,
+        count,
+        addCount,
+        doubleCount
+      }
+    },
+
+    // 依旧可以使用选项式
+    mounted() {
+      console.log('this代理对象', this);
+    },
+
+  }).mount('#app')  // 需要使用实例的mount方法来挂载到对应的元素上
+
+
+
+</script>
+
+</html>

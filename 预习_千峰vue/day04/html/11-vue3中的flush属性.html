@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <p class="p" ref="p">{{count}}</p>
+    <p><button @click="count++">count++</button></p>
+  </div>
+</body>
+<script>
+  /* 
+    vue中如何获取元素/组件(vue),原生方法 => 基本都是从文档中获取(范围可能不准确)
+      vue中定义了自己查找元素的方法 => 基于 ref属性 => 理解为,在我们的vue实例初始化渲染过程中,将包含ref属性的元素提取出来,对应ref名放在vue实例的$refs属性中(优点:只在对应的vue实例范围内查找)
+  */
+
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      count: 1
+    },
+    watch: {
+      // async count(newVal, oldVal) {
+      //   console.log('监听count发生改变', newVal, oldVal);
+      //   console.log(this.$refs.p.textContent);
+      // }
+
+      // Vue3 想在侦听器回调中能访问被Vue更新之后的DOM
+      count: {
+        handler: async function (newVal, oldVal) {
+          console.log('监听count发生改变', newVal, oldVal);
+          console.log(this.$refs.p.textContent);
+        },
+        flush: 'post',
+      }
+    },
+    mounted() {
+      console.log("vue实例", this);
+      console.log('vue.$refs', this.$refs);
+      console.log('p', this.$refs.p);
+    },
+  })
+</script>
+
+</html>

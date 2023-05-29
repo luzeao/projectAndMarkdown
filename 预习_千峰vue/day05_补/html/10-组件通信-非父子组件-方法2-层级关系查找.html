@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+  <style>
+    .article {
+      width: 300px;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+
+    <color-select></color-select>
+
+    <show-article ref="article"></show-article>
+
+  </div>
+</body>
+
+<template id="compA">
+  <div class="colorSelect">
+    <input type="color" :value="color" @change="colorHandler">
+  </div>
+</template>
+
+<template id="compB">
+  <div class="article" :style="{color:color}">
+    <p>说到这里，大师脸上流露出一丝冷笑，“很多人都认为，蓝银草是废武魂，但经过我多年的研究，蓝银草同样有属于自己的作用。如果不是蓝银草在觉醒时产生的魂力过于弱小，哪怕是成为战魂师，也并不是不可能的。</p>
+  </div>
+</template>
+<script>
+
+  /* 
+    非父子组件的通信
+      1. 如果是同级组件 => 有相同的父组件(根组件) => 可以将父组件作为通信的桥梁
+      2. 组件中也有相应的层级关系(父组件,子组件,根组件),通过ref属性也可以获取组件 
+        组件层级的相关属性 
+          -> $parent => 父组件
+          -> $children => 子组件(不建议使用$children => 组件也可以进行动态渲染,下标可能改变)
+          -> $root => 根组件
+  */
+
+
+  Vue.component('color-select', {
+    data() {
+      return {
+        color: '#666666',
+      }
+    },
+    template: "#compA",
+    methods: {
+      colorHandler(e) {
+        console.log('color发生改变');
+        this.color = e.target.value // 改自己的color属性
+
+        // 当前组件找父组件(根组件) -> 对应ref名找article组件(vue实例)
+        this.$parent.$refs.article.color = e.target.value
+      }
+    },
+    mounted() {
+      console.log('组件A', this);
+    },
+  })
+
+
+  Vue.component('showArticle', {
+    data() {
+      return {
+        color: '#666666'
+      }
+    },
+    template: "#compB",
+  })
+
+
+
+  var vm = new Vue({
+    el: '#app',
+    data: {
+
+    }
+  })
+
+</script>
+
+</html>

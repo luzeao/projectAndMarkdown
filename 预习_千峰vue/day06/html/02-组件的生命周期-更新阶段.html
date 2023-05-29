@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <p>{{count}}</p>
+    <button @click="count++">加</button>
+    <comp-a :count.sync="count"></comp-a>
+  </div>
+</body>
+
+<template id="compA">
+  <div class="compA">
+    这是组件A:{{count}}
+    <button @click="$emit('update:count',count+1)">子组件加</button>
+  </div>
+</template>
+<script>
+
+  /* 
+    组件的生命周期-更新阶段
+      1. 子组件自身的数据发生改变 => 就进入更新阶段(只会触发组件自身的更新阶段)
+      2. 子组件接受了父组件动态传递的数据 => 父组件传入的数据,就是子组件接收的数据
+        -> 父组件数据发生改变 => 触发父组件的更新阶段 => 父组件解析template为虚拟dom => 触发子组件的更新阶段 => 解析子组件的template虚拟dom => 子组件解析为真实DOM => 传递给父组件(作为父组件的虚拟dom) => 父组件继续向后解析 => 直到将所有的组件解析完毕 => 通过diff算法更新真实dom
+  */
+
+  Vue.component('compA', {
+    props: ['count'],
+    data() {
+      return {}
+    },
+    template: "#compA",
+    methods: {},
+    beforeUpdate() {
+      console.log("5 beforeUpdate:子组件", this.count);
+    },
+    updated() {
+      console.log("6 updated:子组件", this.count);
+    },
+  })
+
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      count: 1
+    },
+    beforeUpdate() {
+      console.log("5 beforeUpdate:父组件", this.count);
+    },
+    updated() {
+      console.log("6 updated:父组件", this.count);
+    },
+  })
+
+</script>
+
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/table.css">
+    <script src="../js/vue.js"></script>
+
+    <!-- 全局的axios函数 -->
+    <script src="../js/axios.min.js"></script>
+
+</head>
+
+<body>
+    <div id="app">
+        <div class="header">
+            <ul class="leftNav">
+                <li>中国大陆</li>
+                <li class="site-nav-sign">
+                    <a href="./login.html">亲,请登录</a>
+                    <a href="./register.html">免费注册</a>
+                </li>
+                <li class="site-nav-login hide">
+                    <a href="javascript:;" class="site-login-tips">欢迎,xxx</a>
+                    <a href="javascript:;" class="site-exit">退出</a>
+                </li>
+                <li>手机</li>
+                <li>无障碍</li>
+            </ul>
+        </div>
+        <div class="main">
+            <form class="searchGrade" @submit.prevent>
+                <div class="searchBar">
+                    <input ref="searchCon" type="text" class="searchCon">
+                    <a href="javascript:;" class="searchBtn" @click="clickSearchHandler"></a>
+                </div>
+                <div class="orderColBar">
+                    <!-- 排序的列名 -->
+                    <label>默认<input type="radio" v-model="searchParams.col" name="col" class="orderCol" value="id"
+                            checked></label>
+                    <label>语文<input type="radio" v-model="searchParams.col" name="col" class="orderCol"
+                            value="chinese"></label>
+                    <label>数学<input type="radio" v-model="searchParams.col" name="col" class="orderCol"
+                            value="math"></label>
+                    <label>英语<input type="radio" v-model="searchParams.col" name="col" class="orderCol"
+                            value="english"></label>
+                    <label>总分<input type="radio" v-model="searchParams.col" name="col" class="orderCol"
+                            value="total"></label>
+                </div>
+                <div class="orderTypeBar">
+                    <!-- 排序的方式 -->
+                    <label>升序<input type="radio" v-model="searchParams.type" name="type" class="orderType" value="asc"
+                            checked></label>
+                    <label>降序<input type="radio" v-model="searchParams.type" name="type" class="orderType"
+                            value="desc"></label>
+                </div>
+                <div class="showNumSelect">
+                    <select class="showNum" v-model="searchParams.size">
+                        <option value="5" selected>每页显示5条</option>
+                        <option value="10">每页显示10条</option>
+                        <option value="15">每页显示15条</option>
+                        <option value="20">每页显示20条</option>
+                    </select>
+                </div>
+                <input type="reset" value="重置" @click="resetHandler">
+            </form>
+            <div class="grade-list">
+                <table class="garde-table">
+                    <thead>
+                        <tr>
+                            <th>编号</th>
+                            <th>姓名</th>
+                            <th>班级</th>
+                            <th>语文</th>
+                            <th>数学</th>
+                            <th>英语</th>
+                            <th>总分</th>
+                            <th>编辑</th>
+                            <th>删除</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template v-if="list.length">
+                            <tr v-for="item in list">
+                                <td>{{item.id}}</td>
+                                <td>{{item.name}}</td>
+                                <td>{{item.class}}</td>
+                                <td>
+                                    <template v-if="item.isEdit==false">{{item.chinese}}</template>
+                                    <template v-else><input type="text" v-model.number.lazy="item.chinese"></template>
+                                </td>
+                                <td>
+                                    <template v-if="item.isEdit==false">{{item.math}}</template>
+                                    <template v-else><input type="text" v-model.number.lazy="item.math"></template>
+                                </td>
+                                <td>
+                                    <template v-if="item.isEdit==false">{{item.english}}</template>
+                                    <template v-else><input type="text" v-model.number.lazy="item.english"></template>
+                                </td>
+                                <td>{{item.chinese + item.math + item.english}}</td>
+                                <td>
+                                    <!-- isEdit==true => 正处于编辑状态,span内的文本应该是保存 -->
+                                    <!-- isEdit==false =>正处于未编辑状态,span内的文本应该是编辑(可编辑)-->
+                                    <a href="" @click.prevent="editHandler(item)">
+                                        {{item.isEdit==true ? '保存': '编辑'}}
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="" @click.prevent="delHandler(item)">删除</a>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+            <div class="pageBox" v-if="maxPage" v-cloak>
+                <!-- <template v-if="maxPage" v-cloak> -->
+                <button class="prev" @click="prevhandler">上一页</button>
+                <span class="page-tips">{{current}}/{{maxPage}}</span>
+                <button class="next" @click="nextHandler">下一页</button>
+                <!-- </template> -->
+            </div>
+        </div>
+        <div class="shadow">
+            <form class="edit-box" onsubmit="return false">
+                <div class="input-group">
+                    <label>编号:<input type="text" disabled name="id"></label>
+                </div>
+                <div class="input-group">
+                    <label>姓名:<input type="text" disabled name="name"></label>
+                </div>
+                <div class="input-group">
+                    <label>班级:<input type="text" disabled name="class"></label>
+                </div>
+                <div class="input-group">
+                    <label>语文:<input type="text" name="chinese"></label>
+                </div>
+                <div class="input-group">
+                    <label>数学:<input type="text" name="math"></label>
+                </div>
+                <div class="input-group">
+                    <label>英语:<input type="text" name="english"></label>
+                </div>
+                <div class="input-group">
+                    <button class="save">保存</button>
+                    <input type="reset" class="cancel" value="取消">
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+<script type="module">
+    import { searchGradeOrderLimit, updateGradeById, deleteGradeById } from "../js/api.js";
+
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            searchParams: {
+                wd: "",
+                col: "id",
+                type: "asc",
+                page: 1,
+                size: 5,
+            },
+            list: [],
+            total: null,
+            maxPage: null,
+            current: 1,
+        },
+        methods: {
+            clickSearchHandler() {
+                console.log(this.$refs.searchCon.value);
+                this.searchParams.wd = this.$refs.searchCon.value;
+            },
+            searchHandler() {
+                searchGradeOrderLimit(this.searchParams).then(res => {
+                    console.log(res);
+                    var { status, message, list, total, maxPage, current } = res;
+                    if (status) {
+
+                        list.forEach(v => {
+                            this.$set(v, "isEdit", false);  // 给每条数据新增isEdit属性 -> 记录是否开启编辑状态
+                        })
+
+
+                        this.list = list;
+                        this.total = total;
+                        this.maxPage = maxPage;
+                        this.current = current;
+                    } else {
+                        alert(message);
+                    }
+                })
+            },
+            async editHandler(item) {
+                // 每一个数据都可以变为编辑状态 / 保存状态
+                // item.isEdit = !item.isEdit;
+                this.list.forEach(v => {
+                    if (v != item) {
+                        v.isEdit = false
+                    }
+                });
+
+                item.isEdit = !item.isEdit;
+
+
+                if (item.isEdit == false) {  // 退出编辑模式 => 变为保存
+                    let { id, chinese: ch, math: mh, english: eh } = item;
+                    var res = await updateGradeById({ id, ch, mh, eh })
+                    var { status, message } = res;
+                    console.log(11111, res);
+                    if (status) {
+                        console.log("更新成功");
+                    } else {
+                        alert(message);
+                    }
+                }
+
+
+            },
+            async delHandler(item) {
+                var { id } = item;
+                var res = await deleteGradeById({ id: id })
+                var { status, message } = res;
+                console.log("删除", res);
+                if (status) { // 数据已经从数据库中删除 => 更新视图
+                    console.log("删除成功");
+                    // 改变list
+                    // var index = this.list.find(v=>v===item);
+                    // this.list.splice(index,1);
+
+                    // 再次发送请求 => 更新视图
+                    this.searchHandler();
+                } else {
+                    alert(message);
+                }
+            },
+            prevhandler() {
+                if (this.searchParams.page <= 1) return false;
+                this.searchParams.page--;
+            },
+            nextHandler() {
+                if (this.searchParams.page > this.maxPage) return false;
+                this.searchParams.page++;
+            },
+            resetHandler() {
+                this.searchParams = {
+                    wd: "",
+                    col: "id",
+                    type: "asc",
+                    page: 1,
+                    size: 5,
+                };
+            }
+        },
+        watch: {
+            searchParams: {
+                handler: function (newVal, old) {
+                    console.log("searchParams改变了");
+                    this.searchHandler();
+                },
+                deep: true,
+            }
+        },
+        mounted() {
+            this.searchHandler();
+        }
+    })
+
+
+</script>
+
+</html>

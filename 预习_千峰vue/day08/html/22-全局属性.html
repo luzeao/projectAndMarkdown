@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.global.js"></script>
+</head>
+
+<body>
+
+  <div id="app">
+    <p>$a:{{$a}}</p>
+    <p>$b:{{$b}}</p>
+    <p>both:{{both}}</p>
+    <p>$watch:{{count}}</p>
+    <br>
+    <p>
+      <button @click="count++"> count++</button>
+    </p>
+  </div>
+
+</body>
+<script>
+
+  const { createApp, getCurrentInstance } = Vue
+  const { globalProperties, computed, ref } = Vue
+
+  /* 
+    Vue2中可以给 Vue.prototype的原型对象配置全局属性,从而允许所有的实例都可以访问这些属性
+
+    Vue3中需要给根实例配置  app.config.globalProperties
+      1. 在模板中,可以直接对应属性名访问,选项式语法中 => 直接通过this(代理对象访问) => 用法同v2
+      2. 再组合式语法中 => 需要通过当前实例访问 getCurrentInstance
+
+    注意:使用app.config.globalProperties定义全局属性时,需要先定义全局属性后,再将app挂在到元素上
+  */
+
+  // app.config.globalProperties.$a = 1
+  // app.config.globalProperties.$b = 2
+
+  const app = Vue.createApp({
+
+    setup(props) {
+
+      let count = ref(100)
+
+      let app = getCurrentInstance()
+
+      // 获取全局属性/方法
+      let { $a, $b } = app.appContext.config.globalProperties
+
+      let { ctx } = app // 获取当前实例的代理数据 => 此时数据还没有存 => 只能使用代理中的方法($emit,$forceUpdate,$root,$parent,$watch)
+
+      console.log('app', app);  // app => appContext => config => globalProperties
+      console.log('$a和$b', $a, $b);
+
+      let both = computed(() => {
+        return $a + $b
+      })
+
+      return {
+        both,
+        count
+      }
+    },
+
+
+    mounted() {
+      // console.log('this', this);
+      // console.log("this.$a", this.$a);
+      // console.log("this.$b", this.$b);
+      // 选项式语法
+      // 组件挂载完毕,开启一个监听,监听count
+      this.$watch('count', function (newVal, oldVal) {
+        console.log('count修改了,自己开启的监听', newVal, oldVal);
+      })
+
+      this.$watch(() => this.count * 2, function (newVal, oldVal) {
+        console.log('doubleCount修改了', newVal, oldVal);
+      })
+
+    },
+
+    watch: {
+      count(newVal, oldVal) {
+        console.log('count修改了,官方开启的监听', newVal, oldVal);
+      }
+    }
+
+  })
+
+  app.config.globalProperties.$a = 1
+  app.config.globalProperties.$b = 2
+  app.config.globalProperties.msg = 'hello'
+  app.mount('#app')   // 需要使用实例的mount方法来挂载到对应的元素上
+
+
+
+
+
+</script>
+
+</html>

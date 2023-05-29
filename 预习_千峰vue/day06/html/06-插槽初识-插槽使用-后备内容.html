@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <!-- 父组件使用子组件时可以在组件的标签对内,传入一些文本 html结构 组件 => 被子组件接收之后 => 会替换子组件原本的插槽标签 -->
+    <my-button>
+      我的按钮
+    </my-button>
+
+    <my-button>
+      <i>字体图标 : </i> 按钮
+    </my-button>
+
+    <my-button>
+      按钮{{count}}
+    </my-button>
+
+  </div>
+</body>
+
+<template id="demo">
+  <div class="my-button">
+    <button>
+      <!-- 官方提供了插槽功能 => 在组件内<slot></slot>标签 作为占位符 -->
+      <slot>默认按钮</slot>
+    </button>
+  </div>
+</template>
+
+<script>
+  /* 
+    1. 组件内的按钮内容是死的 => 想变成活的 => 传入一个属性来定义按钮内容
+    2. 父组件传入的内容可能是 text html结构 其他组件 => 通过属性接收后期不好解析
+ 
+      官方提供了插槽功能 => 在组件内<slot></slot>标签 作为占位符
+        -> 父组件使用子组件时可以在组件的标签对内,传入一些文本 html结构 组件 => 被子组件接收之后 => 会替换子组件原本的插槽标签
+
+      编译作用域
+        -> 虽然标签对内的内容最终会放到子组件中,但是他是属于父组件给子组件传入的
+        -> 父级模板里的所有内容都是在父级作用域中编译的；子模板里的所有内容都是在子作用域中编译的
+
+      后备内容(默认值)
+        -> slot标签对中的内容会作为后备内容(默认值)
+        -> 组件被调用时传入内容,就使用传入的,否则就使用后备内容(默认的)
+  */
+  Vue.component('my-button', {
+    props: ['text'],
+    data() {
+      return {
+
+      }
+    },
+    template: `#demo`,
+  })
+
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      count:1
+    }
+  })
+</script>
+
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+  <style>
+    .article {
+      width: 300px;
+      font-size: 13px;
+    }
+
+    .compA,
+    .compB,
+    .compC {
+      padding: 5px;
+      border: 1px dashed;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <p>{{count}}</p>
+    <button @click="count++">加</button>
+
+    <p>
+      <button @click="showComp='comp-a'">comp-a</button>
+      <button @click="showComp='comp-b'">comp-b</button>
+      <button @click="showComp='comp-c'">comp-c</button>
+    </p>
+
+    <!-- 
+      官方封装的一个组件 => 可以对应组件名称渲染某个组件
+        is => 要求传入的组件名称 (可以是静态属性,也可以是动态属性)
+     -->
+
+     <!-- 
+      通过给component组件传递动态属性 :is 可以实现组件切换
+      每次切换时,当前组件要被卸载(销毁),被切换的组件会进行初始化(组件中的数据)
+      组件中的数据没有被记录下来,每次卸载时都会被销毁
+      下次被在初始化还是使用初始值
+     -->
+    <component :is='showComp'></component>
+
+  </div>
+</body>
+
+<template id="compA">
+  <div class="compA">
+    这是组件A{{a}}
+    <button @click="a++">a++</button>
+  </div>
+</template>
+
+<template id="compB">
+  <div class="compB">
+    这是组件B:{{ms}}
+  </div>
+</template>
+
+<template id="compC">
+  <div class="compC">
+    这是组件C
+  </div>
+</template>
+<script>
+
+
+  Vue.component('compA', {
+    data() {
+      return {
+        a: 1
+      }
+    },
+    template: "#compA",
+    methods: {},
+    mounted() {
+      console.log("组件a被挂载");
+    },
+    destroyed() {
+      console.log("组件a被卸载了");
+    },
+  })
+
+
+  Vue.component('compB', {
+    data() {
+      return {
+        ms: 0,
+        timer: null
+      }
+    },
+    template: "#compB",
+    methods: {},
+    mounted() {
+      console.log("组件b被挂载");
+      clearInterval(this.timer)
+      this.timer = setInterval(() => {
+        console.log(this.ms);
+        this.ms += 10
+      }, 10)
+    },
+    beforeDestroy() {
+      clearInterval(this.timer)
+    },
+    destroyed() {
+      console.log("组件b被卸载了");
+    },
+  })
+
+
+  Vue.component('compC', {
+    data() {
+      return {}
+    },
+    template: "#compC",
+    methods: {},
+    mounted() {
+      console.log("组件c被挂载");
+    },
+    destroyed() {
+      console.log("组件c被卸载了");
+    },
+  })
+
+  
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      count: 1,
+      showComp: 'comp-a'
+    },
+  })
+</script>
+
+</html>

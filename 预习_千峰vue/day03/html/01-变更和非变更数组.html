@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <div>
+      <h2>变更和非变更数组</h2>
+      <button @click="sortList">点击排序</button>
+      <button @click="addList">点击新增</button>
+      <button @click="editList">点击编辑</button>
+      <ul>
+        <li v-for="(item,index) of list" :key="index">
+          {{ item }}
+        </li>
+      </ul>
+    </div>
+  </div>
+</body>
+<script>
+
+  /* 
+    更新数组和非变更数组
+      更新方法 => Vue 将被侦听的数组的变更方法进行了包裹，所以它们也将会触发视图更新 => 影响原数组的方法
+        + push()
+        + pop()
+        + shift()
+        + unshift()
+        + splice()
+        + sort()
+        + reverse()
+      非变更方法(替换数组) => 它们不会变更原始数组，而总是返回一个新数组
+      想让他们能在视图上更新,直接对应原属性名赋值给原属性
+        + filter()
+        + concat()
+        + slice()
+  */
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      list: [1, 4, 7, 2, 5, 8, 3, 6, 9]
+    },
+    methods: {
+      sortList() {
+        this.list.sort((a, b) => a - b)
+      },
+      addList() {
+        var num = Math.round(Math.random() * 100) // 随机一个数
+        var index = Math.floor(Math.random() * this.list.length) // 随机一个下标
+        this.list.splice(index, 0, num)
+      },
+      editList() {
+
+        // 虽然数组中的数据发生了改变,但是this.list引用的地址没有改变 => 不会更新视图
+        this.list[0] = 100
+
+        /* 
+          解决办法
+            1. this.$forceUpdate() => 强制更新视图
+            2. this.$set(target,key,val) => 向嵌套的对象/数组添加响应式的property
+        */
+        this.$forceUpdate()
+        this.$set(this.list, 0, 100)
+
+      }
+    },
+  })
+
+</script>
+
+</html>

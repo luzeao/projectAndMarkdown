@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <!-- <p>{{message}}</p> -->
+    <!-- <p v-text="message"></p> -->
+
+    <!-- 有时候希望将data中的绑定数据作为 标签内属性的属性值 -->
+    <!-- v-bind 动态绑定属性,将data中绑定的数据作为标签内的某个属性(根据参数来定)的属性值 -->
+    <p v-bind:id="idName" v-bind:class="className">{{message}}</p>
+  </div>
+</body>
+<script>
+  /* 
+    模版语法 - 指令(Directives) => vue在标签内设置的自定义属性 => 属性名统一使用 v- 开头
+      + v-前缀开头的特殊属性(attribute),指令属性的值预期是单个 JavaScript 表达式,指令的职责是，当表达式的值改变时，将其产生的连带影响，响应式地作用于 DOM
+
+      + 注意: 指令属性的值预期是一个JavaScript表达式 => 将表达式的执行结果作为指令的最终结果
+
+      v-html => 根据指令的值设置元素的html结构(标签和文本) => 可以只设置文本
+      
+      用法1
+      v-指令名称="指令值"
+
+      用法2
+      v-指令名称:参数="指令值"
+
+  */
+
+
+  var vm = new Vue({
+    el: "#app",
+    data: {
+      message: 'hello world',
+      idName:'one',
+      className:'go'
+    },
+  })
+
+  
+
+</script>
+
+</html>

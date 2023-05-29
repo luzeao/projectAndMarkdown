@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
+    .adver {
+      width: 230px;
+      height: 500px;
+      background-color: grey;
+      position: fixed;
+      right: 5px;
+      bottom: 5px;
+      /* display: none; */
+    }
+
+    .adver-top {
+      font-size: 14px;
+      line-height: 30px;
+    }
+
+    .adver-top .adver-title {
+      text-indent: 10px;
+    }
+
+    .adver-top .adver-close {
+      padding: 0 5px;
+      position: fixed;
+      right: 0;
+      top: 0;
+      cursor: pointer;
+    }
+
+    .adver-detail {
+      width: 230px;
+      height: 500px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 如果标签名或者属性名为大写,浏览器会解析为小写 -->
+  <DIV CLASS="ONE"></DIV>
+
+  <div id="app">
+
+    <!-- 根组件调用了全局组件 my-adver (adverTime => advertime有问题 => 如果属性名是驼峰式命名法,建议写为中划线命名 => 子组件解析时还会被还原为驼峰式命名法)-->
+    <!-- 注意: 子组件接收的数据(属性),是由父组件传入的 -->
+    <!-- 当前案例传入的属性是静态属性(属性值都是字符串类型) => 传入之后不可更改 => 更习惯作为子组件的初始值 -->
+    <my-adver adver-time="30" :loop="true" link="https://www.baidu.com"
+      src="https://img1.baidu.com/it/u=1848835637,2481235776&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500"></my-adver>
+
+  </div>
+</body>
+
+<template id="myAdver">
+  <div class="adver" v-if="isShow">
+    <div class="adver-top">
+      <div class="adver-title">距离广告关闭还有{{countTime}}秒</div>
+      <div class="adver-close" @click="closeHandler">X</div>
+    </div>
+    <div class="adver-detail">
+      <a :href="link">
+        <img :src="src" alt="">
+      </a>
+    </div>
+  </div>
+</template>
+
+<script>
+
+  /*   
+    全局组件 => 缺点(倒计时时间 是否重复广告 广告的图片 点击广告时跳转的地址都是定死的)
+
+    希望其他组件(父组件)在使用此组件时也可以传递一些数据(数据是父组件给子组件传入的)
+
+    父组件传数据,子组件接收数据 
+
+    单向数据流 => 子组件不能直接修改父组件传入的数据
+      直接修改会报错 => oid mutating a prop directly since the value will be overwritten whenever the parent component re-renders. Instead, use a data or computed property based on the prop's value. Prop being mutated: "countTime"
+      避免直接更改属性，因为每当父组件重新渲染时，该值都会被覆盖。相反，使用基于属性值的数据或计算属性。正在变异的道具：“countTime”
+
+      如何修改?
+        间接修改
+
+  */
+
+
+  Vue.component('my-adver', {
+
+    /* 
+      对应属性名称接收父组件传递的数据
+        1. 被接收的数据也会直接挂载到子组件的实例化对象上 => 可以通过实例化对象直接访问 (注意: 也可以通过this.$props)
+        2. 由于组件被设计为单向数据流 => 子组件不能直接修改父组件传入的数据 => 可以将被接收的父组件的数据作为子组件某项数据的初始值
+    */
+    props: ['adverTime', "loop", 'link', 'src'],
+    data() {
+      // this指向当前vue实例(子组件)
+      return {
+        isShow: false,
+        delayTime: 5000,
+        countTime: this.adverTime, // 倒计时时间 (将接收的adverTime作为countTime的初始值传入)
+        // loop: true,
+        timeoutTimer: null,
+        intervalTime: null
+      }
+    },
+    template: '#myAdver',
+    methods: {
+      showAdver() {
+        this.timeoutTimer = setTimeout(() => {
+          this.isShow = true
+          this.intervalTime = setInterval(() => {
+            this.countTime--
+            if (this.countTime <= 0) {
+              clearInterval(this.intervalTime)
+              this.countTime = this.adverTime
+              this.isShow = false
+              if (this.loop) {
+                this.showAdver()
+              }
+            }
+          }, 1000)
+        }, this.delayTime)
+      },
+      closeHandler() {
+
+        this.isShow = false,
+          clearTimeout(this.timeoutTimer)
+        clearInterval(this.intervalTime)
+        this.countTime = this.adverTime
+        if (this.loop) {
+          this.showAdver()
+        }
+
+      }
+    },
+    mounted() {
+      this.showAdver()
+      console.log("子组件的实例", this);
+      console.log("子组件的实例的props", this.$props);
+    },
+  })
+
+  // 根组件/根实例 (初始化渲染)
+  var vm = new Vue({
+    el: "#app",
+    data: {
+
+    }
+  })
+
+
+</script>
+
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <com-a></com-a>
+    <hr>
+    <com-b></com-b>
+    <hr>
+    <com-c></com-c>
+  </div>
+</body>
+<script>
+  /* 
+    局部组件
+      1. 使用时才会被注册(如果不被使用,不会打包到项目的源码中)
+      2. 组件之间的层级关系也比较清晰
+    缺点:
+      1. 注册起来比较麻烦 => 如果使用频率比较高,建议使用全局注册
+
+  */
+  var comB = {
+    data() {
+      return {}
+    },
+    template: `<div>
+      <p>我是组件B</p>
+      </div>`,
+  }
+
+  var comA = {
+    data() {
+      return {}
+    },
+    template: `<div>
+      <p>我是组件A</p>
+      <com-b></com-b>
+      </div>`,
+    components: {
+      "com-b": comB
+    }
+  }
+
+  var comC = {
+    data() {
+      return {}
+    },
+    template: `<div>
+      <p>我是组件C</p>
+      <com-a></com-a>
+      <com-b></com-b>
+      </div>`,
+    components: {
+      "com-a": comA,
+      "com-b": comB,
+    }
+  }
+
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      count: 1
+    },
+    components: {
+      // 键名: 组件的名称
+      // 键值: 组件的配置
+      'com-a': comA,
+      'com-b': comB,
+      'com-c': comC,
+    }
+  })
+</script>
+
+</html>

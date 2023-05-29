@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.global.js"></script>
+</head>
+
+<body>
+
+  <div id="app">
+    <p ref="p">{{count}}</p>
+    <p>
+      <button @click="count++">count++</button>
+    </p>
+
+    <p>{{zhang.name}}</p>
+    <p>{{zhang.age}}</p>
+    <p>
+      <button @click="zhang.name='李四'">改名</button>
+      <br>
+      <button @click="zhang.age++">年龄++</button>
+    </p>
+  </div>
+
+</body>
+<script>
+
+  const { createApp, nextTick } = Vue
+  const { ref, reactive, readonly, computed, watch } = Vue
+  // const { getCurrentInstance } = Vue
+
+  const app = Vue.createApp({
+
+    setup(props) {
+
+      let count = ref(100)
+      let addCount = () => {
+        count.value++
+      }
+
+      // zhang => ref对象
+      let zhang = ref({
+        name: '张三',
+        age: 18
+      })
+
+      // watch监听(默认是惰性的,只有监听的数据发生改变时,才会触发监听函数)
+      // 1. 监听ref对象(ref 计算属性)
+      // watch(count, function (newVal, oldVal) {
+      //   console.log('count发生改变', newVal, oldVal);
+      // })
+
+      // 2. 监听代理对象(当直接侦听一个响应式对象时,侦听器会自动调用深层模式;如果是ref对象.value中存储的也是一个对象,不会自动启用深度监听)
+      // 2-1 直接监听对象,新值和旧值引用同一片内存空间,所以打印内容是一样的
+      // watch(zhang, (newVal, oldVal) => {
+      //   console.log('zhang的值发生改变', newVal, oldVal);
+      // })
+
+      // deep: true 启用深度监听
+      // watch(zhang, (newVal, oldVal) => {
+      //   console.log('zhang的值发生改变', newVal, oldVal);
+      // }, { deep: true })
+
+      // immediate: true 在初始化阶段执行一次监听
+      // watch(zhang, (newVal, oldVal) => {
+      //   console.log('zhang的值发生改变', newVal, oldVal);
+      // }, { deep: true, immediate: true })
+
+
+      // 如何对应ref属性获取对应元素或者组件
+      // 选项式: this.$refs.p
+      // 组合式: let p = ref()  ref中不传入任何参数,就默认查找对应ref属性名的元素,找不到就返回undefined
+      let p = ref()
+      console.log(p);  // 此处打印式undefined,查找元素是在视图渲染之后
+
+
+      // 数据改变了,视图不会立即更新 => 数据改变了,视图中的内容还是旧的
+      // watch(count, function (newVal, oldVal) {
+      //   console.log('count发生改变', newVal, oldVal);
+      //   console.log(p.value);
+      //   console.log(p.value.innerHTML);
+      // })
+
+      // 数据改变了,视图不会立即更新 => 等视图更新之后再获取
+      // 方法1:
+      // watch(count, function (newVal, oldVal) {
+      //   nextTick(() => {
+      //     console.log('count发生改变', newVal, oldVal);
+      //     console.log(p.value);
+      //     console.log(p.value.innerHTML);
+      //   })
+      // })
+
+      // flush:'pre'   数据发生改变后, 视图更新前触发
+      // flush:'sync'  数据发生改变之后, 立即触发
+      // flush:'post'  数据改变,视图更新后触发
+
+      // 方法2:flush:post
+      watch(count, function (newVal, oldVal) {
+        console.log('count发生改变', newVal, oldVal);
+        console.log(p.value);
+        console.log(p.value.innerHTML);
+      }, { flush: 'post' })
+
+
+      // flush:sync演示
+      // watch(count, function (newVal, oldVal) {
+      //   console.log('count发生改变:pre', newVal, oldVal);
+      // }, { flush: 'pre' })
+
+      // watch(count, function (newVal, oldVal) {
+      //   console.log('count发生改变:sync', newVal, oldVal);
+      // }, { flush: 'sync' })
+
+      // watch(count, function (newVal, oldVal) {
+      //   console.log('count发生改变:post', newVal, oldVal);
+      // }, { flush: 'post' })
+
+
+      return {
+        count,
+        zhang,
+        p,
+      }
+    },
+
+    // 依旧可以使用选项式
+    mounted() {
+      console.log('this代理对象', this);
+    },
+
+  }).mount('#app')  // 需要使用实例的mount方法来挂载到对应的元素上
+
+
+
+</script>
+
+</html>

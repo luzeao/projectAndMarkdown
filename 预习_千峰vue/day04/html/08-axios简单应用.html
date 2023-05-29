@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../js/vue.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> -->
+    <script src="../js/axios.min.js"></script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            list-style: none;
+        }
+
+        img {
+            vertical-align: top;
+        }
+
+        body {
+            background-color: #f4f4f4;
+        }
+
+        .good-list {
+            width: 1190px;
+            margin: 20px auto;
+            font-size: 13px;
+            line-height: 20px;
+        }
+
+        .good-list .list {
+            display: flex;
+            /* justify-content: space-between; */
+            flex-wrap: wrap;
+        }
+
+        .good-list .list .list-item {
+            width: 19%;
+            margin-right: 1.25%;
+            background-color: #fff;
+            box-sizing: border-box;
+            padding: 10px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .good-list .list .list-item .shade {
+            width: 100%;
+            height: 100%;
+            background-color: #333;
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 99;
+        }
+
+        .good-list .list .list-item:nth-child(5n) {
+            margin-right: 0;
+        }
+
+        .good-list .list .list-item img {
+            /* width: 70%; */
+            width: 144px;
+            height: 144px;
+            display: block;
+            margin: 20px auto;
+        }
+
+        .good-list .list .list-item .title {
+            /* 多行文本溢出隐藏 */
+            display: -webkit-box;
+            /* 老版本盒模型 */
+            -webkit-box-orient: vertical;
+            /*设置对齐模式*/
+            -webkit-line-clamp: 2;
+            /*设置多行的行数，示例为2行*/
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .good-list .list .list-item .price {
+            color: #f2272b;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="good-list" id="app">
+        <ul class="list">
+            <li class="list-item">
+                <img src="https://img14.360buyimg.com/jdcms/s300x300_jfs/t1/216058/40/28659/115326/643cf848F6b2cb006/d914add7b7fb7187.jpg.avif"
+                    alt="">
+                <div class="title">华硕（ASUS）天选4 英特尔酷睿i7 15.6英寸高性能电竞游戏本笔记本电脑(14核i7 16G 512G RTX4060 2.5K 165Hz P3广色域)灰
+                </div>
+                <div class="price">¥8299.00</div>
+            </li>
+        </ul>
+    </div>
+</body>
+<script>
+    /* 
+        axios 全局方法,任何位置都可以使用
+        console.log(axios)
+
+        `url` 是用于请求的服务器 URL
+        url: '/user',
+
+        `method` 是创建请求时使用的方法
+        method: 'get', // 默认值
+
+        `baseURL` 将自动加在 `url` 前面，除非 `url` 是一个绝对 URL
+        它可以通过设置一个 `baseURL` 便于为 axios 实例的方法传递相对 URL
+        baseURL: 'https://some-domain.com/api/',
+
+        axios携带数据
+            get => params:{}
+            post => data:{} => 需要设置headers(头信息)
+        
+        `timeout` 指定请求超时的毫秒数。
+        如果请求时间超过 `timeout` 的值，则请求会被中断
+        timeout: 1000, // 默认值是 `0` (永不超时)
+
+        `responseType` 表示浏览器将要响应的数据类型
+        选项包括: 'arraybuffer', 'document', 'json', 'text', 'stream'
+        浏览器专属：'blob'
+        responseType: 'json', // 默认值
+    */
+
+    // post测试 => 不能以post请求本地文件
+    axios({
+        method: 'post',
+        url: '../data/goods.json',
+        headers: {
+            "content-type":"application/x-www-form-urlencoded", // formData
+            "content-type":"application/json" // json
+        },
+        data: { // 测试post传参
+            a: 1,
+            b: 2
+        }
+    })
+
+    // get测试
+    axios({
+        method: 'get',
+        url: '../data/goods.json',
+        params: {
+            a: 1,
+            b: 2
+        }
+    }).then(res => {
+        console.log('axios自己配置的信息',res)
+        return res.data
+    }).then(data => {
+        console.log('请求得到的数据',data)
+    })
+</script>
+
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+
+
+    <div>
+      <h2>单行文本框</h2>
+      <!-- vue中提供的v-model指令 -->
+      <!-- 会通过v-model将value和数据进行双向绑定,并在内容改变时修改数据-->
+      <p>
+        input:<input type="text" v-model="msg">
+      </p>
+      <p>message:{{ msg }}</p>
+      <p><button @click="msg='hello'">修改msg</button></p>
+    </div>
+
+
+    <div>
+      <h2>textarea</h2>
+      <!-- vue中提供的v-model指令 -->
+      <!-- 会通过v-model将value和数据进行双向绑定,并在内容改变时修改数据-->
+      <p>
+        textarea:<textarea v-model="content" cols="30" rows="10"></textarea>
+      </p>
+      <p>content:{{ content }}</p>
+      <p><button @click="content='hello'">修改content</button></p>
+    </div>
+
+
+    <div>
+      <!-- 单个checkbox 使用 checked property 和 change 事件 -->
+      <h2>单个复选框</h2>
+      <p>
+        复选框:<br>
+        <input type="checkbox" v-model="isChecked">
+      </p>
+      <p>isChecked:{{ isChecked }}</p>
+      <p><button @click="isChecked=false">修改isChecked</button></p>
+    </div>
+
+
+    <div>
+      <!-- 多个checkbox 使用 value property 和 change 事件,当v-model对应的数组中包含对应的value,复选框也会被选中,否则取消选中 -->
+      <h2>多个复选框</h2>
+      <p>
+        爱好:<br>
+        <label>
+          <input type="checkbox" value="sing" v-model="hobby">唱
+        </label>
+        <label>
+          <input type="checkbox" value="dance" v-model="hobby">跳
+        </label>
+        <label>
+          <input type="checkbox" value="rap" v-model="hobby">rap
+        </label>
+      </p>
+      <p>hobby:{{ hobby }}</p>
+      <p><button @click="hobby=['sing']">修改hobby</button></p>
+    </div>
+
+
+    <div>
+      <!-- radio 使用 value property 和 change 事件 -->
+      <h2>单选框</h2>
+      <p>
+        sex:<br>
+        <label>
+          <input type="radio" name="sex" v-model="sex" value="man">男
+        </label>
+        <label>
+          <input type="radio" name="sex" v-model="sex" value="woman">女
+        </label>
+        <label>
+          <input type="radio" name="sex" v-model="sex" value="secret">保密
+        </label>
+      </p>
+      <p>sex:{{ sex }}</p>
+      <p><button @click="sex='secret'">修改sex</button></p>
+    </div>
+
+
+    <div>
+      <h2>下拉框</h2>
+      <!-- select 使用 value property 和 change 事件,当option中有value属性,优先使用value属性,如果下拉框中没有value属性,则使用option标签对中的文本 -->
+      <select v-model="level">
+        <option value="">请选择等级</option>
+        <option value="4">A</option>
+        <option value="3">B</option>
+        <option value="2">C</option>
+        <option value="1">D</option>
+      </select>
+      <p>level:{{ level }}</p>
+      <p><button @click="level='2'">修改level</button></p>
+    </div>
+  </div>
+</body>
+<script>
+
+  /* 
+    v-model 双向数据绑定 => 数据发生改变会更新视图 => 修改视图中的内容,数据也会更新
+    你可以用 v-model 指令在表单 <input>、<textarea> 及 <select> 元素上创建双向数据绑定
+    但 v-model 本质上不过是语法糖,它负责监听用户的输入事件以更新数据，并对一些极端场景进行一些特殊处理
+
+    v-model 在内部为不同的输入元素使用不同的 property 并抛出不同的事件
+      - text 和 textarea 元素使用 value property 和 input 事件
+      - 单个 checkbox 使用 checked property 和 change 事件
+      - 多个checkbox 使用 value property 和 change 事件,当v-model对应的数组中包含对应的value,复选框也会被选中,否则取消选中
+      - radio 使用 value property 和 change 事件
+      - select 使用 value property 和 change 事件,当option中有value属性,优先使用value属性,如果下拉框中没有value属性,则使用option标签对中的文本
+
+  */
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      message: '',
+      msg: '',
+      content:'',
+      isChecked:false,
+      sex:'secret',
+      hobby:[],
+      level:''
+    }
+  })
+
+</script>
+
+</html>

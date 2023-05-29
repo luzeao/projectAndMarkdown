@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+  <style>
+    .article {
+      width: 300px;
+      font-size: 13px;
+    }
+
+    .compA,
+    .compB,
+    .compC {
+      padding: 5px;
+      border: 1px dashed;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <p>{{count}}</p>
+    <button @click="count++">加</button>
+
+    <!-- 通过v-if实现组件切换 当前组件显示,其他组件销毁(布局过程中所有组件 都需要写) -->
+    <p>
+      <button @click="showComp='comp-a'">comp-a</button>
+      <button @click="showComp='comp-b'">comp-b</button>
+      <button @click="showComp='comp-c'">comp-c</button>
+    </p>
+
+    <comp-a v-if="showComp=='comp-a'"></comp-a>
+    <comp-b v-if="showComp=='comp-b'"></comp-b>
+    <comp-c v-if="showComp=='comp-c'"></comp-c>
+
+  </div>
+</body>
+
+<template id="compA">
+  <div class="compA">
+    这是组件A{{getCount()}}
+  </div>
+</template>
+
+<template id="compB">
+  <div class="compB">
+    这是组件B{{getCount()}}
+  </div>
+</template>
+
+<template id="compC">
+  <div class="compC">
+    这是组件C{{getCount()}}
+    <button @click="setCount(getCount()+1)">count++</button>
+  </div>
+</template>
+<script>
+
+  Vue.component('compA', {
+    data() {
+      return {}
+    },
+    template: "#compA",
+    methods: {},
+    inject: ['getCount', 'setCount']
+  })
+
+  Vue.component('compB', {
+    data() {
+      return {}
+    },
+    template: "#compB",
+    methods: {},
+    inject: ['getCount', 'setCount']
+  })
+
+  Vue.component('compC', {
+    data() {
+      return {}
+    },
+    template: "#compC",
+    methods: {},
+    // 子代组件对应属性名引入数据 => this['getCount'] = 父组件['getCount']
+    inject: ['getCount', 'setCount']
+  })
+
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      count: 1,
+      showComp: 'comp-a'
+    },
+    provide() {
+      return {
+        count: this.count, // this.count 就是取出当前实例的count的值,还是1
+        getCount: () => { // 传入一个函数 => 函数内的this也指向当前实例 => 被子组件对应名称引用 => 当子组件调用方法时会调用此函数 => 重新取值
+          return this.count
+        },
+        // 子组件也可以更改父组件中的值
+        setCount: (v) => {
+          this.count = v
+        }
+      }
+    }
+  })
+
+
+</script>
+
+</html>

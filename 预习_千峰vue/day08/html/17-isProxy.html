@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.global.js"></script>
+</head>
+
+<body>
+
+  <div id="app">
+
+
+
+  </div>
+
+</body>
+<script>
+
+  const { createApp, getCurrentInstance } = Vue
+  const { ref, reactive, readonly, computed, watch, shallowReactive, shallowReadonly } = Vue
+  const { shallowRef, triggerRef } = Vue
+  const { isRef, isReactive, isProxy, isReadonly } = Vue
+
+  const app = Vue.createApp({
+
+    setup(props) {
+
+
+
+      // getCurrentInstance 方法 获取当前实例 app
+      var app = getCurrentInstance()  // 当前实例(app)
+      let { ctx } = app  // 获取当前实例的 proxy对象(存储数据,方法,计算属性)
+
+      let count = ref(100)
+
+      let doubleCount = computed(() => {
+        return count.value * 2
+      })
+
+      // zhang => reactive 代理对象
+      let zhang = reactive({
+        name: '张三',
+        age: 18
+      })
+
+      let li = shallowReadonly({
+        name: '李四',
+        age: 18
+      })
+
+      // 返回一个原值的只读代理(Proxy对象)
+      // count = readonly(count)
+      // zhang = readonly(zhang)
+
+
+
+
+      // isProxy()
+      // 检查一个对象是否是由 reactive()、readonly()、shallowReactive() 或 shallowReadonly() 创建的代理
+      console.log('isProxy:zhang', isProxy(zhang));
+      console.log('isProxy:count', isProxy(count));
+      console.log('isProxy:doubleCount', isProxy(doubleCount));  // !! 计算属性也是代理对象 true
+      console.log('isProxy:li', isProxy(li));
+
+
+      return {
+        zhang,
+
+      }
+    },
+
+    // 依旧可以使用选项式
+    mounted() {
+      console.log('this代理对象', this);
+    },
+
+  }).mount('#app')  // 需要使用实例的mount方法来挂载到对应的元素上
+
+
+
+</script>
+
+</html>

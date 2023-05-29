@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    .count-input {
+      display: flex;
+      width: fit-content;
+    }
+
+    .reduce,
+    .add {
+      width: 40px;
+      height: 40px;
+      text-align: center;
+      line-height: 40px;
+      background-color: pink;
+    }
+
+    .count {
+      width: 100px;
+      border: 0;
+      outline: none;
+      text-align: center;
+      background-color: #f1f1f1;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none !important;
+    }
+
+    input[type='number'] {
+      -moz-appearance: textfield;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <p>{{count}}</p>
+    <p><button @click="count++">按钮</button></p>
+    <br>
+    <br>
+
+    <!-- 
+      组件通信 : 子传父
+        1. 父组件给子组件动态传递数据以及修改数据的方法(通过自定义事件传入)
+        2. 自定义事件的名称可以自行定义,传入的函数被子组件自定义事件接收(两个函数引用同一片内存空间),子组件触发自定义事件,也会执行父组件传入的函数
+    -->
+    <!-- <count-input :value="count" @update:value="updateValueHandler"></count-input> -->
+    <!-- <count-input :value.sync="count"></count-input> -->
+
+    <!-- 对比上述代码 v-model缺少了接收数据的属性 和 更改数据的方法 -> 可以在组件内定义(可以理解为,在组件内定义接收数据的属性名) -> 外界看起来更简洁(更像双向数据绑定) -->
+    <count-input v-model="count"></count-input>
+
+    <!-- Vue3 -->
+    <!-- <count-input v-model.value="count"></count-input> -->
+  </div>
+</body>
+
+<template id="demo">
+  <div class="count-input">
+
+    <span class="reduce" @click="value > 1 && $emit('update:value',value-1)">-</span>
+
+    <input type="number" class="count" :value="value" @change="changeHandler"></input>
+
+    <span class="add" @click="$emit('update:value',value+1)">+</span>
+
+  </div>
+</template>
+
+<script>
+
+
+  // 组件通信 : 子传父
+  Vue.component('count-input', {
+    model: {
+      prop: 'value', // 接收数据的属性 => 需要在props中接收
+      event: 'update:value', // 改变数据的方法
+    },
+    props: {
+      value: {
+        type: [String, Number],
+        required: true
+      }
+    },
+    data() {
+      return {
+
+      }
+    },
+    template: `#demo`,
+
+    methods: {
+      changeHandler(e) {
+        // console.log(e.target.value);
+        // 输入框修改后的值
+        var val = e.target.value
+        if (val < 0 || (val % 1 != 0)) { // 如果手动输入的内容不规范 => 赋值为原值 => 数据没有更新 => 不会触发视图更新
+          this.$emit('update:value', this.value)  // 赋值为原值 => 不会触发视图更新
+          this.$forceUpdate() // 强制视图更新 
+        } else {
+          this.$emit('update:value', val) // 符合规范,更新数据
+        }
+      }
+    },
+
+    mounted() {
+      console.log('组件实例', this);
+
+      // 组件挂载完之后,手动触发测试
+      // this.$emit('update:value', 10)
+    },
+  })
+
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      count: 1
+    },
+    methods: {
+      updateValueHandler(v) {
+        console.log('自定义事件被触发了', this);
+        this.count = v
+      }
+    },
+  })
+</script>
+
+</html>

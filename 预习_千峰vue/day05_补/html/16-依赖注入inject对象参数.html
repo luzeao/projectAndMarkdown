@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+  <style>
+    .article {
+      width: 300px;
+      font-size: 13px;
+    }
+
+    .compA,
+    .compB,
+    .compC {
+      padding: 5px;
+      border: 1px dashed;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <p>{{count}}</p>
+    <button @click="count++">加</button>
+
+    <comp-a></comp-a>
+  </div>
+</body>
+
+<template id="compA">
+  <div class="compA">
+    这是组件A{{getCount()}}
+    <button @click="setCount(getCount()*2)">count*2</button>
+    <comp-b></comp-b>
+  </div>
+</template>
+
+<template id="compB">
+  <div class="compB">
+    这是组件B{{getCount()}}
+    <button @click="setCount(getCount()+1)">count--</button>
+    <comp-c></comp-c>
+  </div>
+</template>
+
+<template id="compC">
+  <div class="compC">
+    这是组件C{{getCount()}}
+    <button @click="updateCount(getCount()+1)">count++</button>
+    <p>a:{{a}}</p>
+  </div>
+</template>
+<script>
+  /* 
+    想要将根组件中的数据 依次通过 A B 组件传递给 组件C
+      如果组件嵌套的层数过多 => 父组件想要将数据传递给某个子组件 => 就比较麻烦 => 有没有更简单的方法
+        -> 官方提供了
+        -> 依赖注入 provide / inject 实现数据的跨层级传递
+        -> 这对选项需要一起使用，以允许一个祖先组件向其所有子孙后代注入一个依赖，不论组件层次有多深，并在其上下游关系成立的时间里始终生效
+        -> provide 选项应该是一个对象或返回一个对象的函数。该对象包含可注入其子孙的 property
+        -> inject 选项应该是
+          一个字符串数组，或
+          一个对象，对象的 key 是本地的绑定名，value
+  */
+
+  Vue.component('compC', {
+    data() {
+      return {}
+    },
+    template: "#compC",
+    methods: {},
+    // 子代组件对应属性名引入数据 => this['getCount'] = 父组件provide数据['getCount']
+    // inject: ['getCount', 'setCount']
+    // 子组件引入,对象写法
+    // 键名: 当前组件接收数据的属性名
+    // 键值: 字符串(父组件provide数据的属性名)/对象
+    inject: {
+      "getCount": "getCount",
+      // 如果名字重复 => 改一个新名字 => this.['updateCount'] = 父组件provide数据['setCount']
+      updateCount: "setCount",
+
+      // this['a'] = 父组件provide数据['a']
+      a: {
+        from: 'a',  // 依赖于父组件的provide提供的a属性
+        default: 100 // 如果父组件没有提供,就使用默认值100
+      }
+    }
+  })
+
+  Vue.component('compB', {
+    data() {
+      return {}
+    },
+    template: "#compB",
+    methods: {},
+    inject: ['getCount', 'setCount']
+  })
+
+
+  Vue.component('compA', {
+    data() {
+      return {}
+    },
+    template: "#compA",
+    methods: {},
+    inject: ['getCount', 'setCount']
+  })
+
+
+
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      count: 1
+    },
+
+    /* 提供 静态/响应式 数据
+    provide 传入一个返回对象的函数,函数的this指向当前实例
+    1. 可以依赖于当前实例中的数据
+    2. 直接依赖当前实例的数据(对当前实例进行取值) => 提供的还是死值
+    传入一个箭头函数,在函数中通过this修改数据 => 响应式(子组件注入之后,需要作为函数调用) */
+    provide() {
+      return {
+        count: this.count, // this.count 就是取出当前实例的count的值,还是1
+        getCount: () => { // 传入一个函数 => 函数内的this也指向当前实例 => 被子组件对应名称引用 => 当子组件调用方法时会调用此函数 => 重新取值
+          return this.count
+        },
+        // 子组件也可以更改父组件中的值
+        setCount: (v) => {
+          this.count = v
+        },
+        a: 10,
+        b: 20
+      }
+    }
+  })
+
+</script>
+
+</html>

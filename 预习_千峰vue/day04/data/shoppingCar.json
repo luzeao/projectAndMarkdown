@@ -1,0 +1,42 @@
+[
+    {
+        "goodsId": "100010022425",
+        "goodsName": "华为笔记本电脑MateBook 14 2021款 14.0英寸11代酷睿i5 16G 512G 锐炬显卡/2K触控轻薄本 /多屏协同 深空灰",
+        "goodsImg": "//img10.360buyimg.com/n1/s400x400_jfs/t1/122542/4/23654/143024/620386c5E573918ec/17e4748a1de7ecad.jpg",
+        "goodsPrice": "5699.00",
+        "buyNum":1,
+        "isChecked":true
+    },
+    {
+        "goodsId": "100026819200",
+        "goodsName": "HUAWEI P50 骁龙888 4G全网通 原色双影像单元 HarmonyOS 2 万象双环设计8GB+256GB曜金黑华为手机",
+        "goodsImg": "//img10.360buyimg.com/n1/s400x400_jfs/t1/96068/25/19359/193062/61697ecaE1dba41be/e685647a3c872cb4.jpg",
+        "goodsPrice": "4988.00",
+        "buyNum":2,
+        "isChecked":false
+    },
+    {
+        "goodsId": "100026797032",
+        "goodsName": "HUAWEI nova 9 4G全网通 120Hz 后置5000万超感知影像 搭载HarmonyOS 2 8+128GB亮黑色手机 标配无充",
+        "goodsImg": "//img12.360buyimg.com/n1/s400x400_jfs/t1/209823/35/5464/184159/61697197Ec2a48eec/e28a2833555b00a6.jpg",
+        "goodsPrice": "2699.00",
+        "buyNum":3,
+        "isChecked":false
+    },
+    {
+        "goodsId": "100022634064",
+        "goodsName": "华为 HUAWEI Mate 40 Pro 4G 全网通 麒麟9000旗舰芯片 8GB+256GB釉白色华为手机【搭载HarmonyOS 2】",
+        "goodsImg": "//img14.360buyimg.com/n1/s400x400_jfs/t1/161275/13/9843/137365/60b59f8eEbade8c1d/3c778f0a77663104.jpg",
+        "goodsPrice": "6599.00",
+        "buyNum":4,
+        "isChecked":false
+    },
+    {
+        "goodsId": "100016376331",
+        "goodsName": "HUAWEI nova 8 SE 4G全网通 8+128GB幻夜黑 6400万高清四摄 66W超级快充 6.5英寸OLED大屏华为手机 标配无充",
+        "goodsImg": "//img11.360buyimg.com/n1/s400x400_jfs/t1/222158/36/4421/171836/61a641faE69bc97a5/550df7ea4bc6ddcd.jpg",
+        "goodsPrice": "1999.00",
+        "buyNum":5,
+        "isChecked":false
+    }
+]

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> -->
+    <script src="../js/axios.min.js"></script>
+    <script src="../js/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <button @click="getHanlder">get</button>
+        <button @click="postHanlder">post</button>
+    </div>
+</body>
+<script>
+    // axios => 第三方插件(浏览器中: 本质上就是Promise封装的ajax)
+
+    // Axios 是什么?
+    // Axios 是一个基于 promise 网络请求库，作用于node.js 和浏览器中。 它是 isomorphic 的(即同一套代码可以运行在浏览器和node.js中)。在服务端它使用原生 node.js http 模块, 而在客户端 (浏览端) 则使用 XMLHttpRequests。
+
+
+    // 先下载
+    // 1. CDN => 在线地址
+    // 2. 基于npm安装 => 脚手架中使用
+
+    // 在使用
+    // 本地引入 => 全局函数 axios => 可以作为普通函数调用 
+
+    // 为了方便起见，已经为所有支持的请求方法提供了别名。
+    // axios.get(url[, config])
+    // axios.post(url[, data[, config]])
+
+
+    // 全局 axios 默认值   => 指定默认配置，它将作用于每个请求。
+    axios.defaults.baseURL = 'http://121.43.116.41/demo';
+    // axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;   //携带token的
+    axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';  // post默认传递数据的方式
+
+
+    console.log(axios); // 全局方法
+
+    var vm = new Vue({
+        el:"#app",
+        data:{
+            searchParams:{
+                wd:"",
+                col:"id",
+                type:"asc",
+                page:1,
+                size:10,
+            },
+            loginParams:{
+                user:"a123123",
+                pwd:"123123",
+            }
+        },
+        methods:{
+            getHanlder(){
+                // 以get方式发送请求 获取数据
+               /*  axios({
+                    method:"get",
+                    baseURL:"http://121.43.116.41/demo",
+                    url:"/php/searchGoodsOrderLimit.php",
+                    params:this.searchParams,
+                    responseType:"json",
+                }).then(response=>{
+                    console.log("axios配置的响应对象",response);
+                    return response.data;
+                }).then(data=>{
+                    console.log("响应数据",data);
+                }) */
+
+                axios.get("/php/searchGoodsOrderLimit.php",{
+                    params:this.searchParams,
+                }).then(response=>{
+                    console.log("axios配置的响应对象",response);
+                    return response.data;
+                }).then(data=>{
+                    console.log("响应数据",data);
+                })
+            },
+            postHanlder(){
+                 // 以post方式发送请求 获取数据
+                 /* axios({
+                    method:"post",
+                    baseURL:"http://121.43.116.41/demo",
+                    url:"/php/login.php",
+                    headers:{
+                        "Content-Type":"application/x-www-form-urlencoded",
+                    },
+                    data:this.loginParams,
+                    responseType:"json",
+                }).then(response=>{
+                    console.log("axios配置的响应对象",response);
+                    return response.data;
+                }).then(data=>{
+                    console.log("响应数据",data);
+                }) */
+
+                // axios.post(url,data(对象),config)
+                axios.post("/php/login.php",this.loginParams).then(response=>{
+                    console.log("axios配置的响应对象",response);
+                    return response.data;
+                }).then(data=>{
+                    console.log("响应数据",data);
+                })
+            }
+        }
+    })
+    
+
+
+
+</script>
+</html>

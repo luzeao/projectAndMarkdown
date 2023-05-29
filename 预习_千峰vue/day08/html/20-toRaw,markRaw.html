@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.global.js"></script>
+</head>
+
+<body>
+
+  <div id="app">
+
+    <p>count: {{count}}</p>
+    <p><button @click="count++">addCount</button></p>
+    <p><button @click="addCount">addCount</button></p>
+
+    <p>{{zhang.name}}</p>
+    <p>{{zhang.age}}</p>
+    <p>
+      <button @click="zhang.name='李四'">改名</button>
+      <br>
+      <button @click="changeAge">年龄++</button>
+      <br>
+      <!-- 修改zhang的value值 -->
+      <button @click="zhang={name: '张三',age: 18}">重置</button>
+    </p>
+
+  </div>
+
+</body>
+<script>
+
+  const { createApp } = Vue
+  const { ref, reactive, readonly, computed, watch } = Vue
+  const { shallowRef, triggerRef } = Vue
+  const { isRef, isReactive, isProxy, isReadonly, unref, toRaw, markRaw } = Vue
+
+  const app = Vue.createApp({
+
+    setup(props) {
+
+      let count = ref(10)
+
+      let doubleCount = computed(() => {
+        return count.value * 2
+      })
+
+      let addCount = () => {
+        count.value++  // 在组合式中修改数据要通过ref对象的 .value 语法
+      }
+
+
+      // zhang => 转化为代理对象
+      let zhang = reactive({
+        name: '张三',
+        age: 18
+      })
+
+      let data = { a: 1, b: 2 }
+      // markRaw()​
+      // 将一个对象标记为不可被转为代理。返回该对象本身
+      data = markRaw(data)
+      console.log('data', data);
+
+      let res = reactive(data)
+      console.log('res', res);
+
+      // toRaw()​
+      // 根据一个 Vue 创建的代理返回其原始对象
+      console.log('zhang', zhang);
+      console.log('toRaw', toRaw(zhang));
+
+
+
+
+
+
+      return {
+        zhang,
+        count,
+        addCount,
+        doubleCount
+      }
+    },
+
+    // 依旧可以使用选项式
+    mounted() {
+      console.log('this代理对象', this);
+    },
+
+  }).mount('#app')  // 需要使用实例的mount方法来挂载到对应的元素上
+
+
+
+</script>
+
+</html>

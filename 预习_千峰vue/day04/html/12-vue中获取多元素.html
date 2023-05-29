@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <p ref="p">{{count}}</p>
+    <p><button @click="count++">count++</button></p>
+
+    <div ref="div" v-for="n in 10">{{n}}</div>
+  </div>
+</body>
+<script>
+
+  /* 
+    ref属性的存储依赖于就近的vue实例(就近原则)
+
+    ref获取元素细节(获取多元素)
+      普通用法无法获取多元素 => 默认情况下,如果有多个元素/vue组件,有相同的ref名称 => 后面的会覆盖前面的(不要同名)
+      如果ref属性用在v-for中时,会将对应名称的元素/vue组件,整合为数组存储
+  */
+
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      count: 1
+    },
+    mounted() {
+      console.log(this.$refs.p);
+      console.log(this.$refs.div);
+    },
+  })
+</script>
+
+</html>

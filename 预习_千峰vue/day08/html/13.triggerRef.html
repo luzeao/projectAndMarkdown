@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.global.js"></script>
+</head>
+
+<body>
+
+  <div id="app">
+
+    <p>{{zhang.name}}</p>
+    <p>{{zhang.age}}</p>
+    <p>
+      <button @click="zhang.name='李四'">改名</button>
+      <br>
+      <button @click="changeAge">年龄++</button>
+      <br>
+      <!-- 修改zhang的value值 -->
+      <button @click="zhang={name: '张三',age: 18}">重置</button>
+    </p>
+
+  </div>
+
+</body>
+<script>
+
+  const { createApp, getCurrentInstance } = Vue
+  const { ref, reactive, readonly, computed, watch } = Vue
+  const { shallowRef, triggerRef } = Vue
+
+  const app = Vue.createApp({
+
+    setup(props) {
+
+      // ref() 一般创建对值类型的引用,也可以创建对 对象的引用
+      // ref() 让我们创建一个任意值的"引用",并能够在不丢失响应式的前提下传递这些引用
+      // 方法返回一个ref对象,对象中存在value属性(取值拦截和赋值拦截)存储传入的数据,监听到value值发生改变,更新视图
+      // 如果ref.value值是一个对象 -> 无论是ref的value发生改变(修改整个对象),还是ref.value下的对象的属性发生改变,都会触发视图更新 => 数据监听默认是深度的
+
+      // zhang => ref对象
+      // let zhang = ref({
+      //   name: '张三',
+      //   age: 18
+      // })
+
+      // shallowRef() => 只监听ref对象的value改变 => 不监听value下的属性改变 => 如果数据改变了,想要更新视图 => 强制更新视图
+      // 1. triggerRef()  只针对shallowRef
+      // 2. 通过getCurrentInstance获取ctx => 通过ctx使用$forceUpdate强制视图更新
+      let zhang = shallowRef({
+        name: '张三',
+        age: 18
+      })
+
+      // 2. triggerRef()
+      // 强制触发依赖于一个浅层 ref 的副作用
+      let changeAge = () => {
+        zhang.value.age++
+        console.log(zhang.value.age);
+        triggerRef(zhang)
+      }
+
+      return {
+        zhang,
+        changeAge
+      }
+    },
+
+    // 依旧可以使用选项式
+    mounted() {
+      console.log('this代理对象', this);
+    },
+
+  }).mount('#app')  // 需要使用实例的mount方法来挂载到对应的元素上
+
+
+
+</script>
+
+</html>

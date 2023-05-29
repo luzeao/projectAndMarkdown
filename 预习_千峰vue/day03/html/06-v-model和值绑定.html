@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+
+    <div>
+      <!-- 单个checkbox 使用 checked property 和 change 事件 -->
+      <h2>单个复选框</h2>
+      <p>
+        复选框:<br>
+        <input type="checkbox" v-model="isChecked">
+      </p>
+      <p>isChecked:{{ isChecked }}</p>
+      <p><button @click="isChecked=false">修改isChecked</button></p>
+    </div>
+
+    <div>
+      <!-- 单个checkbox  也可以和 value 值绑定 -->
+      <h2>单个复选框(值绑定)</h2>
+      <p>
+        复选框:<br>
+        <!-- 静态属性 => 属性值是字符串 -->
+        <input type="checkbox" true-value="agree" false-value="disagree" v-model="isagree">
+        <!-- 动态属性 => 属性值是true或者false -->
+        <!-- <input type="checkbox" :true-value="true" :false-value="false" v-model="isagree"> -->
+      </p>
+      <p>isagree:{{ isagree }}</p>
+      <p v-if="isagree  != null">类型:{{ typeof isagree }}</p>
+      <p><button @click="isagree='disagree'">修改isagree</button></p>
+    </div>
+
+
+    <div>
+      <h2>下拉框</h2>
+      <!-- 内联对象字面量(动态绑定) -->
+      <select v-model="obj">
+        <option value="">请选择等级</option>
+        <option :value="{level:4}">A</option>
+        <option :value="{level:3}">B</option>
+        <option :value="{level:2}">C</option>
+        <option :value="{level:1}">D</option>
+      </select>
+      <p>obj:{{obj}}</p>
+      <p>level:{{ obj.level }}</p>
+      <p><button @click="obj.level=4">修改level</button></p>
+    </div>
+  </div>
+</body>
+<script>
+
+  /* 
+
+  */
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      isChecked: false,
+      isagree: null,
+      obj: {
+        level:4
+      }
+    }
+  })
+
+</script>
+
+</html>

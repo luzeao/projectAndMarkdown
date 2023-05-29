@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../js/vue.js"></script>
+</head>
+
+<body>
+    <!-- <span ABC="ABC">123123</span> -->
+    <div id="app">
+        <p>
+            商品单价: <input type="text" v-model.number="price">
+        </p>
+        <p>
+            购买数量: <input type="text" v-model.number="num">
+        </p>
+        <p>
+            小计: {{(price*num).toFixed(2)}}
+        </p>
+        
+        <hr>
+
+        <!-- <time-count :second="100"></time-count>
+        <time-count :second="60"></time-count>
+        <time-count :second="100000"></time-count> -->
+
+
+        <!-- 千分位  10,000  -->
+        <p>
+            小计: <money-show :money="(price*num).toFixed(2)"></money-show>
+        </p>
+    </div>
+</body>
+
+<template id="compA">
+    <div>
+        <p>{{count}}</p>
+        <p><button @click="count++">count++</button></p>
+    </div>
+</template>
+
+<template id="countDown">
+    <div>
+        <p><span v-if="day>0">距离倒计时结束还有{{day}}天</span> {{hour}}:{{min}}:{{sec}}</p>
+    </div>
+</template>
+
+<template id="moneyShow">
+    <span>{{beautyNum}}</span>
+</template>
+<script>
+    // 组件通信:
+
+    // 父子组件:  父组件传  子组件收
+
+    // 组件更新阶段
+    // 1. 组件自身的数据发生改变 => 组件更新
+    // 2. 父组件传入子组件的数据发生改变 => 父组件自己进入更新阶段 => 把模板解析为虚拟DOM => 解析过程中遇到子组件,也会触发子组件的更新阶段 => 子组件也会生成新的虚拟dom,diff算法对比完成之后,解析为真实dom => 传递给父组件,父组件接续向后解析 => 等模板全部解析完毕 =>  diff算法对比虚拟dom => 解析为真实dom 
+
+
+    // 子组件如何接收父组件传入的数据?  
+    //  1. 子组件可以配置props属性,对应属性名接收数据
+    //  a. props属性值一般是一个数组(对象) => 对应属性名接收数据(此写法只负责接收数据,至于数据是什么类型,无所谓)
+    //  b. props属性值也可以是一个对象 => 可以对接收的属性值进行限制(类型限制 必填 默认值 验证函数)
+
+    // 2. 父组件传入的属性没有被子组件的prop接收的? 
+    //  a.   没有被prop接收的属性,默认会透过组件,传递到组件的根元素(此时如果根元素在存在同名属性 class style会拼接 其他属性会覆盖原本的属性)
+    //  b.   如果想禁止attributes透传(你不希望组件的根元素继承 attribute) => 可以给组件设置 inheritAttrs:false,(class和style依旧会透传) => 此时官方提供了一个属性 $attrs => 用于接收属性(禁止透传的属性) => 此时可以自己选择属性绑定的位置
+
+    // 子组件接收父组件传入的数据之后,如何使用?
+    // props
+    // a. 通过props属性接收的数据,默认存储在组件实例的$props中 => 可以通过$props对应属性名方法(如果父组件传入数据时,属性名是中划线命名法 => 解析完毕会变成驼峰式命名法)
+    // b. 通过props属性接收的数据,也会在组件实例中挂载一份(方便取值和赋值) => 可以在组件中通过this访问
+
+
+    // 单向数据流:
+    // 父子组件通信过程中,数据的传输默认是单向的, 子组件不能直接更改父组件传入的数据 => 否则会带来页面渲染问题
+
+    // 1. 父子组件通信过程中 => 如果子组件想修改父组件传入的数据(前提: 间接改 => 不影响父组件的传入数据)
+    // a. 将父组件传入的值作为子组件的初始值  => 只会在初始化阶段使用一次,后续使用的子组件自身的值
+    // b. 使用计算属性得到一个新值  => 常用于:父组件给子组件传入动态属性, 根据父组件传入的得到一个计算属性, 每次父组件传入的数据改变,计算属性也会同步更新
+
+
+    // 组件封装过程需要注意:
+    // 1. data是一个函数
+    // 2. 单个根元素
+    // 3. 单向数据流
+
+    let compA = {
+        props: {
+            count: Number,
+        },
+        data() {
+            return {
+                // count: 1,  // 组件内的数据
+            }
+        },
+        template: "#compA",
+        mounted() {
+            console.log("组件实例", this.count);
+        },
+    }
+
+    // 
+    let TimeCount = {
+        props: {
+            second: {
+                type: Number,
+                required: true,
+                validator: function (val) {
+                    if (val > 0 && val % 1 == 0) {
+                        return true;
+                    }
+                    return false;
+                }
+            },
+        },
+        data() {
+            return {
+                time: this.second, // 将父组件传入的数据second作为子组件time的初始值 
+                timer: null,
+            }
+        },
+        template: "#countDown",
+        methods: {
+            updateTime() {
+                clearInterval(this.timer)
+                this.timer = setInterval(() => {
+                    this.time--;
+                    if (this.time == 0) {
+                        clearInterval(this.timer);
+                    }
+                }, 1000)
+            }
+        },
+        computed: {
+            day() {
+                return Math.floor(this.time / (24 * 60 * 60));
+            },
+            hour() {
+                return (Math.floor(this.time / (60 * 60)) % 24).toString().padStart(2, "0");
+            },
+            min() {
+                return (Math.floor(this.time / 60) % 60).toString().padStart(2, "0");
+            },
+            sec() {
+                return (this.time % 60).toString().padStart(2, "0");
+            }
+        },
+        mounted() {
+            this.updateTime();
+        }
+
+    }
+
+    let moneyShow={
+        props: {
+          money:[Number,String],
+        },
+        data() {
+            return {
+                // num:this.money,  // 定死的
+            }
+        },
+        template: "#moneyShow",
+        computed: {
+            // 根据父组件传入的数据得到一个计算属性 => 放父组件传入的数据改变时,计算属性也会更新
+            beautyNum(){
+                // Intl => 国际化对象
+                // Intl.NumberFormat =>  国际化对象下的数字格式化(构造函数)
+                return new Intl.NumberFormat().format(this.money);
+            }
+        },
+        mounted() {
+            
+        }
+    }
+
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            message: "",
+            price:"999",
+            num: 1,
+
+        },
+        components: {
+            compA: compA,
+            TimeCount: TimeCount,
+            moneyShow:moneyShow,
+        },
+        updated() {
+            console.log(1, this);
+        },
+    })
+
+</script>
+
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.global.js"></script>
+</head>
+
+<body>
+
+  <div id="app">
+    <p ref="p">{{count}}</p>
+    <p>
+      <button @click="count++">count++</button>
+    </p>
+
+    <p>{{zhang.name}}</p>
+    <p>{{zhang.age}}</p>
+    <p>
+      <button @click="zhang.name='李四'">改名</button>
+      <br>
+      <button @click="zhang.age++">年龄++</button>
+    </p>
+  </div>
+
+</body>
+<script>
+
+  const { createApp, nextTick } = Vue
+  const { ref, reactive, readonly, computed, watch, watchEffect, effectScope } = Vue
+
+  const app = Vue.createApp({
+
+    setup(props) {
+
+      let count = ref(100)
+      let addCount = () => {
+        count.value++
+      }
+
+      // zhang => 响应对象(代理对象)
+      let zhang = reactive({
+        name: '张三',
+        age: 18
+      })
+
+      let p = ref()
+
+      // effectScope()​
+      // 创建一个 effect 作用域，可以捕获其中所创建的响应式副作用 (即计算属性和侦听器)，这样捕获到的副作用可以一起处理
+      // 可以一次性直接调用effectScope.stop()清除作用域内所有需要执行的副作用
+      let scope = effectScope()
+
+      scope.run(() => {
+        console.log('effectScope中的代码开始执行');
+        watch(count, () => console.log('监听数据改变:count', count.value))
+
+        let doubleCount = computed(() => {
+          return count.value * 2
+        })
+
+        watch(doubleCount, (newVal, oldVal) => {
+          console.log('doubleCount改变', newVal, oldVal);
+        })
+      })
+
+      // scope.stop()
+
+
+
+      return {
+        count,
+        zhang,
+        p,
+      }
+    },
+
+  }).mount('#app')  // 需要使用实例的mount方法来挂载到对应的元素上
+
+
+
+</script>
+
+</html>

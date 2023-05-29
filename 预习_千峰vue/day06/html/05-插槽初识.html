@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+
+    <my-button></my-button>
+    <my-button text="我的按钮"></my-button>
+    <my-button text="<i class='iconfont'>xxxxxxx</i>我的按钮"></my-button>
+
+  </div>
+</body>
+
+<template id="demo">
+  <div class="my-button">
+    <button>{{ text ? text : '按钮' }}</button>
+  </div>
+</template>
+
+<script>
+  /* 
+    1. 组件内的按钮内容是死的 => 想变成活的 => 传入一个属性来定义按钮内容
+    2. 父组件传入的内容可能是 text html结构 其他组件 => 通过属性接收后期不好解析
+ 
+      官方提供了插槽功能 => 在组件内<slot></slot>标签 作为占位符
+  */
+  Vue.component('my-button', {
+    props: ['text'],
+    data() {
+      return {
+
+      }
+    },
+    template: `#demo`,
+  })
+
+  var vm = new Vue({
+    el: '#app',
+    data: {
+
+    }
+  })
+</script>
+
+</html>

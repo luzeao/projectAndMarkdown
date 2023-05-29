@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../js/vue.js"></script>
+</head>
+
+<body>
+    <!-- <span ABC="ABC">123123</span> -->
+    <div id="app">
+        <input type="text" v-model="message">
+        <hr>
+        <!-- comp-a自定义组件 => 会在其他组件中使用(父组件) -->
+        <!-- 父组件在使用子组件时,可以给子组件传递一些数据/方法/自定义事件 -->
+
+        <!-- 父组件如何给子组件传递数据?  将数据写在子组件的标签内,作为子组件的属性传入(对于复杂的属性名建议使用中划线命名法) -->
+        <!-- a. 父组件如何给子组件传入静态属性(属性值字符串类型) => 子组件接收时是字符串类型 -->
+        <!-- <comp-a a="1"  b="2" ></comp-a> -->
+
+        <!-- b. 父组件如何给子组件传入动态属性(属性值javascript表达式) => 优点:1.子组件可以接收各种类型的数据  2. 子组件接收父组件的数据,可以随父组件数据更新而更新(传入父组件中的某个动态属性) -->
+        <!-- (1) :a="1"  => 指令的值是一个定值 -->
+        <!-- (1) :msg="message"  => 指令的值是一个变量(父组件的属性) -->
+        <comp-a id="myCompA" class="one two three" title="你好" data-msg="123123" style="background:grey" :num="100"
+            :str="'hello'" :bool="true" :a="null" :b="undefined" :arr="[1,2,3]" :obj="{x:10,y:20}" :msg="message"
+            :data-index="0">
+        </comp-a>
+    </div>
+</body>
+
+<template id="compA">
+    <div id="A" class="compA" title="hello" data-msg="abcabc" style="font-size:13px">
+        <p :id="$attrs.id">{{count}}</p>
+        <p :data-msg="$attrs['data-msg']"><button @click="count++">count++</button></p>
+    </div>
+</template>
+<script>
+    // 组件通信:
+
+    // 父子组件:  父组件传  子组件收
+
+    // 组件更新阶段
+    // 1. 组件自身的数据发生改变 => 组件更新
+    // 2. 父组件传入子组件的数据发生改变 => 父组件自己进入更新阶段 => 把模板解析为虚拟DOM => 解析过程中遇到子组件,也会触发子组件的更新阶段 => 子组件也会生成新的虚拟dom,diff算法对比完成之后,解析为真实dom => 传递给父组件,父组件接续向后解析 => 等模板全部解析完毕 =>  diff算法对比虚拟dom => 解析为真实dom 
+
+
+
+
+
+    // 子组件如何接收父组件传入的数据?  
+    //  1. 子组件可以配置props属性,对应属性名接收数据
+    //  a. props属性值一般是一个数组(对象) => 对应属性名接收数据(此写法只负责接收数据,至于数据是什么类型,无所谓)
+    //  b. props属性值也可以是一个对象 => 可以对接收的属性值进行限制(类型限制 必填 默认值 验证函数)
+
+    // 2. 父组件传入的属性没有被子组件的prop接收的? 
+    //  a.   没有被prop接收的属性,默认会透过组件,传递到组件的根元素(此时如果根元素在存在同名属性 class style会拼接 其他属性会覆盖原本的属性)
+    //  b.   如果想禁止attributes透传(你不希望组件的根元素继承 attribute) => 可以给组件设置 inheritAttrs:false,(class和style依旧会透传) => 此时官方提供了一个属性 $attrs => 用于接收属性(禁止透传的属性) => 此时可以自己选择属性绑定的位置
+
+    // 子组件接收父组件传入的数据之后,如何使用?
+    // props
+    // a. 通过props属性接收的数据,默认存储在组件实例的$props中 => 可以通过$props对应属性名方法(如果父组件传入数据时,属性名是中划线命名法 => 解析完毕会变成驼峰式命名法)
+    // b. 通过props属性接收的数据,也会在组件实例中挂载一份(方便取值和赋值) => 可以在组件中通过this访问
+
+    let compA = {
+
+        // props接收数组
+        // props:["num","str","bool","a","b","arr","obj","msg","data-index"], // 也是在当前组件实例配置对象解析时执行(created阶段)
+
+        // props接收对象
+        /* props: {
+            // num:Number,  // num属性的属性值要求接收number类型,
+            num: [Number, String],   // 数组或字符串
+            str: String,
+            bool: Boolean,
+            a: null,
+            b: undefined,
+            arr: Array,
+            obj: Object,
+            msg: String,
+            dataIndex: Number,
+        }, */
+        inheritAttrs: false,
+        props: {
+            num: {
+                type: Number, // num属性的属性值要求接收number类型,
+                required: true, // 必填
+                validator: function (val) {
+                    if (val >= 0 && val <= 100 && val % 1 == 0) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            },
+            str: {
+                type: String,
+                validator: function (val) {
+                    var reg = /^\w{5,12}$/;
+                    return reg.test(val);
+                },
+                default: "world",
+            },
+            bool: Boolean,
+            a: null,
+            b: undefined,
+            arr: Array,
+            obj: Object,
+            msg: String,
+            dataIndex: Number,
+        },
+        data() {
+            return {
+                count: 1,
+            }
+        },
+        template: "#compA",
+        watch: {
+            msg: function (newVal, oldVal) {
+                console.log("父组件传入的数据发生改变", newVal);
+            }
+        },
+        mounted() {
+            console.log("组件实例", this);
+
+            // props
+            // console.log("$props", this.$props);
+            // console.log("直接取值data-index:", this.dataIndex);
+
+        },
+        updated() {
+            console.log(2, this);
+        },
+    }
+
+
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            message: "",
+        },
+        components: {
+            compA: compA,
+        },
+        updated() {
+            console.log(1, this);
+        },
+    })
+
+</script>
+
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <p>{{count}}</p>
+    <p>{{doubleCount}}</p>
+    <p>{{tripleCount}}</p>
+    <button @click="count++">count++</button>
+    <button @click="count--">count--</button>
+  </div>
+</body>
+<script>
+
+  /* 
+    watch监听属性
+      作用: 对应属性名监听data中某个绑定数据的改变,如果被监听的数据发生改变可以执行一系列副作用操作
+        可以执行一系列副作用操作 => 如果存在的数据依赖于被监听的属性 => 此时被监听的数据发生改变,依赖此数据的属性也要改变
+      属性名: 被监听的属性(data中的数据/计算属性)
+      属性值: 回调函数 => 当被监听的数据发生改变触发,回调函数有两个参数,分别表示新值(newVal)和以前的值(oldVal)
+              注意: 不适合监听对象属性(监听对象属性需要深度监听)
+
+    watch和computed的区别
+      computed: 
+        1. 是根据data中绑定的数据(一个或多个)得到的数据(派生值 衍生值),并缓存计算的结果,当被依赖的数据发生改变时,才会重新计算,并缓存结果
+        2. 计算属性绑定的函数会在data数据挂载完毕之后默认执行一次,并将函数的执行结果作为计算属性的值
+        3. 计算属性不能执行异步操作
+      watch:
+        1. 对应属性名监听data中某个绑定数据的改变,如果被监听的数据发生改变可以执行一系列副作用操作
+        2. 被watch监听的数据只有在监听的数据发生改变时才会触发对应的回调函数(默认情况下)
+        3. watch中可以执行异步操作
+  */
+
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      count: 1,
+      doubleCount: 2,
+      tripleCount: 3
+    },
+    methods: {},
+    computed: {},
+    watch: {
+      // 属性名: 被监听的属性(data中的数据/计算属性)
+      // 属性值: 回调函数 => 当被监听的数据发生改变触发,回调函数有两个参数,分别表示新值(newVal)和以前的值(oldVal),注意
+      count(newVal, oldVal) {
+        console.log('触发监听', newVal, oldVal);
+
+        // 可以执行一系列副作用操作 => 如果存在的数据依赖于被监听的属性 => 此时被监听的数据发生改变,依赖此数据的属性也要改变
+        if (newVal >= 0) {
+          this.doubleCount = newVal * 2
+          this.tripleCount = newVal * 3
+        } else {
+          this.count = oldVal
+        }
+
+      }
+    },
+  })
+
+</script>
+
+</html>

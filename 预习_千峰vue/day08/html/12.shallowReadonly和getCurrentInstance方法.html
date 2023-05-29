@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.global.js"></script>
+</head>
+
+<body>
+
+  <div id="app">
+
+    <p>{{zhang.age}}</p>
+    <p>{{zhang.info.height}}</p>
+    <p>{{zhang.info.width}}</p>
+    <p>
+      <button @click="zhang.age++">年龄++</button>
+      <button @click="addheight">height++</button>
+      <button @click="zhang.info.width++">width++</button>
+    </p>
+
+  </div>
+
+</body>
+<script>
+
+  const { createApp } = Vue
+  const { getCurrentInstance } = Vue
+  const { shallowRef, shallowReactive, shallowReadonly } = Vue
+
+  const app = Vue.createApp({
+
+    setup(props) {
+
+
+      // shallowReadonly() => 只会将响应对象的根属性变为只读属性,根属性下的子对象没有这个限制
+      
+      let zhang = shallowReadonly({
+        name: '张三',
+        age: 18,  // 根对象上的根属性(只读的)
+        info: {
+          height: 180,
+          width: 60
+        }
+      })
+
+      // getCurrentInstance 方法 获取当前实例 app
+      var app = getCurrentInstance()  // 当前实例(app)
+      let { ctx } = app  // 获取当前实例的 proxy对象(存储数据,方法,计算属性)
+      // console.log('当前实例app', app);
+
+      let addheight = () => {
+        zhang.info.height++
+        console.log(zhang.info.height);  // 数据改变了 -> app实例数据监听没有监听到,无法触发更新视图
+        ctx.$forceUpdate()  // 强制更从新
+      }
+
+      return {
+        zhang,
+        addheight
+      }
+    },
+
+    // 依旧可以使用选项式
+    mounted() {
+      console.log('this代理对象', this);
+    },
+
+  }).mount('#app')  // 需要使用实例的mount方法来挂载到对应的元素上
+
+
+
+</script>
+
+</html>

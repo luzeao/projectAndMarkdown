@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.global.js"></script>
+</head>
+
+<body>
+
+  <div id="app">
+    <p>{{count}}</p>
+    <p>
+      <button @click="countAdd">count++</button>
+    </p>
+
+    <p>{{zhang.name}}</p>
+    <p>zhang.age{{zhang.age}}</p>
+    <p>zhang.height{{zhang.info.height}}</p>
+    <p>{{zhang.info.width}}</p>
+    <p>
+      <button @click="zhang.age++">zhang.age++</button>
+      <button @click="age++">age++</button>
+      <button @click="zhang.info.height++">zhang.height++</button>
+      <button @click="height++">height++</button>
+    </p>
+
+    <p>age:{{age}}</p>
+    <p>height:{{height}}</p>
+
+  </div>
+
+</body>
+<script>
+
+  const { createApp } = Vue
+  const { ref, reactive, readonly, computed, watch } = Vue
+  const { shallowRef, shallowReactive, toRef, toRefs } = Vue
+
+  const app = Vue.createApp({
+
+    setup(props) {
+
+      let count = ref(100)
+      let countAdd = () => {
+        count.value++
+      }
+
+      // proxy对象(有深层的监听)
+      let zhang = reactive({
+        name: '张三',
+        age: 18,
+        info: {
+          height: 180,
+          width: 60
+        }
+      })
+
+      console.log(zhang);  // 代理对象
+
+      // 通过代理对象对应键名取值,赋值给变量age => age=18(app实例不会监听数据改变,重新更新视图)
+      // 不会影响到zhang.age
+      // let age = zhang.age  会丢失响应性
+
+      // 1. 通过proxy对象(响应对象) 得到一个新属性
+      // 2. 新属性可以和源proxy对象,对应键名的数据保持一致 => 新数据更新,源proxy对应数据也更新,源proxy数据更新,新数据也会同步更新
+
+      // 方法1: 计算属性(ref对象) 比较麻烦 => 优化版可以封装 toRef(proxy,key)
+      // let age = computed({
+      //   get() {
+      //     return zhang.age
+      //   },
+      //   set(val) {
+      //     zhang.age = val
+      //   }
+      // })
+
+      // toRef()
+      // 基于响应式对象上的一个属性，创建一个对应的 ref。这样创建的 ref 与其源属性保持同步：改变源属性的值将更新 ref 的值，反之亦然
+      // 方法2: toRef() 官方已经对方法1进行了封装 => toRef(proxy,key) => 可以直接返回计算属性(ref对象)
+      // 缺点:一次只能转化一个
+      // let age = toRef(zhang, 'age')
+      // console.log(age);
+
+      // toRefs()
+      // 将一个响应式对象转换为一个普通对象，这个普通对象的每个属性都是指向源对象相应属性的 ref。每个单独的 ref 都是使用 toRef() 创建的
+      // 只转化一层,如果存在对象嵌套,子对象不会转化
+
+      let obj = toRefs(zhang)  // 将zhang的属性都转化为计算属性 {name:computedRef,age:computedRef,info:computedRef}
+      console.log(obj);
+      let { name, age, info } = obj
+      let { height, width } = toRefs(info.value)
+      // let { name, age, info: { height, width } } = obj  // height没有转化
+
+      return {
+        count,
+        zhang,
+        countAdd,
+        age,
+        height
+      }
+    },
+
+    // 依旧可以使用选项式
+    mounted() {
+      console.log('this代理对象', this);
+    },
+
+  }).mount('#app')  // 需要使用实例的mount方法来挂载到对应的元素上
+
+
+
+</script>
+
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <p ref="p">{{count}}</p>
+  </div>
+</body>
+<script>
+  /* 
+    vue特征: 
+      1. 声明式渲染
+      2. 响应式
+
+    vue生命周期分为三个阶段
+      1. 初始化阶段
+        => beforeCreate
+        => create
+        => beforeMount
+        => mounted
+      2. 更新阶段
+        => beforeUpdate
+        => update
+      3. 销毁阶段(卸载)
+        => beforeDestroy
+        => destroy
+
+    生命周期钩子函数不是必须的(有没有钩子函数生命周期都会正常进行) => 钩子函数的目的可以帮助我们在不同的阶段,可以查看数据变化,或者执行一系列操作
+  */
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      count: 1
+    },
+  })
+</script>
+
+</html>

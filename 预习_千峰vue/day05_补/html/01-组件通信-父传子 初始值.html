@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+  <style>
+
+  </style>
+</head>
+
+<body>
+  <div id="app">
+
+    <!-- <my-count-down></my-count-down> -->
+
+    <div class="countDown">
+      {{beauty(hour)}}:{{beauty(min)}}:{{beauty(sec)}}
+    </div>
+  </div>
+</body>
+<script>
+  /* 
+
+  */
+
+  // Vue2 组件名建议使用中划线命名 my-count-down
+  // Vue3 组件名建议使用大驼峰式   MyCountDown
+  // Vue.components('my-count-down', {
+
+  // })
+
+  var vm = new Vue({
+    el: "#app",
+    data: {
+      time: 25 * 60 * 60 * 1000, // 单位ms
+      timer: null
+    },
+    methods: {
+      beauty(val) {
+        return val.toString().padStart(2, '0')
+      },
+      timeDown() {
+        clearInterval(this.timer)
+        this.timer = setInterval(() => {
+          this.time -= 1000
+          if (this.time <= 0) {
+            clearInterval(this.timer)
+          }
+        }, 1000);
+      }
+    },
+    computed: {
+      day() {
+        return parseInt(this.time / (24 * 60 * 60 * 1000))
+      },
+      hour() {
+        return parseInt(this.time / (60 * 60 * 1000)) % 24
+      },
+      min() {
+        return parseInt(this.time / (60 * 1000)) % 60
+      },
+      sec() {
+        // 总的时间(ms)/1000 => xxx秒(总秒数) % 60  
+        return parseInt(this.time / 1000) % 60
+      }
+    },
+    mounted() {
+      this.timeDown()
+    },
+    // 组件准备销毁
+    beforeDestroy() {
+      clearInterval(this.timer)
+    },
+  })
+
+</script>
+
+</html>

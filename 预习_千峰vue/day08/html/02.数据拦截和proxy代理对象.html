@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+
+  var data = {
+    name: '张三',
+    age: 18,
+    height: 178,
+    width: 60
+  }
+
+
+  // 给对象中的每个属性添加拦截器(取值拦截和赋值拦截)
+
+  // for (let key in data) {  // {name,age.height,width}
+  //   let defaultVal = data[key]
+  //   Object.defineProperty(data, key, {
+  //     get() {
+  //       console.log('取值拦截', key);
+  //       return defaultVal
+  //     },
+  //     set(val) {
+  //       console.log('赋值拦截', key);
+  //       defaultVal = val
+  //     }
+  //   })
+  // }
+  // console.log(data)
+
+  // Proxy 代理对象 => 根据传入的对象(目标对象)生成代理对象 => 操作目标对象需要通过代理对象完成
+
+  // 注意: 此时没有给代理对象设置拦截功能,所有对代理对象的操作,都会同步给目标对象
+  // var obj = new Proxy(data, {})  // 代理对象
+  // console.log(obj);
+  // console.log(obj === data);
+
+  // obj.name = '李四'
+  // console.log(data.name);
+
+
+  // new Proxy(data, {})  // 给代理对象设置拦截功能
+  var obj = new Proxy(data, {
+    get(targetObj, key) {  // 取值拦截 => 当对代理对象进行取值
+      // return null
+      console.log('取值拦截');
+      return targetObj[key]
+    },
+    set(target, key, val) {
+      // return false
+      target[key] = val
+    }
+  })
+
+  // console.log(obj.name);
+  // console.log(obj.age);
+  obj.name = '李四'
+  console.log(obj.name);
+
+</script>
+
+</html>

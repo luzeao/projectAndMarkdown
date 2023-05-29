@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <com-a></com-a>
+    <com-b></com-b>
+    <com-c></com-c>
+  </div>
+</body>
+<script>
+  /* 
+    混入 (mixin) 提供了一种非常灵活的方式，来分发 Vue 组件中的可复用功能
+    mixin(混入) => 可以将组件内的公共 代码(data,methods,computed,watch,生命周期) 提取出来,后期可以在其他组件中复用
+
+      全局混入
+        所有组件都会混入(包括根组件) => 将提取出来的公共代码注入到每一个组件(一般不建议全局混入)
+        混入也可以进行全局注册。使用时格外小心！一旦使用全局混入，它将影响每一个之后创建的 Vue 实例
+        选项冲突:
+          1. 如果组件内有同名属性和方法(methods、components 和 directives),将会使用组件内的
+          2. 如果组件内有生命周期钩子函数,会合并成一个数组,都会触发
+
+      局部混入
+        当组件被使用时才会混入
+  */
+
+  // 局部混入
+  let mixinCount = {
+    data() {
+      return {
+        count: 1
+      }
+    },
+    // data: { count: 1 },
+    methods: {
+      addCount() {
+        this.count++
+      }
+    },
+    mounted() {
+      console.log('全局混入 已注入');
+    },
+  }
+
+
+  Vue.component('com-a', {
+    mixins:[mixinCount],  // 组件可以混入多个局部混入
+    template: `<div>
+      <p>{{count}}</p>
+      <button @click="addCount">count++</button>
+    </div>`,
+  })
+
+  Vue.component('com-b', {
+    template: `<div>
+      <p>{{count}}</p>
+      <button @click="addCount">count++</button>
+    </div>`,
+    methods: {
+      addCount() {
+        this.count+=10
+      }
+    },
+  })
+
+  Vue.component('com-c', {
+    // data() {
+    //   return {
+    //     count: 1
+    //   }
+    // },
+    template: `<div>
+      <p>{{count}}</p>
+      <button @click="addCount">count++</button>
+    </div>`,
+    // methods: {
+    //   addCount() {
+    //     this.count++
+    //   }
+    // },
+  })
+
+  var vm = new Vue({
+    el: '#app',
+    data: {}
+  })
+</script>
+
+</html>

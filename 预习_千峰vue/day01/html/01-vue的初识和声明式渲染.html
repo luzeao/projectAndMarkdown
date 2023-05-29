@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <!-- 本地下载,下载后引入使用 -->
+  <script src="../js/vue.js"></script>
+
+  <!-- CND -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script> -->
+</head>
+
+<body>
+  <!-- 在没有使用vue之前 => 他就是一个普通的文本 -->
+  <div id="app">
+    <p>
+      message:{{message}}
+    </p>
+    <p>
+      count:{{count}}
+    </p>
+    <p>
+      say:{{say()}}
+    </p>
+  </div>
+</body>
+<script>
+  // ajax({type,url,data,async}) => 传入对象作为参数 => 同时传入多个数据 => 不同的键名执行不同的代码逻辑
+</script>
+<script>
+  /* 
+    Vue.js 的核心是一个允许采用简洁的模板语法来声明式地将数据渲染进 DOM 的系统
+  
+    插值 => 文本插值 (将{{}}内的内容插入到标签内,作为标签内的文本 => 拼接)
+    {{message}}
+  
+    注意:
+      + vue中的绝大部分功能都是依赖options(选项)参数实现的
+      + 挂载的数据,挂载的方法,最终也会在实例化对象上绑定一份 => 模版数据上能访问的数据和方法本质上都是通过vue实例访问的
+        挂载的数据和方法才能在模版语法中使用,不挂载直接使用会报错
+  
+    声明式渲染 => 在创建vue实例的过程中,将vue实例中的内容渲染到绑定的元素中
+    new Vue({options}) => 创建一个 Vue实例(应用)
+  */
+
+
+  var app = new Vue({ // vue中的绝大部分功能都是依赖于options(选项)参数实现的
+    el: '#app', // 挂载的元素(css选择器) => #app
+
+    data: {     // 挂载的数据 => 可以有多条(对象) => 可以在挂载的元素内使用(对应数据名称使用)
+      message: 'Hello Wrold',
+      count: 1,
+      msg: "你好"
+    },
+
+    methods: {  // 挂载的方法 => 执行既定的内容 => 可以在挂载的元素内使用(对应函数名称使用)
+      say: function () {
+        console.log("this", this); // 在vue实例中,methods,computed,watch,中的方法的this都指向当前vue实例
+        // return "你好"
+        return this.msg
+      }
+    }
+
+  })
+
+  console.log(app) //打印vue创建的实例
+
+  console.log(app.$el) // 查看挂载的元素
+  console.log(app.$data) // 查看挂载的数据
+  console.log(app.count) // 对应属性名查看挂载的数据
+  console.log(app.message) // 对应属性查看挂载的数据
+  console.log(app.say) // 对应属性查看挂载的数据
+</script>
+
+</html>

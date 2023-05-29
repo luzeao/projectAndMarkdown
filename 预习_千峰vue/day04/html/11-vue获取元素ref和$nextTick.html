@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <p class="p" ref="p">{{count}}</p>
+    <p><button @click="count++">count++</button></p>
+  </div>
+</body>
+<script>
+  /* 
+    vue中如何获取元素/组件(vue),原生方法 => 基本都是从文档中获取(范围可能不准确)
+      vue中定义了自己查找元素的方法 => 基于 ref属性 => 理解为,在我们的vue实例初始化渲染过程中,将包含ref属性的元素提取出来,对应ref名放在vue实例的$refs属性中(优点:只在对应的vue实例范围内查找)
+  */
+
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      count: 1
+    },
+    watch: {
+      async count(newVal, oldVal) {
+        console.log('监听count发生改变', newVal, oldVal);
+
+        // 想查看数据改变之后对应元素的内容是否立即发生改变
+
+        // 原生方法 => 基本都是从文档中获取(查找返回的元素可能并不是挂载的元素内的)
+        // var p = document.querySelector('.p')
+
+        // 注意: 数据虽然发生了改变,后续需将模版编译为 虚拟DOM,通过diff算法比较之后,求出最优解 => 更新到 真实DOM(页面)上 (异步操作 => 微任务)
+        // 所以虽然数据发生了改变,但是视图还未更新,dom中的内容还是原本的内容
+        console.log('直接打印', this.$refs.p.textContent)
+
+        // 如何解决? => 等到虚拟DOM 编译为真实DOM (视图更新之后再查看元素的内容)
+
+        // 1. 设置延时器(宏任务,会等微任务执行完毕)
+        setTimeout(() => { console.log('延时器打印', this.$refs.p.textContent) })
+
+        // 2. 官方给Vue实例提供了方法 this.$nextTick()
+        // 用法1:可以接收一个回调函数,在虚拟dom编译为真实dom(视图更新之后)执行 => 相当于是微任务后面又新增的一个微任务
+        this.$nextTick(() => { console.log('$nextTick方法,用法1', this.$refs.p.textContent) })
+
+        // 用法2:不接收任何参数,默认返回一个进行中(pedding)状态的promise实例,该promise实例在在虚拟dom编译为真实dom(视图更新之后)变为成功状态(fulfilled)
+        this.$nextTick().then(() => { console.log('$nextTick方法,用法2', this.$refs.p.textContent) })
+
+        // 用法3 也可以直接用async和await来实现
+        await this.$nextTick()
+        console.log('$nextTick方法,用法2使用async', this.$refs.p.textContent)
+
+      }
+    },
+    mounted() {
+      console.log(this.$refs.p);
+    },
+  })
+</script>
+
+</html>

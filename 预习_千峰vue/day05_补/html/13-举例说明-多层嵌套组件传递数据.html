@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+  <style>
+    .article {
+      width: 300px;
+      font-size: 13px;
+    }
+
+    .compA,
+    .compB,
+    .compC {
+      padding: 5px;
+      border: 1px dashed;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <p>{{count}}</p>
+    <button @click="count++">加</button>
+    <comp-a :count="count"></comp-a>
+  </div>
+</body>
+
+<template id="compA">
+  <div class="compA">
+    这是组件A
+    <comp-b :count="count"></comp-b>
+  </div>
+</template>
+
+<template id="compB">
+  <div class="compB">
+    这是组件B
+    <comp-c :count="count"></comp-c>
+  </div>
+</template>
+
+<template id="compC">
+  <div class="compC">
+    这是组件C {{count}}
+  </div>
+</template>
+<script>
+  /* 
+    想要将根组件中的数据 依次通过 A B 组件传递给 组件C
+      如果组件嵌套的层数过多 => 父组件想要将数据传递给某个子组件 => 就比较麻烦 => 有没有更简单的方法
+        -> 官方提供了
+        -> 依赖注入 provide / inject 实现数据的跨层级传递
+        -> 这对选项需要一起使用，以允许一个祖先组件向其所有子孙后代注入一个依赖，不论组件层次有多深，并在其上下游关系成立的时间里始终生效
+        -> provide 选项应该是一个对象或返回一个对象的函数。该对象包含可注入其子孙的 property
+        -> inject 选项应该是：
+          一个字符串数组，或
+          一个对象，对象的 key 是本地的绑定名，value 
+  */
+
+  Vue.component('compC', {
+    props: ['count'],
+    data() {
+      return {}
+    },
+    template: "#compC",
+    methods: {},
+  })
+
+  Vue.component('compB', {
+    props: ['count'],
+    data() {
+      return {}
+    },
+    template: "#compB",
+    methods: {},
+  })
+
+  Vue.component('compA', {
+    props: ['count'],
+    data() {
+      return {}
+    },
+    template: "#compA",
+    methods: {},
+  })
+
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      count: 1
+    }
+  })
+
+</script>
+
+</html>

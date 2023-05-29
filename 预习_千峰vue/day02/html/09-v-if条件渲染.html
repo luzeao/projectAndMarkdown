@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+  <style>
+    p {
+      width: 100px;
+      height: 100px;
+      background-color: pink;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div>
+      <h2>v-if,v-else,v-else-if条件渲染</h2>
+      <button @click="clickHandler">获取随机数</button>
+
+      <!-- v-else就是v-if的else块 -->
+      <p>是否大于50
+        <span v-if="num>50">大于</span>
+        <span v-else>不大于</span>
+      </p>
+
+      <p>数值等级
+        <span v-if="num>95">A++</span>
+        <span v-else-if="num>90">A</span>
+        <span v-else-if="num>80">B</span>
+        <span v-else-if="num>70">C</span>
+        <span v-else-if="num>60">D</span>
+        <span v-else>没有等级</span>
+      </p>
+    </div>
+  </div>
+</body>
+<script>
+
+  /* 
+    条件渲染
+      v-if 指令用于条件性地渲染一块内容。这块内容只会在指令的表达式返回 truthy 值的时候被渲染
+      v-if='指令值' 指令结果为true => 渲染,反之不渲染
+  */
+
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      // num: Math.random(),
+      num: null,
+
+    },
+    methods: {
+      clickHandler() {
+        this.num = Math.random() * 100
+      }
+    },
+
+    // 钩子函数(mounted) => vue实例初始化渲染完毕之后执行的函数(有就执行,没有就不执行)
+    mounted() {
+      console.log('初始化完毕');
+      this.clickHandler() // 在vue根实例
+    },
+  })
+
+</script>
+
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../js/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <p class="p1">count:{{count}}</p>
+        <p>doubleCount:{{doubleCount}}</p>
+        <p>tripleCount:{{tripleCount}}</p>
+        <p>
+            <button @click="addCount">count++</button>
+        </p>
+        <p>
+            <button @click="$destroy()">销毁实例</button>
+        </p>
+    </div>
+</body>
+<script>
+     // Vue的生命周期  =>  自V ue实例创建 到 页面渲染, 数据更新, 实例销毁 => 有一个完整的执行流程(体系) 
+    // 学习 Vue的生命周期 -> 可以帮助我们理解 Vue在各个阶段做了什么操作?
+
+    // Vue的各个生命周期都有对应的钩子函数(回调函数),可以辅助我们查看Vue在了解该阶段做了什么操作,并可以执行一些副作用操作  
+
+    // 注意: 
+    // 有没有生命周期钩子函数 => Vue实例的生命周期都会正常的进行 => 钩子函数只是辅助作用,并可以在对应阶段执行一些操作
+
+    // Vue生命周期大致分为三个阶段
+    // 1. 初始化渲染 (初始化阶段 模板编译  挂载阶段)
+    // 2. 响应式 (更新阶段  -> 数据更新之后视图也会更新)
+    // 3. 销毁阶段 (当前Vue实例无法使用)
+
+    // 对应的生命周期钩子函数:
+
+    // beforeCreate  第一个执行的生命周期钩子函数, 发生在实例化对象创建之后, 数据监听(获取data,给data绑定拦截器),方法,事件,监听器绑定之前执行(此时new Vue(options)中的配置对象options还未解析) 
+
+    // created   发生在实例化对象创建之后,此时new Vue(options)中的配置对象options已经被解析了,这就意味着数据监听(获取data,给data绑定拦截器),方法,计算属性,事件,监听器已经绑定 (此时挂载阶段还没开始,还没有选定编译模板)
+    // 此阶段: 可以对Vue实例中绑定的数据进行修改(可以触发watch监听,但是不会触发更新阶段 beforeUpdate和updated  => 此时初始化阶段还未结束)
+
+
+    // beforeMount  在挂载开始之前被调用：相关的 render 函数首次被调用。(将模板(html结构)传入到render函数中, 生成对应的虚拟DOM)
+    // 此阶段亦可修改数据(不建议)  => 它是视图挂载前,修改数据的最后一次机会 
+
+    // mounted   实例被挂载后调用，此时虚拟DOM已经解析为真实DOM,渲染到页面上(el 被新创建的 vm.$el 替换了)
+    // 此阶段:常用于请求数据(ajax) => 在Vue实例初始化渲染完毕之后,在发送请求获取数据(异步操作),等到数据请求成功之后,存储到Vue实例中 => 重新渲染视图
+
+
+
+
+    // beforeUpdate   发生在数据改变之后,视图更新之前被调用(此时还未将模板解析为虚拟DOM),元素的内容还是原本的 => 这里适合在现有 DOM 将要被更新之前访问它，比如移除手动添加的事件监听器。
+    // updated   在数据更改导致的虚拟 DOM 重新渲染和更新完毕之后被调用。 => 数据改变之后,已经重新根据模板编译为虚拟DOM, 并和之前的虚拟dom做对比(diff算法)-> 找到要修改的元素,更新视图 =>可以访问DOM中更新后的内容
+    // 注意: 不建议在updated钩子函数中修改数据
+
+
+    // beforeDestroy   实例销毁之前调用。在这一步，实例仍然完全可用。
+    // 此阶段: Vue实例销毁之前,常用于清除Vue中绑的的一些事件,计时器,延时器
+
+    // destroyed    实例销毁后调用。该钩子被调用后，对应 Vue 实例的所有指令都被解绑，所有的事件监听器被移除，所有的子实例也都被销毁。
+
+
+    var vm = new Vue({
+        el:"#app",
+        data: {
+            count: 1,
+            timer:null,
+
+        },
+        methods: {
+            addCount:function() {
+                this.count++
+            }
+        },
+        computed:{
+            doubleCount:function(){
+                console.log("计算属性doubleCount函数执行:1");
+                return this.count * 2;
+            },
+            tripleCount:function(){
+                console.log("计算属性tripleCount函数执行:2");
+                return this.count * 3;
+            }
+        },
+        watch: {
+            count: {
+                handler: function (newVal, oldVal) {
+                    console.log("watch监听count");
+                    console.log("count发生了改变", newVal, oldVal);
+                },
+                // immediate:true,  // 立即执行 => 设置了此属性之后,不管监听的属性是否改变, 会在实例化对象创建之后,模板编译为虚拟DOM之前默认执行一次  =>  此时 newVal就是初始值,oldVal为undefined
+            }
+        },
+        /* beforeCreate:function(){
+            console.log("1. beforeCreate: this",this);
+            console.log("1. beforeCreate: data",this.count);
+            console.log("1. beforeCreate: 方法",this.addCount);
+            console.log("1. beforeCreate: 计算属性",this.doubleCount,this.tripleCount);
+            console.log("1. beforeCreate: $el",this.$el);
+            console.log("1. beforeCreate: $data",this.$data);
+        } */
+        /* created:function(){
+            console.log("2. created: this",this);
+            console.log("2. created: data",this.count);
+            console.log("2. created: 方法",this.addCount);
+            console.log("2. created: 计算属性",this.doubleCount,this.tripleCount);
+            console.log("2. created: $el",this.$el);
+            console.log("2. created: $data",this.$data);
+
+            this.count = 10;
+        }, */
+        /* beforeMount:function(){
+            console.log("3. beforeMount: this",this);
+            console.log("3. beforeMount: data",this.count);
+            console.log("3. beforeMount: 方法",this.addCount);
+            console.log("3. beforeMount: 计算属性",this.doubleCount);
+            console.log("3. beforeMount: $el",this.$el);
+            console.log("3. beforeMount: $el",this.$el.innerHTML);
+            console.log("3. beforeMount: $data",this.$data);
+
+            this.count = 10;
+        }, */
+        mounted:function(){
+            console.log("4. mounted: this",this);
+            console.log("4. mounted: data",this.count);
+            console.log("4. mounted: 方法",this.addCount);
+            console.log("4. mounted: 计算属性",this.doubleCount);
+            console.log("4. mounted: $el",this.$el);
+            console.log("4. mounted: $el",this.$el.innerHTML);
+            console.log("4. mounted: $data",this.$data);
+
+            // this.count = 10;  // 视图已经渲染,此时更新数据 => 触发更新阶段
+
+            // 在视图挂载完毕之后, 可以绑定一些事件/计时器
+            document.onclick  = function(){
+                console.log(1111111);
+            }
+
+            this.timer = setInterval(()=>{
+                this.count ++;
+                console.log(this.count);
+            },1000)
+
+        },
+
+        beforeUpdate:function(){
+            console.log("5. beforeUpdate:this",this);
+            console.log("5. beforeUpdate:data",this.count);
+            console.log("5. beforeUpdate:方法",this.addCount);
+            console.log("5. beforeUpdate:计算属性",this.doubleCount,this.tripleCount);
+            console.log("5. beforeUpdate:$el",this.$el);
+            console.log("5. beforeUpdate:$el",this.$el.innerHTML);
+            console.log("5. beforeUpdate:$data",this.$data);
+
+
+            var p1 = document.getElementsByClassName("p1")[0];
+            console.log("p1的内容:",p1.innerHTML);
+
+        },
+        updated:function(){
+            console.log("6. updated:this",this);
+            console.log("6. updated:data",this.count);
+            console.log("6. updated:方法",this.addCount);
+            console.log("6. updated:计算属性",this.doubleCount,this.tripleCount);
+            console.log("6. updated:$el",this.$el);
+            console.log("6. updated:$el",this.$el.innerHTML);
+            console.log("6. updated:$data",this.$data);
+
+            var p1 = document.getElementsByClassName("p1")[0];
+            console.log("p1的内容:",p1.innerHTML);
+
+           
+
+        },
+
+        // 销毁阶段:
+        beforeDestroy:function(){
+            console.log("7. beforeDestroy:this",this);
+            console.log("7. beforeDestroy:data",this.count);
+            console.log("7. beforeDestroy:方法",this.addCount);
+            console.log("7. beforeDestroy:计算属性",this.doubleCount,this.tripleCount);
+            console.log("7. beforeDestroy:$el",this.$el);
+            console.log("7. beforeDestroy:$el",this.$el.innerHTML);
+            console.log("7. beforeDestroy:$data",this.$data);
+
+            // 清除事件
+            document.onclick = null;
+            clearInterval(this.timer);
+        },
+        destroyed:function(){
+            console.log("8. destroyed:this",this);
+            console.log("8. destroyed:data",this.count);
+            console.log("8. destroyed:方法",this.addCount);
+            console.log("8. destroyed:计算属性",this.doubleCount,this.tripleCount);
+            console.log("8. destroyed:$el",this.$el);
+            console.log("8. destroyed:$el",this.$el.innerHTML);
+            console.log("8. destroyed:$data",this.$data);
+        }
+    })
+
+    // vm.$mount("#app");
+
+</script>
+
+</html>

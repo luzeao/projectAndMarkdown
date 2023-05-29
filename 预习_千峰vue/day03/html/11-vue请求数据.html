@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <p>{{message}}</p>
+  </div>
+</body>
+<script>
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      message: '请求到了吗'
+    },
+
+    methods: {
+      getRes() {
+        // var xhr = new XMLHttpRequest
+        // xhr.open('get', '../data/1.txt')
+        // xhr.send()
+        // xhr.onreadystatechange = () => {
+        //   if (xhr.readyState == 4 && xhr.status == 200) {
+        //     let res = xhr.responseText
+        //     this.message = res
+        //   }
+        // }
+
+        // 原生js新增 ajax(promise版本)
+        fetch('../data/1.json').then(res => {
+          console.log(res)
+          return res.json()
+        }).then(result => {
+          console.log(result)
+        })
+      }
+
+
+
+    },
+
+    watch: {
+      message(newVal, oldVal) {
+        console.log('message发生改变了', newVal, oldVal)
+      }
+    },
+
+    mounted() {
+      this.getRes()
+    },
+  })
+</script>
+
+</html>

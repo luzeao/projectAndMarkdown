@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+
+</head>
+
+<body>
+
+  <div id="app">
+    <button @click="count++">按钮</button>
+    <!-- 注意: 子组件接收的数据(属性),是由父组件传入的 -->
+    <!-- 当前案例传入的属性是静态属性(属性值都是字符串类型) => 传入之后不可更改 => 更习惯作为子组件的初始值 -->
+    <!-- 静态属性: 测试 => 组件内接收数据时,属性名全都是字符串-->
+    <!-- <prop-test num="1" str="hello" bool="true" a="null" b="undefined" arr="[1,2,3]" obj="{a:1,b:2,c:3}"></prop-test> -->
+    <!-- 动态属性: 测试 
+      优点:
+        1. 组件接收数据时,得到原本的类型 
+        2. 可以使用父组件的数据 -->
+    <prop-test :num="count" :str="'hello'" :bool="true" :a="null" :b="undefined" :arr="[1,2,3]" :obj="{a:1,b:2,c:3}"
+      :class="'one'" style="background-color: aqua;"></prop-test>
+  </div>
+</body>
+
+<script>
+
+
+  Vue.component('prop-test', {
+    /* 
+      没有被props接收的数据
+        1. 透过组件传递到组件的根元素上 => 全都作为html属性 => 继承
+        2. 查看时可以通过this.$attrs获取传入的数据
+        3. 此时如果组件上存在同名属性 => 传入属性的会覆盖原本的 (style和class除外 => 会合并)
+
+      如果你不希望组件的根元素继承 attribute，你可以在组件的选项中设置 inheritAttrs: false
+        注意:
+          1. class和style一样会透传和合并
+          2. 此时组件的$attrs依旧可用 => 可以通过$attrs => 在指定元素内使用
+    */
+    inheritAttrs: false,
+    data() {
+      return {
+
+      }
+    },
+    template: `<div style='width:100px' class='tow'>
+      我是组件prop-text
+      <span :title='$attrs.str'>{{$attrs.num}}</span>s
+      </div>`,
+    watch: {
+      num(newVal, oldVal) {
+        console.log("num接受的数据发生改变", newVal, oldVal);
+      }
+    },
+    mounted() {
+      console.log("接受的数据", this.$props); // 没有通过props属性定义接收的数据 undefined
+      console.log("当前组件实例", this);
+    },
+  })
+
+  // 根组件/根实例 (初始化渲染)
+  var vm = new Vue({
+    el: "#app",
+    data: {
+      count: 1,
+    }
+  })
+
+
+</script>
+
+</html>

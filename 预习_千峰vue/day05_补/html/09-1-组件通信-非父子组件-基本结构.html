@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+  <style>
+    .article {
+      width: 300px;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+
+    <color-select v-model="color"></color-select>
+
+    <show-article></show-article>
+
+  </div>
+</body>
+
+<template id="compA">
+  <div class="colorSelect">
+    <input type="color" :value="value" @change="colorHandler">
+  </div>
+</template>
+
+<template id="compB">
+  <div class="article" :style="{color:color}">
+    <p>说到这里，大师脸上流露出一丝冷笑，“很多人都认为，蓝银草是废武魂，但经过我多年的研究，蓝银草同样有属于自己的作用。如果不是蓝银草在觉醒时产生的魂力过于弱小，哪怕是成为战魂师，也并不是不可能的。</p>
+  </div>
+</template>
+<script>
+
+  /* 
+    非父子组件的通信
+      1. 如果是同级组件 => 有相同的父组件(根组件) => 可以将父组件作为通信的桥梁
+  */
+
+
+  Vue.component('color-select', {
+
+    // value = color
+    model: {
+      prop: 'value',  // 定义接收数据的属性名
+      event: 'update:value', // 自定义改变数据的事件名
+    },
+    props: {
+      value: { // 对应属性名接收数据
+        type: String,
+        required: true
+      }
+    },
+    data() {
+      return {
+        color: '#666666',
+      }
+    },
+    template: "#compA",
+    methods: {
+      colorHandler(e) {
+        console.log('color发生改变');
+        // this.color = e.target.value
+        this.$emit('update:value', e.target.value)
+      }
+    },
+  })
+
+
+  Vue.component('showArticle', {
+    data() {
+      return {
+        color: '#666666'
+      }
+    },
+    template: "#compB",
+  })
+
+
+
+  new Vue({
+    el: '#app',
+    data: {
+      color: '#666666'
+    }
+  })
+
+</script>
+
+</html>

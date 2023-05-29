@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <p>{{count}}</p>
+    <button @click="count++">加</button>
+
+    <hr>
+    <button @click="isShow=!isShow">子组件是否显示</button>
+
+    <comp-a v-if="isShow" :count.sync="count"></comp-a>
+  </div>
+</body>
+
+<template id="compA">
+  <div class="compA">
+    这是组件A:{{count}}
+    <button @click="$emit('update:count',count+1)">子组件加</button>
+    <button @click="$destroy()">自行销毁</button>
+  </div>
+</template>
+<script>
+
+  /* 
+    组件的生命周期-销毁阶段
+      1. 子组件自己调用销毁方法 $destroy (不影响其他组件 -> 一般不会出现)
+      2. 子组件不再被父组件引用(子组件被卸载)
+  */
+
+  Vue.component('compA', {
+    props: ['count'],
+    data() {
+      return {
+        timer: null
+      }
+    },
+    template: "#compA",
+    methods: {
+      testHandler() {
+        console.log('test被触发了');
+      }
+    },
+    mounted() {
+      console.log("4 子组件挂载完毕");
+      // 绑定自定义事件
+      this.$on('test', this.testHandler)
+      // 绑定定时器
+      this.timer = setInterval(() => {
+        console.log(1111)
+      }, 100)
+    },
+    beforeDestroy() {
+      // 清除自定义事件
+      this.$off('test', this.testHandler)
+      // 清除计时器
+      clearInterval(this.timer)
+      console.log('7 beforeDestroy:子组件', this.count);
+    },
+    destroyed() {
+      console.log('8 destroyed:子组件', this.count);
+    },
+  })
+
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      count: 1,
+      isShow: false
+    },
+    beforeDestroy() {
+      console.log('7 beforeDestroy:父组件', this.count);
+    },
+    destroyed() {
+      console.log('8 destroyed:父组件', this.count);
+    },
+  })
+
+</script>
+
+</html>

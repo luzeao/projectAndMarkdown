@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.global.js"></script>
+</head>
+
+<body>
+
+  <div id="app">
+
+
+
+  </div>
+
+</body>
+<script>
+
+  const { createApp, getCurrentInstance } = Vue
+  const { ref, reactive, readonly, computed, watch,shallowReactive } = Vue
+  const { shallowRef, triggerRef } = Vue
+  const { isRef, isReactive, isProxy, isReadonly } = Vue
+
+  const app = Vue.createApp({
+
+    setup(props) {
+
+
+
+      // getCurrentInstance 方法 获取当前实例 app
+      var app = getCurrentInstance()  // 当前实例(app)
+      let { ctx } = app  // 获取当前实例的 proxy对象(存储数据,方法,计算属性)
+
+
+      // zhang => ref对象
+      let zhang = reactive({
+        name: '张三',
+        age: 18
+      })
+
+      let lisi = shallowReactive({
+        name: '李四',
+        age: 18
+      })
+
+
+      // isReactive => 检查一个对象是否是由 reactive() 或 shallowReactive() 创建的代理对象
+      console.log('isReactive', isReactive(zhang));
+      console.log('isReactive', isReactive(lisi));
+
+
+      return {
+        zhang,
+        lisi
+      }
+    },
+
+    // 依旧可以使用选项式
+    mounted() {
+      console.log('this代理对象', this);
+    },
+
+  }).mount('#app')  // 需要使用实例的mount方法来挂载到对应的元素上
+
+
+
+</script>
+
+</html>

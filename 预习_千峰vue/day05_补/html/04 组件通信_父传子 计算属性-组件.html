@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+  <style>
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none !important;
+    }
+
+    input[type='number'] {
+      -moz-appearance: textfield;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+
+    <input type="number" v-model.number="val">
+
+    <!-- 值: 定死的 -->
+    <!-- <get-total :pay="1000"></get-total> -->
+
+    <!-- 根据val值动态变化 -->
+    <get-total :pay="val"></get-total>
+  </div>
+</body>
+
+<script>
+
+  /* 
+    如果子组件需要改父组件传入的数据 => 变相修改
+      1. 把从父组件接收的数据,作为子组件某个属性的初始值
+      2. 根据父组件传入的数据生成计算属性 (如果父组件传入的数据发生改变 -> 子组件中的数据也会跟着改变)
+  */
+  Vue.component('get-total', {
+    props: {
+      pay: {
+        type: [String, Number],
+        required: true
+      }
+    },
+
+    data() {
+      return {
+        // val: this.pay, // 将传入的数据作为组件的初始值(父组件传递的数据发生改变不会重新初始化)
+      }
+    },
+
+    template: `<p class='get-total'>{{handlerMoney}}</p>`,
+
+    computed: {
+      handlerMoney() {
+        return new Intl.NumberFormat().format(this.pay)
+      }
+    }
+  })
+
+  new Vue({
+    el: "#app",
+    data: {
+      val: '0'
+    }
+  })
+
+</script>
+
+</html>

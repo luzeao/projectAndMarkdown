@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet"
+        href="https://cdn.cnbj1.fds.api.mi-img.com/mi.com-assets/shop/pro/css/buy/cart2.382798e6.css">
+    <script src="../js/vue.global.js"></script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        .checkbox {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 1px;
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+            margin: 5px;
+            user-select: none;
+        }
+
+        .checkbox i {
+            display: block;
+            width: 20px;
+            height: 20px;
+            /* 没有切换之前的状态 */
+            background-color: #fff;
+            color: #fff;
+            text-align: center;
+            line-height: 20px;
+        }
+
+        .checkbox i:hover {
+            color: #333;
+        }
+
+        /* 变为选中之后的状态 */
+        .checkbox input[type='checkbox']:checked+i.iconfont {
+            background-color: #ff6700;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <button @click="bool=!bool">{{bool}}</button>
+        <br>
+        <!-- <lw-check-box :checked="bool" @update:checked="(v)=>bool=v" ></lw-check-box> -->
+        <lw-check-box v-model:checked="bool" ></lw-check-box>
+    </div>
+</body>
+<script>
+    // 定义组件的v-model  => 本质上和.sync修饰符是类似的  => 目的也是为了实现父子组件通信
+    // 组件中使用v-model需要注意:
+    // 组件内需要设置model属性 => 
+    // 1. 定义一个属性prop,用于定义接收父组件传入v-model的指令的值的属性
+    // 2. 定义一个属性event,用于定义修改v-model指令值的事件的事件
+
+    
+    // vue3中使用v-model时
+    // 默认接收v-model指令值的属性叫modelValue,默认接收更新执指令值的方法update:modelValue
+
+    // vue3中可以给v-model设置参数  => 用于接收接收v-model指令值的属性名和接收更新执指令值的方法model:参数名
+
+
+    let lwCheckBox = { 
+        props: ["checked"],
+        emits:["update:checked"],  //用于接收自定义事件
+        data() {
+            return {
+                // checked:false,
+            }
+        },
+        template: `<label class="checkbox">
+            <input type="checkbox" :checked='checked' @change="$emit('update:checked',$event.target.checked)" hidden name="" id="">
+            <i class="iconfont">√</i>
+        </label>`,
+        watch: {
+            checked(newVal) {
+                console.log("checked发生改变", newVal);
+            }
+        },
+    }
+
+
+    console.log(Vue);  // 全局对象 => 存储各种方法的对象
+
+
+    // Vue2 和 Vue3的区别
+    
+    // 1. 创建Vue实例要通过 createApp
+    // 2. data选项要求是返回对象的函数
+    // 3. 没有el配置了, 通过vue实例的mount方法挂载
+    // 4. vue3中没有.sync修饰符 => 统一用v-model
+
+
+    // 每个 Vue 应用都是通过 createApp 函数创建一个新的 应用实例：
+    var {createApp} = Vue;
+
+    var app = createApp({
+        // el: "#app",
+        data(){
+            return {
+                bool:false,
+            }
+        },
+        components: {
+            lwCheckBox
+        }
+    })
+
+    app.mount("#app");
+
+</script>
+
+</html>

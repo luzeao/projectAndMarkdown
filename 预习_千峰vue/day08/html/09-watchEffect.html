@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.global.js"></script>
+</head>
+
+<body>
+
+  <div id="app">
+    <p ref="p">{{count}}</p>
+    <p>
+      <button @click="count++">count++</button>
+    </p>
+
+    <p>{{zhang.name}}</p>
+    <p>{{zhang.age}}</p>
+    <p>
+      <button @click="zhang.name='李四'">改名</button>
+      <br>
+      <button @click="zhang.age++">年龄++</button>
+    </p>
+  </div>
+
+</body>
+<script>
+
+  const { createApp, nextTick } = Vue
+  const { ref, reactive, readonly, computed, watch, watchEffect } = Vue
+
+  const app = Vue.createApp({
+
+    setup(props) {
+
+      let count = ref(100)
+      let addCount = () => {
+        count.value++
+      }
+
+      // zhang => 响应对象(代理对象)
+      let zhang = reactive({
+        name: '张三',
+        age: 18
+      })
+
+      let p = ref()
+
+      // watchEffect()
+      // 立即运行一个函数，同时响应式地追踪其依赖，并在依赖更改时重新执行
+
+      // watchEffect() 接受一个函数
+      // 1. 此函数在初始化阶段立即执行(和计算属性类似)
+      // 2. 可以有多个数据依赖(可以依赖于ref,代理对象,计算属性)
+      // 3. watchEffect 返回值是一个stop函数,调用该函数可以停止监听
+
+      // 和计算属性相比
+      // 共同点
+      // 1. 都会在初始化阶段执行一次
+      // 2. 都可以有多个依赖
+      // 区别
+      // 1. 计算属性要求返回一个新值 => 得到一个新属性       watchEffect会监听依赖的数据发生改变,执行副作用操作(数据改变产生的影响)
+      // 2. watchEffect 可以接受第二参数 flush:'pre' , flush:'sync' , flush:'post'   计算属性不行(默认就是created阶段执行)
+
+      // 和watch对比 => 都可以监听数据改变 可以设置 flush参数
+      // 1. watch懒执行副作用(watch数据改变之后才会执行), watchEffect在初始化阶段立即执行
+      // 2. watch更加明确是应该由哪个状态触发侦听器执行(单个数据监听), watchEffect只要依赖的数据改变就会触发(默认可以是多个数据监听,单个也可以)
+      // 3. watch可以访问所侦听的旧值和新值, watchEffect只有数据变化之后的新值
+      var stop = watchEffect(() => {
+        console.log('依赖的数据发生改变: count.value', count.value);
+        console.log('依赖的数据发生改变: zhang.age', zhang.age);
+        // if (p.value) {  // 会在初始化阶段执行,此时p还是undefined,有值才会取
+        //   console.log('依赖的数据发生改变', p.value.innerHTML);
+        // }
+        console.log('依赖的数据发生改变: P.innerHTML', p.value.innerHTML);
+      }, { flush: 'post' })
+
+      return {
+        count,
+        zhang,
+        p,
+      }
+    },
+
+    beforeMount() {
+      console.log('beforeMount');
+    },
+
+    // 依旧可以使用选项式
+    mounted() {
+      // console.log('this代理对象', this);4
+      console.log('mounted');
+    },
+
+  }).mount('#app')  // 需要使用实例的mount方法来挂载到对应的元素上
+
+
+
+</script>
+
+</html>

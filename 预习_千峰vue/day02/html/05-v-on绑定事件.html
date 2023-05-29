@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+  <style>
+    p {
+      width: 50px;
+      height: 50px;
+      background-color: skyblue;
+      color: pink;
+      font-size: 30px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <!-- vue中绑定事件的方式 -->
+    <!-- 1. 触发事件时执行对应的JavaScript表达式 -->
+    <button v-on:click="count++">点击add</button>
+
+    <hr>
+    <!-- 2. 触发事件时执行对应的事件函数,函数可以接受一个形参表示事件对象 -->
+    <button v-on:click="addCount">点击add</button>
+
+    <hr>
+    <!-- 3. 触发事件执行对应的事件函数,在事件函数中调用传入的函数,此写法可以自己定义传入的参数,想接收事件对象传入第二参数$event => 官方定死的 -->
+    <button v-on:click="addN(10,$event)">加N</button>
+
+
+    <p>
+      {{ count }}
+    </p>
+  </div>
+</body>
+<script>
+
+  /* 
+    指令的常见用法
+      1. v-指令名称 = '指令值'
+        => v-html  v-text  v-pre
+      2. v-指令名称:参数 = '指令值'
+        => v-bind:id  v-bind:class  v-on:click
+  */
+  new Vue({
+    el: '#app',
+    data: {
+      count: 0
+    },
+    methods: {
+      addCount: function (e) {
+        console.log('事件对象', e)
+        this.count++
+      },
+      addN: function (n = 1, e) {
+        console.log("事件对象", e);
+        this.count += n
+      }
+    },
+  })
+</script>
+
+</html>

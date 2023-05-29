@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <div>
+      <h2>变更和非变更数组</h2>
+      <button @click="sortList">点击排序</button>
+      <button @click="addList">点击新增</button>
+      <button @click="editList">点击编辑</button>
+      <ul>
+        <!-- 先渲染对应list元素个数的li,再对每个li进行v-if条件渲染判断 -->
+        <li v-for="(item,index) of list" :key="index" v-if="item%2==0">
+          {{ item }}
+        </li>
+      </ul>
+
+      <!-- 有数据就渲染,否则不渲染 -->
+      <ul v-if="list.length>0">
+        <li v-for="(item,index) of list" :key="index">
+          {{ item }}
+        </li>
+      </ul>
+    </div>
+  </div>
+</body>
+<script>
+
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      list: [1, 4, 7, 2, 5, 8, 3, 6, 9]
+    },
+    methods: {
+      sortList() {
+        this.list.sort((a, b) => a - b)
+      },
+      addList() {
+        var num = Math.round(Math.random() * 100) // 随机一个数
+        var index = Math.floor(Math.random() * this.list.length) // 随机一个下标
+        this.list.splice(index, 0, num)
+      },
+      editList() {
+        this.$set(this.list, 0, 100)
+      }
+    },
+  })
+
+</script>
+
+</html>

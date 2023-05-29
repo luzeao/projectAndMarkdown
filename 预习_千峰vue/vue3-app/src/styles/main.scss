@@ -1,0 +1,87 @@
+html {
+  font-size: calc(100vw / 7.5); //  1rem = 100px
+  // font-size: math.div(100vw, 7.5); //  1rem = 100px
+}
+
+body {
+  font-size: 0.24rem;
+}
+
+html,
+body,
+#app {
+  width: 100%;
+  height: 100%;
+}
+
+// 头部样式(全局)
+.HomeNav {
+  background-color: red;
+  height: 0.8rem;
+
+  .van-ellipsis {
+    max-width: 5.444rem;
+
+    .van-search {
+      background: transparent;
+      width: 5.44rem;
+
+      .van-search__content--round {
+        height: 0.5rem;
+        padding-top: 0.05rem;
+        align-items: center;
+
+        .van-search__label {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .van-icon__image {
+          width: 0.4rem;
+          height: 0.4rem;
+        }
+      }
+    }
+
+    .van-haptics-feedback {
+      a {
+        font-size: 0.3rem;
+      }
+    }
+  }
+
+  .van-icon {
+    font-size: 0.24rem;
+  }
+
+  .an-cell__value {
+    height: 0.5rem;
+
+    input {
+      color: #757575;
+      height: 100%;
+    }
+  }
+
+  .van-haptics-feedback {
+    a {
+      color: #fff;
+    }
+  }
+}
+
+// 搜索页框样式
+.SearchNav {
+  background-color: #fff;
+
+  .SearchBtn {
+    height: 0.4rem;
+  }
+}
+
+// 底部全局布局
+.van-tabbar{
+  height: 1rem;
+}

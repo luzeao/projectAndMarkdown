@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <p>{{count}}</p>
+    <p>{{doubleCount}}</p>
+    <button @click="count++">count++</button>
+    <button @click="doubleCount+=2">count+2</button>
+  </div>
+</body>
+<script>
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      count: 1
+    },
+    computed: {
+      // 此写法给计算属性只绑定了一个函数 => 函数默认是取值函数 doubleCount 的值依赖于函数的执行结果
+      // doubleCount() {
+      //   return this.count * 2
+      // }
+
+      doubleCount: {
+        // doubleCount取值时执行的函数
+        get() {
+          console.log('取值拦截')
+          return this.count * 2
+        },
+        // doubleCount赋值时执行的函数(把val赋值给对应的计算属性是由vue内部操作)
+        set(val) {
+          console.log('赋值拦截')
+          this.count = val / 2
+        }
+      }
+    }
+  })
+
+</script>
+
+</html>

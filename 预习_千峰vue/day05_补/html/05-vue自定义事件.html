@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+
+  </div>
+</body>
+<script>
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      count: 1
+    }
+  })
+
+  /* 
+    vue的自定义事件
+      $on(event,callback)  => 绑定自定义事件
+        => event -> 事件类型
+        => callback -> 对应的事件处理函数
+      $off(event,callback) => 清除自定义事件 (对应函数引用清除)
+        => event -> 事件类型
+        => callback -> 对应的事件处理函数
+      $emit(event,data)     => 触发自定义事件
+        => event -> 事件类型
+        => data -> 事件接收的参数
+      $once(event,data)   => 自定义事件只会执行一次,执行一次之后就会移除
+        => event => 事件类型
+        => data => 事件接收参数
+  */
+
+  let a, b, c, d;
+
+  // 绑定自定义事件
+  vm.$on('hello', a = function (data) {
+    console.log('自定义事件hello触发了111', data);
+  });
+
+  vm.$on('hello', b = function (data) {
+    console.log('自定义事件hello触发了222', data);
+  });
+
+  vm.$on('world', c = function (data) {
+    console.log('自定义事件world触发了222', data);
+  });
+
+  vm.$on('world', d = function (data) {
+    console.log('自定义事件world触发了222', data);
+  });
+
+  // 清除自定义事件
+  vm.$off('hello', a)
+  vm.$off('hello', b)
+  vm.$off('world', c)
+  vm.$off('world', d)
+
+  // 对应事件类型清除
+  vm.$off('wrold')
+
+  // 清除实例所有事件
+  vm.$off()
+
+  // 触发自定义事件
+  vm.$emit('hello', 10)
+  vm.$emit('world', 20)
+
+  // 绑定的事件会存放到 _event内,对应事件的处理函数存放到数组中
+  console.log(vm)
+</script>
+
+</html>

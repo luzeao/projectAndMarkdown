@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <com-a></com-a>
+    <hr>
+    <com-b></com-b>
+    <hr>
+    <com-c></com-c>
+  </div>
+</body>
+<script>
+  /* 
+    全局组件
+      优点:只需全局注册一次,在页面中的任何位置均可以使用
+      缺点:
+        + 全局注册的组件无论在页面中是否使用,都会打包到项目源码中,代码量增加
+        + 因为都是全局的,所以组件之间也可以相互嵌套,组件之间的层级关系不是很明确
+  */
+  Vue.component('com-a', {
+    data() {
+      return {}
+    },
+    template: `<div>
+      <p>我是组件A</p>
+      <com-b></com-b>
+      </div>`,
+  });
+
+  Vue.component('com-b', {
+    data() {
+      return {}
+    },
+    template: `<div>
+      <p>我是组件B</p>
+      </div>`,
+  });
+
+  Vue.component('com-c', {
+    data() {
+      return {}
+    },
+    template: `<div>
+      <com-a></com-a>
+      <p>我是组件C</p>
+      </div>`,
+  });
+
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      count:1
+    }
+  })
+</script>
+
+</html>

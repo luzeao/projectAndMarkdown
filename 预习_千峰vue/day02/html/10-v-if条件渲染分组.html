@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+  <style>
+    p {
+      width: 100px;
+      height: 100px;
+      background-color: pink;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div>
+      <h2>v-if条件渲染分组</h2>
+      <div>
+        <!-- 方法1 包裹父元素,以父元素判断 => 缺点:比预期多了一个div -->
+        <div v-if="isLogin">
+          <span>欢迎,xxx</span>
+          <span>退出登录</span>
+        </div>
+
+        <div v-else>
+          <a href="">你好请登录</a>
+          <a href="">免费注册</a>
+        </div>
+
+        <!-- 方法2 用法和1一样,但是template标签,在被vue解析成真实的dom过程中 -->
+        <template v-if="isLogin">
+          <span>欢迎,xxx</span>
+          <span>退出登录</span>
+        </template>
+
+        <template v-else>
+          <a href="">你好请登录</a>
+          <a href="">免费注册</a>
+        </template>
+      </div>
+    </div>
+</body>
+<script>
+  /* 
+    条件渲染分组
+      如果想同时渲染多个元素,又不想包裹无意义的标签,可以选择template标签,可以把template当做一个不可见的包裹元素
+  */
+
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      isLogin: false,
+    },
+  })
+
+</script>
+
+</html>

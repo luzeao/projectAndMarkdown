@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <!-- 静态绑定属性 也就是说属性值是定死的,和vue实例没有关系 -->
+    <div class="box" id="one"></div>
+
+    <!-- 动态绑定属性 将vue实例中的数据绑定到标签中 作为某个属性的属性值 -->
+    <div v-bind:class="cls" :id="id"></div>
+  </div>
+</body>
+
+<script>
+  new Vue({
+    el: '#app',
+    data: {
+      id: 'one',
+      cls: 'box'
+    }
+  })
+
+</script>
+
+</html>

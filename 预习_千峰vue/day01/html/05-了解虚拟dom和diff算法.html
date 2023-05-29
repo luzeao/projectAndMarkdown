@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <!-- 本地下载,下载后引入使用 -->
+  <script src="../js/vue.js"></script>
+
+  <!-- CND -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script> -->
+</head>
+
+<body>
+  <!-- 在没有使用vue之前 => 他就是一个普通的文本 -->
+  <div id="app">
+    <p>
+      message:{{message}}
+    </p>
+    <p>
+      count:{{count}}
+    </p>
+    <p>
+      say:{{say()}}
+    </p>
+  </div>
+</body>
+<script>
+
+  /* 
+    虚拟DOM和diff算法
+      为了实现页面渲染时的优化操作
+    
+    虚拟DOM => 通过 数组对象/对象数组 的形式记录html结构
+
+    初始DOM => 
+  */
+
+  // 初始DOM
+  // var Vdom1 = {
+  //   tag: 'div',
+  //   attrs: {
+  //     id: '#app',
+  //   },
+  //   child: [
+  //     { tag: 'p', attrs: {}, child: [{ tag: '', attrs: {}, text: 'message:{{message}}' }] },
+  //     { tag: 'p', attrs: {}, child: [{ tag: '', attrs: {}, text: 'count:{{count}}' }] },
+  //     { tag: 'p', attrs: {}, child: [{ tag: '', attrs: {}, text: 'say():{{say()}}' }] },
+  //   ]
+  // }
+
+  // 解析1:
+  var Vdom1 = {
+    tag: 'div',
+    attrs: {
+      id: '#app',
+    },
+    child: [
+      { tag: 'p', attrs: {}, child: [{ tag: '', attrs: {}, text: 'message:Hello World' }] },
+      { tag: 'p', attrs: {}, child: [{ tag: '', attrs: {}, text: 'count:1' }] },
+      { tag: 'p', attrs: {}, child: [{ tag: '', attrs: {}, text: 'say():你好' }] },
+    ]
+  }
+  // new Vue() 初始化之后直接将对应的vdom 渲染为真实dom
+
+  // 数据会发生改变
+  // app.message = '你好'
+  var Vdom2 = {
+    tag: 'div',
+    attrs: {
+      id: '#app',
+    },
+    child: [
+      { tag: 'p', attrs: {}, child: [{ tag: '', attrs: {}, text: 'message:你好' }] },
+      { tag: 'p', attrs: {}, child: [{ tag: '', attrs: {}, text: 'count:1' }] },
+      { tag: 'p', attrs: {}, child: [{ tag: '', attrs: {}, text: 'say():你好' }] },
+    ]
+  }
+  // 数据发生改变 => 生成了新的虚拟DOM => 对比两次虚拟DOM之间发生的变化(diff算法) => 求出改变后的最优解 => 再将修改后的内容更新到真实DOM
+
+
+
+
+  var app = new Vue({
+    el: '#app',
+    data: {
+      message: 'Hello Wrold',
+      count: 1,
+      msg: "你好"
+    },
+    methods: {
+      say: function () {
+        return this.msg
+      }
+    }
+  })
+  document.onclick = function () {
+    // 通过实例化对象访问数据 => 写法更简单
+    app.message = '你好'
+    app.count = 10
+    app.msg = "ok"
+  }
+</script>
+
+</html>

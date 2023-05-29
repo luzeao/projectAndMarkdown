@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <p>{{count}}</p>
+    <p>{{doubleCount}}</p>
+    <p>{{tripleCount}}</p>
+    <button @click="count++">count++</button>
+    <button @click="count--">count--</button>
+  </div>
+</body>
+
+<script>
+
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      count: 1,
+      doubleCount: 0,
+      tripleCount: 0
+    },
+    methods: {},
+    computed: {},
+    watch: {
+      // 传统的watch写法,必须等到数据发生改变之后才会执行
+      // count(newVal, oldVal) {
+      //   console.log('触发监听', newVal, oldVal);
+      //   if (newVal >= 0) {
+      //     this.doubleCount = newVal * 2
+      //     this.tripleCount = newVal * 3
+      //   } else {
+      //     this.count = oldVal
+      //   }
+      // }
+
+
+      // 能不能让watch监听的属性 在初始化渲染时默认执行一次(类似与computed)
+      // 在监听数据时配置immediate(立即)属性为true => 注意:在此实例化初识渲染后默认执行一次 newVal是当前值,oldVal是undefined
+      count: {
+        handler(newVal, oldVal) {
+          console.log('触发监听', newVal, oldVal);
+          if (newVal >= 1) {
+            this.doubleCount = newVal * 2
+            this.tripleCount = newVal * 3
+          } else {
+            this.count = oldVal
+          }
+        },
+        immediate: true
+      }
+    },
+  })
+
+</script>
+
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
+    html,
+    body,
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+
+    .page {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <!-- 组件切换 -->
+    <component :is="showPage"></component>
+
+  </div>
+</body>
+<script>
+
+  /*
+    以前的案例是多页面应用 => 一个页面有一个根实例
+  
+    SPA单页面应用(single page Application)
+      + 多个页面依赖于同一个根实例进行展示
+      + 页面之间可以根据url地址进行切换 => 前端路由
+
+    路由:
+      后端路由 => 站点(对应url地址显示站点中的页面 css js images)
+              => 接口(接收前端发送过来的请求(请求方式,地址,携带数据) => 处理请求
+              => 返回响应数据 /根路由 /user(一级路由) /user/add(二级路由))
+        
+      前端路由 => 对应不同的url路径显示不同的页面(渲染不同的页面)
+        + 一般有两种实现方式 => History / Hash值
+
+      Hash值 => 锚点
+        1. 可以实现同页面不同位置的跳转
+        2. 当Hash值发生改变,并不会触发页面刷新
+        3. Hash值也不会随着请求传递给后端
+  */
+
+  let Home = {
+    template: "<div class='page'>这是主页</div>"
+  }
+
+  let List = {
+    template: "<div class='page'>这是列表页</div>"
+  }
+
+  let Car = {
+    template: "<div class='page'>这是购物车页</div>"
+  }
+
+  let Mine = {
+    template: "<div class='page'>这是我的页</div>"
+  }
+
+  var vm = new Vue({
+    el: "#app",
+    data: {
+      showPage: 'home'
+    },
+    components: {
+      Home,
+      List,
+      Car,
+      Mine
+    }
+  })
+</script>
+
+</html>

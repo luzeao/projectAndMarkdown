@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.global.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    .box {
+      display: flex;
+      width: fit-content;
+    }
+
+    .reduce,
+    .add {
+      width: 40px;
+      height: 40px;
+      text-align: center;
+      line-height: 40px;
+      background-color: pink;
+    }
+
+    .count {
+      width: 100px;
+      border: 0;
+      outline: none;
+      text-align: center;
+      background-color: #f1f1f1;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none !important;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <p>{{count}}</p>
+    <p><button @click="count++">按钮</button></p>
+    <br>
+
+    <count-input v-model:value="count"></count-input>
+
+  </div>
+</body>
+
+<template id="demo">
+  <div class="box">
+    <span class="reduce" @click="value > 1 && $emit('update:value',value-1)">-</span>
+    <input type="number" class="count" :value="value" @change="changeHandler"></input>
+    <span class="add" @click="$emit('update:value',value+1)">+</span>
+  </div>
+</template>
+
+<script>
+
+
+  // 组件通信 : 子传父
+
+  let { createApp } = Vue
+
+  let app = createApp({
+    data() {
+      return {
+        count: 1
+      }
+    },
+    methods: {
+      updateValueHandler(v) {
+        console.log('自定义事件被触发了', this);
+        this.count = v
+      }
+    },
+  })
+
+
+
+  app.component('count-input', {
+
+    // vue3中v-model传递的数据 默认会被value属性接收,更新数据的方法 默认叫"update:value"
+    // 如果想要自定义接收数据的参数名,和改变数据的方法,可以给v-model传一个参数 => v-model:参数 => 参数名,就是接收数据的属性名
+    props: ['value'],  // 定义接收数据的属性名(默认)
+    emits: ['update:value'],  // 定义改变数据的方法名(默认)
+
+    data() {
+      return {
+
+      }
+    },
+    template: `#demo`,
+
+    methods: {
+      changeHandler(e) {
+        this.$emit('update:value', e.target.value) // 符合规范,更新数据
+      }
+    },
+    mounted() {
+      console.log('组件实例', this);
+    },
+  })
+
+  app.mount("#app")
+
+
+</script>
+
+</html>

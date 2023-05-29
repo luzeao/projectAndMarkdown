@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <form action="" @submit.prevent>
+      <div class="input-group">
+        <label>firstName:</label>
+        <input type="text" v-model="form.firstName">
+        <span>{{form.firstName}}</span>
+      </div>
+      <div class="input-group">
+        <label>lastName:</label>
+        <input type="text" v-model="form.lastName">
+        <span>{{form.lastName}}</span>
+      </div>
+      <div>
+        <label>fullName:</label>
+        <input type="text" v-model="fullName">
+        <span>{{fullName}}</span>
+      </div>
+      <button @click="form={firstName:'',lastName:''}">修改from</button>
+    </form>
+  </div>
+</body>
+<script>
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      // 再给data中的数据绑定数据监听时,默认只给data中的根属性绑定数据监听(watch),跟属性的值发生改变之后才会触发 数据监听(watch),如果根属性的值也是一个对象,该对象的值发生改变不会触发 form 的 数据监听(watch)
+      form: {
+        firstName: '',
+        lastName: ''
+      }
+    },
+    computed: {
+      // fullName() {
+      //   return this.firstName + (this.lastName ? ' ' + this.lastName : '')
+      // }
+      fullName: {
+        get() {
+          return this.form.firstName + (this.form.lastName ? ' ' + this.form.lastName : '')
+        },
+        set(val) {
+          if (val) {
+            var list = val.split(' ')
+            this.form.firstName = list[0]
+            this.form.lastName = list[1] || ''
+          }
+        }
+      }
+    },
+    watch: {
+
+      // 浅监听(只会监听data根数据的改变)
+      // form() {
+      //   console.log('form中的数据改变了');
+      // },
+
+      // 深度监听: 分别给data中的根属性,及其下对象的子属性绑定数据监听(watch),当根属性的值发生变化,或者根属性下的对象的子属性的值发生变化,才会触发数据监听(watch)
+      // 深度监听引发的新的问题: newVal,oldVal 引用同一个内存空间(被监听的对象的新值和旧值)
+      form: {
+        handler(newVal,oldVal) {
+          console.log('form中的数据改变了');
+          console.log('form中的数据改变了newVal',newVal);
+          console.log('form中的数据改变了oldVal',oldVal);
+        },
+        deep:true, // 是否开启深度监听(如果被监听的属性下的对象中的数据发生改变,也会触发)
+      }
+    }
+  })
+</script>
+
+</html>

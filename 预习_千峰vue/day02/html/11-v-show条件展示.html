@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+  <style>
+    p {
+      width: 100px;
+      height: 100px;
+      background-color: pink;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div>
+      <h2>v-show条件展示</h2>
+      <div id="app">
+        <div>
+          <h2>v-if,v-else,v-else-if条件渲染</h2>
+          <button @click="clickHandler">获取随机数</button>
+
+          <p>是否大于50
+            <span v-show="num>50">大于</span>
+            <span v-show="num<50">不大于</span>
+          </p>
+          <p>数值等级
+            <span v-show="num>95&&num<=100">A++</span>
+            <span v-show="num>90&&num<=95">A</span>
+            <span v-show="num>80&&num<=90">B</span>
+            <span v-show="num>70&&num<=80">C</span>
+            <span v-show="num>60&&num<=70">D</span>
+            <span v-show="num<60">没有等级</span>
+          </p>
+        </div>
+      </div>
+    </div>
+</body>
+<script>
+  /* 
+    v-show条件展示
+      v-show 指令用于条件性的展示一段内容,这块内容只会在指令的表达式返回 truthy 值的时候被展示
+      v-show='指令值' 指令结果为true => 展示,反之不展示 => 使用的是display:none和display:block
+      v-show 无论条件是否成立,都会被渲染到页面上,区别就是元素是否被展示(视觉方面)
+  */
+
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      // num: Math.random(),
+      num: null,
+
+    },
+    methods: {
+      clickHandler() {
+        this.num = Math.random() * 100
+      }
+    },
+
+    // 钩子函数(mounted) => vue实例初始化渲染完毕之后执行的函数(有就执行,没有就不执行)
+    mounted() {
+      console.log('初始化完毕');
+      this.clickHandler() // 在vue根实例
+    },
+  })
+
+</script>
+
+</html>

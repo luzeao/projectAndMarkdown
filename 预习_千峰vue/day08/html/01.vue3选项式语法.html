@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.global.js"></script>
+</head>
+
+<body>
+
+  <div id="app">
+
+    <p>count: {{count}}</p>
+    <p>{{doubleCount}}</p>
+    <p><button @click="addCount">count++</button></p>
+
+  </div>
+
+</body>
+<script>
+  /* 
+    本地引入 Vue -> 全局对象(各种方法 -> 后期要使用)
+
+    脚手架 import {} from 'vue'
+  */
+
+  const { createApp } = Vue
+
+  // createApp(options) => 根据传入的options对象 创建一个vue实例(应用 每个应用都是一个组件)
+  // 1. optinos选项中没有el参数,挂载实例(应用)需要通过,需要通过实例的mount方法
+  // 2. createApp() 创建的每一个应用都是一个组件 -> data要写成函数版本
+  // 3. Vue实例(应用)中的data methods computed 不会再挂载到实例本身,而是存到一个公共的代理对象(this->代理对象),通过代理对象访问和修改数据
+  // 4. 定义组件  混合  指令  依赖注入 => 需要通过app(来定义) => 一般给根应用(定义的就是全局的)
+
+  const app = Vue.createApp({
+    // el:'#app',   // v3中没有这个选项
+    data() {
+      return {
+        count: 1
+      }
+    },
+    computed: {
+      doubleCount() {
+        return this.count * 2
+      }
+    },
+    methods: {
+      addCount() {
+        this.count++
+      }
+    },
+    watch: {
+      count(newVal, oldVal) {
+        console.log('count发生改变', newVal, oldVal);
+      }
+    },
+    mounted() {
+      console.log('this', this);
+    },
+  }).mount('#app')  // 需要使用实例的mount方法来挂载到对应的元素上
+
+
+
+</script>
+
+</html>

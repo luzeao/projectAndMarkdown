@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../js/vue.js"></script>
+  <style>
+    li {
+      list-style: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div>
+      <h2>v-for列表渲染</h2>
+      <ul>
+
+        <h2>遍历数组</h2>
+        <li v-for="(item,index) of list">
+          {{ item }}---{{index}}
+        </li>
+
+        <h2>遍历对象</h2>
+        <li v-for="(val,key,index) of obj">
+          {{ key }}---{{val}}---{{index}}
+        </li>
+
+        <h2>遍历数值</h2>
+        <li v-for="(n,i) of 10">
+          {{ n }}---{{ i }}
+        </li>
+      </ul>
+    </div>
+  </div>
+</body>
+<script>
+  /* 
+    v-for列表渲染
+      遍历数组
+        语法: v-for:="(item,index) of list"
+          -> in 和 of 没有区别,只是of更接近与迭代语法
+          -> list => 循环的元素
+          -> item => 数组内的元素
+          -> index => 对应元素的下标
+      遍历对象
+        语法: v-for="(val,key,index) of obj
+          -> val => 对象的键值
+          -> key => 对象的键名
+          -> index => 对象的下标
+      遍历数值
+        语法: v-for="(n,i) of 100
+          -> n => 会从1开始
+          -> i => 就是下标
+          -> 100 => 是终止值
+    注意: 遍历的元素,只能在标签内使用 => 也有一个类似作用域
+  */
+
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      list: [1, 4, 7, 2, 5, 8, 3, 6, 9],
+      obj: {
+        name: '张三',
+        age: 18,
+        height: 180,
+        width: '70kg'
+      }
+    },
+  })
+
+</script>
+
+</html>
