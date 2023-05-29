@@ -11,7 +11,7 @@ import RegisterView from '@/views/Register/index.vue'
 import NotFoundView from '../views/NotFound/index.vue'
 import SearchView from "../views/Search/index.vue"
 import DetailView from '@/views/Detail/index.vue'
-import OrderView from "../views/Order/index.vue"
+import OrderView from "@/views/Order/Order.vue"
 import AddressView from '@/views/Address/index.vue'
 import AddressAddView from '@/views/Address/AddAddress/index.vue'
 
@@ -100,7 +100,7 @@ export default [
     meta: {
       auth: true  // 是否需要登录
     },
-    component: () => import('../views/Order/MyOrder/index.vue')
+    component: () => import('@/views/Order/OrderDetail.vue')
   },
   {
     path: '/address',

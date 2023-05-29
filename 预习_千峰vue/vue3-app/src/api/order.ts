@@ -11,3 +11,6 @@ export const updateOrderAddressAPI = (params: any): AxiosPromise => request.post
 
 // 获取订单的确认信息
 export const confirmOrderAPI = (params: any): AxiosPromise => request.get("/order/confirmOrder", { params });
+
+// 获取所有订单
+export const orderlistAPI = (params: any): AxiosPromise => request.post("/user/orderlist", params);
