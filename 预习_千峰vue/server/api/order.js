@@ -114,8 +114,10 @@ router.post('/addOrder', (req, res, next) => {
       })
       Promise.all(arr).then(result => {
         // result [[{}], [{}]]
+       
         const dataarr = []
         result.forEach(item => {
+          
           dataarr.push(item[0])
         })
         // dataarr [{proid: '', proname: '', discount: '', originprice: '', img1: ''}, {}]
@@ -145,7 +147,9 @@ router.post('/addOrder', (req, res, next) => {
           const resultarr = []
           const time = new Date().getTime() + ''
           // 遍历dataarr 添加其他的数据
+          
           dataarr.forEach((item, index) => {
+            console.log(item,"321");
             resultarr.push({
               name: obj.name,
               tel: obj.tel,
@@ -167,6 +171,7 @@ router.post('/addOrder', (req, res, next) => {
           })
           // console.log(1111111)
           // 插入数据
+          console.log(resultarr,"123456");
           mysql.insert(Order, resultarr).then(() => {
             console.log(222222)
             res.send({

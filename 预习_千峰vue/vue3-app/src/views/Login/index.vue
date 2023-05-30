@@ -15,6 +15,7 @@
             :rules="[{ required: true, message: '请填写密码' }]" />
 
         </van-cell-group>
+        <div class="goRegister" @click="goRegisterHandler">去注册</div>
         <div style="margin: 16px;">
           <van-button round block type="primary" native-type="submit">
             登录
@@ -31,7 +32,7 @@
 </template>
 
 <script lang="ts" setup>
-import AppHeader  from "@/components/AppHeader/index.vue"
+import AppHeader from "@/components/AppHeader/index.vue"
 import type { Ref } from 'vue'  // 从声明文件中解构出来
 import { ref } from 'vue';
 import { doCheckPhoneAPI, doFinishRegisterAPI, doLoginAPI } from '@/api/user'
@@ -63,7 +64,10 @@ const validateTel = async (tel: number): Promise<any> => {
     return true
   }
 }
-
+// 点击去注册
+const goRegisterHandler = () => {
+  router.replace('/register')
+}
 
 // 提交事件
 const onSubmit = async (): Promise<any> => {
@@ -118,5 +122,10 @@ const onSubmit = async (): Promise<any> => {
   .van-button--round {
     height: 0.7rem;
   }
+}
+
+.goRegister {
+  margin-left: 0.2rem;
+  color: red;
 }
 </style>

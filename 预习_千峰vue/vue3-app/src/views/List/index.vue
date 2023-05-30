@@ -9,6 +9,8 @@
       </template>
 
     </AppHeader>
+
+
   </div>
 </template>
 
@@ -17,7 +19,7 @@
 import AppHeader from '../../components/AppHeader/index.vue'
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import {useSearch} from '@/stores/search'
+import { useSearch } from '@/stores/search'
 
 const keyWord = ref<string>('')
 

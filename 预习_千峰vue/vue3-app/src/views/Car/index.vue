@@ -24,6 +24,7 @@
         </div>
       </template>
 
+      
       <template v-else>
         <van-empty image="http://img2.3png.com/8264ae8fd7ffe7829afbdcd9c1c6b241ec16.png/w260" image-size="80"
           description="您的购物车已经空了哦">
@@ -53,8 +54,6 @@ import { showFailToast, showSuccessToast } from 'vant';
 import { useRouter } from 'vue-router';
 
 import { delCartByIdAPI, clearCartAPI, updateCartOneCheckedStatusAPI, getCartListAPI, updateCartNumAPI } from '@/api/cart';
-
-import { addOrderAPI } from "@/api/order"
 
 import { ref, watchEffect, computed } from 'vue';
 
@@ -147,11 +146,7 @@ let submitHandler = async () => {
   var num = cartList.value.filter((item: any) => item.flag).length; // 找到选中的商品数量
   if (num > 0) {
     try {
-      var res: any = await addOrderAPI({
-        userid: userid.value
-      });
-      // console.log("新增成功", res);
-      router.push({ name: 'order', query: { time: res.time } })
+      router.push('/order')
     } catch (err: any) {
       showFailToast(err.message);
     }

@@ -61,10 +61,10 @@ export default [
   {
     path: '/mine',
     name: 'mine',
-    meta: {
-      auth: true  // 是否需要登录
-    },
-    component: MineView
+    components: {
+      default: MineView,
+      footer: CommonFooterView
+    }
   },
   {
     path: '/login',
@@ -74,9 +74,6 @@ export default [
   {
     path: '/car',
     name: 'car',
-    meta: {
-      auth: true  // 是否需要登录
-    },
     components: {
       default: CarView,
     }
@@ -89,10 +86,12 @@ export default [
   {
     path: '/order',
     name: 'order',
-    meta: {
-      auth: true  // 是否需要登录
-    },
     component: OrderView
+  },
+  {
+    path: '/order/detail',
+    name: 'detailorder',
+    component: ()=>import('../views/Order/DetailOrder.vue')
   },
   {
     path: '/myorder',
@@ -100,14 +99,11 @@ export default [
     meta: {
       auth: true  // 是否需要登录
     },
-    component: () => import('@/views/Order/OrderDetail.vue')
+    component: () => import('@/views/Order/MyOrder.vue')
   },
   {
     path: '/address',
     name: 'address',
-    meta: {
-      auth: true  // 是否需要登录
-    },
     component: AddressView
   },
   {

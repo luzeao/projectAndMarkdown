@@ -51,32 +51,42 @@ const AddressList = async () => {
 }
 // 点击新增地址跳转
 const onAdd = () => {
-  router.push('address/add')
+  if (route.query.returnUrl != undefined) {
+    router.replace({ path: (route.query.returnUrl as any), query: { time: route.query.time } })
+  } else {
+    router.push('address/add')
+  }
 }
 // 点击编辑地址
 const onEdit = async (item: any, index: any) => {
-  router.push({ path: '/address/add', query: { info: JSON.stringify(item) } })
+  router.push({ path: '/address/add', query: { info: JSON.stringify(item), returnUrl: route.fullPath } })
 }
 // 点击地址时跳转
+// console.log(1111111,route.query.returnUrl);
+
 const selectHandler = async (item: any) => {
-  let res = await updateOrderAddressAPI({
-    userid: item.userid,
-    name: item.name,
-    tel: item.tel,
-    province: item.province,
-    city: item.city,
-    county: item.county,
-    addressDetail: item.addressDetail,
-    tiem: route.query.tiem
-  })
-  console.log('更改地址',res);
-  
-  router.push({ path: '/order', query: { info: JSON.stringify(item) } })
+  if (route.query.returnUrl != undefined) {
+    router.replace({ path: (route.query.returnUrl as any), query: { info: JSON.stringify(item), time: route.query.time } })
+    console.log(item.name, item.tel, item.province, item.city, item.county, item.addressDetail,);
+
+    let res1 = await updateOrderAddressAPI({
+      userid: user.userid,
+      name: item.name,
+      tel: item.tel,
+      province: item.province,
+      city: item.city,
+      county: item.county,
+      addressDetail: item.addressDetail,
+      tiem: route.query.time
+    })
+    console.log('更新订单地址', res1);
+
+  } else {
+    router.replace({ path: '/order', query: { info: JSON.stringify(item) } })
+  }
 }
+
 watchEffect(() => {
-  AddressList()
-})
-onMounted(() => {
   AddressList()
 })
 

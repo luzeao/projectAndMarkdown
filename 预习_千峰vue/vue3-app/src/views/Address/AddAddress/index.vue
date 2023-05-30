@@ -41,7 +41,8 @@ const saveHandler = async (info: any) => {
       userid: userid.value,
       ...info
     })
-    // console.log('地址更新成功', res);
+    console.log('地址更新成功', res);
+    
     router.replace('/address')
   } else {
     try {
@@ -49,7 +50,7 @@ const saveHandler = async (info: any) => {
         userid: userid.value,
         ...info
       });
-      // console.log("地址新增成功", res);
+      console.log("地址新增成功", res);
       router.replace('/address')
     } catch (err: any) {
       showFailToast(err.message);

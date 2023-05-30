@@ -38,7 +38,7 @@ router.get('/', (req, res, next) => {
  */
 router.post('/docheckphone', (req, res, next) => {
   const { tel } = req.body
-  mysql.find(User, { tel }, { _id: 0, __v: 0}).then(data => {
+  mysql.find(User, { tel }, { _id: 0, __v: 0 }).then(data => {
     if (data.length === 0) { // 没有被注册过
       res.send({
         code: '200',
@@ -57,14 +57,14 @@ router.post('/docheckphone', (req, res, next) => {
           message: '该用户已被注册'
         })
       }
-    } 
+    }
   })
 })
 
-function getTelCode () {
+function getTelCode() {
   return 10000 + Math.floor(Math.random() * 90000)
 }
-function getRandomName () {
+function getRandomName() {
   return '123123'
 }
 
@@ -85,7 +85,7 @@ router.post('/dosendmsgcode', (req, res, next) => {
   const { tel } = req.body
   const telcode = getTelCode()
   // 得到验证码，验证上一次是否有验证码，如果有 更新验证码，如果没有插入数据
-  mysql.find(User, { tel }, { _id: 0, __v: 0}).then(data => {
+  mysql.find(User, { tel }, { _id: 0, __v: 0 }).then(data => {
     if (data.length === 0) { // 没有被注册过，直接可以吧手机号和验证码存入数据库 
       // 插入数据 ---- 数据的默认值
       const insertData = {
@@ -113,7 +113,7 @@ router.post('/dosendmsgcode', (req, res, next) => {
       })
     } else {
       if (data[0].telcode !== '') {// 上一次获取过验证码，但是未注册完成，更新验证码
-        mysql.update(User, { tel }, { $set: { telcode }}).then(() => {
+        mysql.update(User, { tel }, { $set: { telcode } }).then(() => {
           // 发送短信验证码
           res.send({
             code: '200',
@@ -208,11 +208,13 @@ router.post('/dofinishregister', (req, res, next) => {
 router.post('/login', (req, res, next) => {
   // loginname 代表 账户名/手机号/邮箱
   const { loginname, password } = req.body
-  mysql.find(User, { $or: [
-    { username: loginname }, 
-    { tel: loginname }, 
-    { email: loginname }
-  ]}, { _id: 0, __v: 0 }).then(data => {
+  mysql.find(User, {
+    $or: [
+      { username: loginname },
+      { tel: loginname },
+      { email: loginname }
+    ]
+  }, { _id: 0, __v: 0 }).then(data => {
     if (data.length === 0) {
       // 这个用户不存在
       res.send({
@@ -223,11 +225,11 @@ router.post('/login', (req, res, next) => {
       // 有该用户，需要验证密码(加密)
       mysql.find(User, {
         $or: [
-          { username: loginname, password: md5(password) }, 
-          { tel: loginname, password: md5(password) }, 
+          { username: loginname, password: md5(password) },
+          { tel: loginname, password: md5(password) },
           { email: loginname, password: md5(password) }
         ]
-      }, { _id: 0, __v: 0}).then(result => {
+      }, { _id: 0, __v: 0 }).then(result => {
         if (result.length === 0) { // []
           // 密码错误
           res.send({
@@ -327,8 +329,11 @@ router.get('/info', (req, res, next) => {
  */
 // 查看订单信息
 router.post('/orderlist', (req, res, next) => {
-  const { userid } = req.query
+  // console.log(req.body);
+  const { userid } = req.body
+  // console.log(111111111111111111, userid);
   mysql.find(Order, { userid }, { _id: 0, __v: 0 }).then(data => {
+    // console.log(111111111111111111, data);
     res.send({
       code: '200',
       message: '查看全部订单',
@@ -365,13 +370,13 @@ router.get('/updatePassword', (req, res, next) => {
         message: '原始密码错误'
       })
     } else {
-      mysql.update(User, { userid }, { $set: { password: newpassword }}).then(() => {
+      mysql.update(User, { userid }, { $set: { password: newpassword } }).then(() => {
         res.send({
           code: '200',
           message: '密码修改成功'
         })
       })
-      
+
     }
   })
 })
@@ -393,7 +398,7 @@ router.get('/updatePassword', (req, res, next) => {
 // 绑定用户名
 router.get('/bindusername', (req, res, next) => {
   const { userid, username } = req.query
-  mysql.update(User, { userid }, { $set: { username} }).then(() => {
+  mysql.update(User, { userid }, { $set: { username } }).then(() => {
     res.send({
       code: '200',
       message: '绑定用户名'

@@ -29,6 +29,7 @@ import { ref, onMounted, computed } from 'vue';
 import { useUserStore } from '@/stores/user';
 import { useRouter, useRoute } from 'vue-router';
 import { getCartListAPI, clearCartAPI } from '@/api/cart';
+import { updateOrderAddressAPI } from '@/api/order';
 import { addOrderAPI } from '@/api/order';
 import { showFailToast } from 'vant';
 const router = useRouter()
@@ -39,6 +40,7 @@ const list = ref<any>([])
 
 let name = ref('')
 let tel = ref('')
+
 
 if (route.query.info) {
   let obj = JSON.parse((route.query.info as any))
@@ -69,10 +71,11 @@ const getCartList = async () => {
   list.value = res.data
 }
 
-// 点击新增地址跳转
+
 const onEdit = () => {
   router.push({ path: '/address', query: { time: route.query.time } })
 }
+// 点击新增地址跳转
 const onAdd = () => {
   router.push({ path: '/address', query: { time: route.query.time } })
 }
@@ -80,14 +83,17 @@ const onAdd = () => {
 // 新增订单
 let submitHandler = async () => {
   try {
+
+    // console.log(userid,"cs");
+
     let res: any = await addOrderAPI({
-      userid: userid.value
+      userid: userid
     });
-    // console.log("新增成功", res);
-    router.push({ name: 'myorder', query: { time: res.time } })
+    console.log("新增订单成功", res);
     await clearCartAPI({
       userid,
     })
+    router.replace('/myorder')
   } catch (err: any) {
     showFailToast(err.message);
   }
