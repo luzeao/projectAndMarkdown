@@ -18,12 +18,34 @@
       </div>
 
       <van-action-bar>
-        <van-action-bar-icon icon="chat-o" text="客服" />
+        <van-action-bar-icon icon="chat-o" text="评论" @click="commentHandler" />
         <van-action-bar-icon icon="cart-o" text="购物车" :badge="badge" @click="router.push('/car')" />
         <van-action-bar-icon icon="shop-o" text="店铺" />
         <van-action-bar-button type="warning" text="加入购物车" @click="addToShoppingCar" />
         <van-action-bar-button type="danger" text="立即购买" />
       </van-action-bar>
+
+      <van-popup v-model:show="show" round closeable position="bottom" :style="{ height: '90%' }">
+        <h3 style="text-align: center;margin-top: 20px;margin-bottom: 10px;">商品评论</h3>
+
+        <van-cell-group inset>
+          <van-field v-model="text" rows="5" border autosize type="textarea" maxlength="500" placeholder="请输入留言"
+            show-word-limit />
+          <span>评分</span>
+          <van-rate v-model="star" touchable />
+          <van-cell inset>
+            <van-button type="primary" @click="submitText">提交评价</van-button>
+          </van-cell>
+        </van-cell-group>
+
+        <van-cell-group>
+          <van-cell>
+
+          </van-cell>
+        </van-cell-group>
+
+      </van-popup>
+
 
     </div>
   </div>
@@ -39,7 +61,7 @@ import { addCartAPI, getCartListAPI } from '@/api/cart'
 import { ref, onMounted } from "vue";
 import { storeToRefs } from "pinia";
 import { useRouter, useRoute } from 'vue-router';
-import { showFailToast, showSuccessToast } from 'vant';
+import { showFailToast } from 'vant';
 
 import { useUserStore } from "@/stores/user.js"
 
@@ -48,14 +70,36 @@ const route = useRoute();
 const User = useUserStore();
 
 const proid = ref(route.query.proid)
-// console.log('111111111111111', proid);
 const badge = ref<any>(0)
-
 
 const detailInfo = ref<any>(null)
 
 const { isLogin, userInfo } = storeToRefs(User)
 
+const show = ref<any>(false)
+const star = ref<any>(4)
+const text = ref<any>('')
+const textList = ref<any>([])
+
+// 点击评论事件
+const commentHandler = () => {
+  show.value = true
+}
+
+// 提交评论事件
+const submitText = () => {
+  let event = new Date()
+  let time = event.toLocaleString('zh-CN')
+  let msg = {
+    text: text.value,
+    star: star.value,
+    time,
+  }
+  textList.value.push(msg)
+  sessionStorage.setItem('评论', JSON.stringify(textList.value))
+  star.value = 5
+  text.value = ''
+}
 
 // 获取商品详情
 const getDetail = async () => {
@@ -68,6 +112,7 @@ const getDetail = async () => {
   }
 }
 
+// 添加至购物车
 const addToShoppingCar = async () => {
   // 加入购物车
   // 1. 判断用户是否登录   
@@ -115,10 +160,11 @@ onMounted(() => {
 
 </script>
 
-<style scoped>
-.box{
+<style scoped lang="scss">
+.box {
   padding: 10px;
 }
+
 .price {
   font-size: large;
   color: red;
