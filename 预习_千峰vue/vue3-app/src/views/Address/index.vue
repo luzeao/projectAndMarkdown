@@ -62,7 +62,7 @@ const onEdit = async (item: any, index: any) => {
 
 const selectHandler = async (item: any) => {
   if (route.query.returnUrl != undefined) {
-    // console.log(item.name, item.tel, item.province, item.city, item.county, item.addressDetail,);
+    console.log(1111111111111111, user.userid, item.name, item.tel, item.province, item.city, item.county, item.addressDetail, route.query.time);
 
     let res1 = await updateOrderAddressAPI({
       userid: user.userid,
@@ -72,11 +72,11 @@ const selectHandler = async (item: any) => {
       city: item.city,
       county: item.county,
       addressDetail: item.addressDetail,
-      tiem: route.query.time
+      time: route.query.time
     })
     console.log('更新订单地址', res1);
 
-    router.replace({ path: (route.query.returnUrl as any), query: { info: JSON.stringify(item), time: route.query.time } })
+    router.replace({ path: (route.query.returnUrl as any), query: { time: route.query.time } })
   } else {
     router.replace({ path: '/order', query: { info: JSON.stringify(item) } })
   }

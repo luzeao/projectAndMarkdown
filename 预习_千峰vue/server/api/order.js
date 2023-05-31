@@ -27,7 +27,7 @@ const uuid = require('uuid')
 router.post('/updateOrderAddress', (req, res, next) => {
   const { userid, time, name, tel, 
     province, city, county, addressDetail} = req.body
-    // console.log('2222', req.body)
+    console.log('2222', req.body)
   mysql.update(Order, { userid, time }, { $set: { name, tel, 
     province, city, county,addressDetail} }, 1).then(() => {
       res.send({
@@ -51,10 +51,10 @@ router.post('/updateOrderAddress', (req, res, next) => {
  *  }
  */
 router.get('/confirmOrder', (req, res, next) => {
-  console.log(req.query)
+  // console.log(req.query)
   const { userid, time } = req.query
   mysql.find(Order, { userid, time }, { _id: 0, __v: 0}).then(data => {
-    console.log(data)
+    // console.log(data)
     // 查询该订单有没有地址信息
     var flag = false
     let obj = {}

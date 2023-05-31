@@ -2,7 +2,7 @@
   <div>
     <AppHeader title="订单详情" to=".app-header" left-arrow back></AppHeader>
 
-    <template v-if="tel && name">
+    <template v-if="!name">
       <van-contact-card type="add" @click="onAdd" />
     </template>
     <template v-else>
@@ -45,15 +45,8 @@ const getconfirmOrder = async () => {
   })
   console.log('获取确认订单', res);
   list.value = res.data
-
-  if (route.query.info) {
-    let info = JSON.parse(route.query.info as any)
-    name.value = info.name
-    tel.value = info.tel
-  } else {
-    name.value = list.value[0].name
-    tel.value = list.value[0].tel
-  }
+  name.value = list.value[0].name
+  tel.value = list.value[0].tel + list.value[0].province + list.value[0].city + list.value[0].county + list.value[0].addressDetail
 }
 
 const onEdit = () => {
