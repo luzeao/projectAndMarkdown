@@ -23,10 +23,16 @@
 
     <van-cell title="地址管理" is-link @click="addressHandler" v-if="isLogin" />
     <van-cell title="修改密码" is-link v-if="isLogin" />
+    <van-cell title="绑定用户名" is-link v-if="isLogin" @click="show = true" />
     <van-cell title="联系我们" is-link />
     <van-cell title="公司简介" />
     <van-cell title="清除缓存" />
     <van-cell title="设置" />
+
+    <van-dialog v-model:show="show" title="用户名绑定" show-cancel-button @confirm="bindUserName">
+      <van-field v-model="username" label="用户名" placeholder="请输入想要绑定的用户名" />
+    </van-dialog>
+
 
     <van-button class="btn" type="default" v-if="isLogin" @click="exitHandler">注销登录</van-button>
   </div>
@@ -37,7 +43,7 @@
 import AppHeader from '@/components/AppHeader/index.vue'
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { getUserInfoAPI } from '@/api/user'
+import { getUserInfoAPI, bindUserNameAPI } from '@/api/user'
 import { useUserStore } from '@/stores/user';
 import { showConfirmDialog } from 'vant';
 
@@ -46,6 +52,9 @@ const user = useUserStore()
 const { userid, isLogin } = user
 const showPopover = ref(false);
 const tel = ref('')
+let show = ref<any>(false)
+let username = ref<any>('')
+
 const actions = [
   { text: '首页' },
   { text: '订单' },
@@ -65,12 +74,21 @@ const selectHandler = (item: any, index: any) => {
     router.replace('/search')
   }
 }
+// 绑定用户名
+const bindUserName = async () => {
+  let res = await bindUserNameAPI({
+    userid,
+    username: username.value
+  })
+  console.log('绑定用户名', res);
+}
 
 // 获取当前登录用户的信息
 const getUserInfo = async () => {
   let res = await getUserInfoAPI({
     userid,
   })
+
   tel.value = res.data[0].tel
 }
 // 点击去登录

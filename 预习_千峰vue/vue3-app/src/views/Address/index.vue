@@ -51,11 +51,7 @@ const AddressList = async () => {
 }
 // 点击新增地址跳转
 const onAdd = () => {
-  if (route.query.returnUrl != undefined) {
-    router.replace({ path: (route.query.returnUrl as any), query: { time: route.query.time } })
-  } else {
-    router.push('address/add')
-  }
+  router.push({ path: 'address/add', query: { time: route.query.time } })
 }
 // 点击编辑地址
 const onEdit = async (item: any, index: any) => {
@@ -66,8 +62,7 @@ const onEdit = async (item: any, index: any) => {
 
 const selectHandler = async (item: any) => {
   if (route.query.returnUrl != undefined) {
-    router.replace({ path: (route.query.returnUrl as any), query: { info: JSON.stringify(item), time: route.query.time } })
-    console.log(item.name, item.tel, item.province, item.city, item.county, item.addressDetail,);
+    // console.log(item.name, item.tel, item.province, item.city, item.county, item.addressDetail,);
 
     let res1 = await updateOrderAddressAPI({
       userid: user.userid,
@@ -81,6 +76,7 @@ const selectHandler = async (item: any) => {
     })
     console.log('更新订单地址', res1);
 
+    router.replace({ path: (route.query.returnUrl as any), query: { info: JSON.stringify(item), time: route.query.time } })
   } else {
     router.replace({ path: '/order', query: { info: JSON.stringify(item) } })
   }

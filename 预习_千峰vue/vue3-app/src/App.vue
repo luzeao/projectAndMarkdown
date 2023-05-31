@@ -19,21 +19,21 @@
 
 <script setup lang="ts">
 
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView } from 'vue-router'
 
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .page {
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
 
   .app-main {
     flex: 1;
     padding-bottom: 1rem;
+    overflow: scroll;
   }
 }
 </style>

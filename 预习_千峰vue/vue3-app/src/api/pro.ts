@@ -27,4 +27,7 @@ export const getProCategoryAPI = (): AxiosPromise => request.get('/pro/categoryl
 export const getCategoryBrandlistAPI = (params: any): AxiosPromise => request.get('/pro/categorybrandlist', { params })
 
 // 搜索列表展示
-export const getSearchList = (params: any): AxiosPromise => request.get('/pro/search', { params })
+export const getSearchListAPI = (params: any): AxiosPromise => request.get('/pro/search', { params })
+
+// 获取某品牌下的商品列表
+export const getBrandProListAPI = (params: any): AxiosPromise => request.get('/pro/categorybrandprolist', { params })

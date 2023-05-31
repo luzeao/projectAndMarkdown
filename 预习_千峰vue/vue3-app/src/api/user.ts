@@ -37,5 +37,6 @@ export const doFinishRegisterAPI = (params: RegMsg): AxiosPromise => request.pos
 export const doLoginAPI = (params: LoginParams): AxiosPromise => request.post('/user/login', params)
 // 获取用户登录信息
 export const getUserInfoAPI = (params: any): AxiosPromise => request.get('/user/info', { params })
-
+// 绑定用户名
+export const bindUserNameAPI = (params: any): AxiosPromise => request.get('/user/bindusername', { params })
 

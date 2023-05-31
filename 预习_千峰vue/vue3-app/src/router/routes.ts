@@ -83,6 +83,7 @@ export default [
     name: 'register',
     component: RegisterView
   },
+
   {
     path: '/order',
     name: 'order',
@@ -91,7 +92,12 @@ export default [
   {
     path: '/order/detail',
     name: 'detailorder',
-    component: ()=>import('../views/Order/DetailOrder.vue')
+    component: () => import('../views/Order/DetailOrder.vue')
+  },
+  {
+    path: '/brand',
+    name: 'brand',
+    component: () => import('@/views/Brand/index.vue')
   },
   {
     path: '/myorder',
