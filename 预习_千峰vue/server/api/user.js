@@ -370,7 +370,7 @@ router.get('/updatePassword', (req, res, next) => {
         message: '原始密码错误'
       })
     } else {
-      mysql.update(User, { userid }, { $set: { password: newpassword } }).then(() => {
+      mysql.update(User, { userid }, { $set: { password: md5(newpassword) } }).then(() => {
         res.send({
           code: '200',
           message: '密码修改成功'

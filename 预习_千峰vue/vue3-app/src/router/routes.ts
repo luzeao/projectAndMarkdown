@@ -95,6 +95,11 @@ export default [
     component: OrderView
   },
   {
+    path: '/city',
+    name: 'city',
+    component: () => import('@/views/City/index.vue')
+  },
+  {
     path: '/order/detail',
     name: 'detailorder',
     component: () => import('../views/Order/DetailOrder.vue')
