@@ -6,7 +6,7 @@
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>Document</title>
-   <script src="../vuejs/vue.js"></script>
+   <script src="../js/vue.js"></script>
 </head>
 
 <body>
@@ -15,6 +15,7 @@
       <p>doubleCount:{{doubleCount}}</p>
       <p>tripleCount:{{tripleCount}}</p>
       <button @click="count++">count++</button>
+      <button @click="adda">count++</button>
    </div>
 </body>
 
@@ -28,21 +29,27 @@
          doubleCount: null,
          tripleCount: null,
       },
-      methods: {},
+      methods: {
+         adda: function () {
+            console.log(this);
+            this.count + 1
+         }
+      },
       computed: {},
 
       watch: {
          count: {
-            handle:function(newVal, oldVal){
-               console.log('count发生了改变',newVal, oldVal);
-               
+            handler: function (newVal, oldVal) {
+               console.log('count发生了改变', newVal, oldVal);
+
                // 影响其他数据
-               setTimeout(()=>{
+               setTimeout(() => {
+                  console.log('this', this);
                   this.doubleCount = newVal * 2;
                   this.tripleCount = newVal * 3;
-               },2000)
+               }, 2000)
             },
-            immediate:true,// 立即执行=>监听数据的回调函数会在初始化阶段立即执行一次
+            immediate: true,// 立即执行=>监听数据的回调函数会在初始化阶段立即执行一次
          }
       }
 
