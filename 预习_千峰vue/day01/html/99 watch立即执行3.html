@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Document</title>
+   <script src="../vuejs/vue.js"></script>
+</head>
+
+<body>
+   <div id="app">
+      <p>count:{{count}}</p>
+      <p>doubleCount:{{doubleCount}}</p>
+      <p>tripleCount:{{tripleCount}}</p>
+      <button @click="count++">count++</button>
+   </div>
+</body>
+
+<script>
+   // watch 数据监听  
+   // 常用于监听data属性、计算属性
+   let app = new Vue({
+      el: "#app",
+      data: {
+         count: 1,
+         doubleCount: null,
+         tripleCount: null,
+      },
+      methods: {},
+      computed: {},
+
+      watch: {
+         count: {
+            handle:function(newVal, oldVal){
+               console.log('count发生了改变',newVal, oldVal);
+               
+               // 影响其他数据
+               setTimeout(()=>{
+                  this.doubleCount = newVal * 2;
+                  this.tripleCount = newVal * 3;
+               },2000)
+            },
+            immediate:true,// 立即执行=>监听数据的回调函数会在初始化阶段立即执行一次
+         }
+      }
+
+   })
+
+
+</script>
+
+</html>
