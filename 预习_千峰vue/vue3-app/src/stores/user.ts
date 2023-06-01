@@ -1,4 +1,4 @@
-import { ref, computed, reactive } from 'vue'
+import { computed, reactive } from 'vue'
 import { defineStore } from 'pinia'
 import { doLoginAPI } from '@/api/user'
 import type { LoginParams } from '@/api/user'
