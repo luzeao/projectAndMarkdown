@@ -51,19 +51,19 @@
     // 由于 JavaScript 的限制，Vue不能检测数组和对象的变化(对数组和对象的某些操作无法检测)。深入响应式原理中有相关的讨论。
 
 
-    for (let key in data) {
-        let initValue = data[key]; // 存储初始值
-        Object.defineProperty(data, key, {
-            get: function () {  // 对data进行取值时 => 触发此拦截函数
-                return initValue;
-            },
-            set: function (val) {   // 对data进赋值时  => 触发此拦截函数
-                console.log("监听到" + key + "发生改变");
-                initValue = val;
-                render();
-            }
-        })
-    }
+    // for (let key in data) {
+    //     let initValue = data[key]; // 存储初始值
+    //     Object.defineProperty(data, key, {
+    //         get: function () {  // 对data进行取值时 => 触发此拦截函数
+    //             return initValue;
+    //         },
+    //         set: function (val) {   // 对data进赋值时  => 触发此拦截函数
+    //             console.log("监听到" + key + "发生改变");
+    //             initValue = val;
+    //             render();
+    //         }
+    //     })
+    // }
 
 
 
@@ -132,8 +132,8 @@
                 // Vue.set(obj,key,val)   构造函数Vue的静态方法  => 可以修改Vue中的对象的数据 (可以被vue检测到)
                 // vm.$set()   实例化对象上也有此方法 (Vue.prototype.$set)
 
-                Vue.set(this.list,1,40);  
-                this.$set(this.list,1,40);  
+                Vue.set(this.list, 1, 40);
+                this.$set(this.list, 1, 40);
 
                 // 方法4:
                 vm.$forceUpdate()   // 强制更新视图 
@@ -153,6 +153,7 @@
                 this.$forceUpdate();
             },
             addProp: function () {
+
                 // this.zhang.sex = "男";
                 // console.log(this.zhang);
 
@@ -164,8 +165,21 @@
                 // 方法2
                 this.zhang.sex = "男";
                 this.$forceUpdate();
+            },
+
+
+            ajax() {
+                let xhr = new XMLHttpRequest()
+                xhr.open('get', '/')
+                xhr.send()
+                xhr.onload = () => {
+                    console.log(11111, this.list);
+                }
             }
-        }
+        },
+        mounted() {
+            this.ajax()
+        },
     })
 
 

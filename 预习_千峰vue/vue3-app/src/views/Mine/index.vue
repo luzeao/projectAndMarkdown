@@ -22,7 +22,7 @@
     </van-row>
 
     <van-cell title="地址管理" is-link @click="addressHandler" v-if="isLogin" />
-    <van-cell title="修改密码" is-link v-if="isLogin" />
+    <van-cell title="修改密码" is-link v-if="isLogin" @click="router.push('/updatepass')"/>
     <van-cell title="绑定用户名" is-link v-if="isLogin" @click="show = true" />
     <van-cell title="联系我们" is-link />
     <van-cell title="公司简介" />

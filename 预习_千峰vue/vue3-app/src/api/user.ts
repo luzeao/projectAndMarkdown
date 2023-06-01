@@ -40,3 +40,5 @@ export const getUserInfoAPI = (params: any): AxiosPromise => request.get('/user/
 // 绑定用户名
 export const bindUserNameAPI = (params: any): AxiosPromise => request.get('/user/bindusername', { params })
 
+// 修改密码
+export const updatePassword = (params: any): AxiosPromise => request.get('/user/updatePassword', { params })

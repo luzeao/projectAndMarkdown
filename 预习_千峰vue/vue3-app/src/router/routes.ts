@@ -72,6 +72,11 @@ export default [
     component: LoginView
   },
   {
+    path: '/updatepass',
+    name: 'updatepass',
+    component: () => import('@/views/Login/updatepass.vue')
+  },
+  {
     path: '/car',
     name: 'car',
     components: {
