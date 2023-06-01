@@ -8,6 +8,7 @@
     <div class="car-list">
       <template v-if="isLogin && cartList.length != 0">
         <div class="car-list">
+          
           <van-swipe-cell v-for="item in cartList" :key="item.cartid" class="list-item">
             <van-checkbox @change="changeHandler(item.cartid, $event)" v-model="item.flag"></van-checkbox>
             <van-card class="goods-card" :title="item.proname" :price="(item.originprice * item.discount) / 10"
