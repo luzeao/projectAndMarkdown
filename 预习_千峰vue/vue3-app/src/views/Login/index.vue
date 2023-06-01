@@ -35,8 +35,7 @@
 import AppHeader from "@/components/AppHeader/index.vue"
 import type { Ref } from 'vue'  // 从声明文件中解构出来
 import { ref } from 'vue';
-import { doCheckPhoneAPI, doFinishRegisterAPI, doLoginAPI } from '@/api/user'
-import { showToast } from 'vant';  // 提示消息
+import { doCheckPhoneAPI } from '@/api/user'
 import type { FormInstance } from 'vant';  // 声明类型
 import type { RouteLocationRaw } from 'vue-router';
 import { useRouter, useRoute } from 'vue-router';
@@ -72,13 +71,7 @@ const goRegisterHandler = () => {
 // 提交事件
 const onSubmit = async (): Promise<any> => {
   try {
-    // 先登录
-    // let res = await doLoginAPI({
-    //   loginname: tel.value,
-    //   password: password.value
-    // })
-    // console.log('登陆成功', res);
-    // 登陆成功再存储userid,token
+    
 
     // 登录是异步代码
     await userStore.loginAndUpdateUserInfo({
