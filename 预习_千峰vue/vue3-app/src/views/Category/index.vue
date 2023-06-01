@@ -1,6 +1,11 @@
 <template>
   <teleport to='.app-header'>
-    <van-nav-bar title="分类" left-arrow back fixed placeholder></van-nav-bar>
+    <van-nav-bar title="分类" fixed placeholder>
+      <template #left>
+        <span @click="router.push('/city')">{{ route.query.city ? route.query.city : '选择城市' }}</span>
+        <van-icon name="exchange" />
+      </template>
+    </van-nav-bar>
   </teleport>
 
 
@@ -22,8 +27,9 @@
 import { ref } from 'vue';
 import { getProCategoryAPI, getCategoryBrandlistAPI } from '@/api/pro'
 import { onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 const router = useRouter()
+const route = useRoute()
 
 let CategoryList = ref([])
 let CategoryBrandlist = ref<any>([])
