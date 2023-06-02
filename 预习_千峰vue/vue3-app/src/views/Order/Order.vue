@@ -2,11 +2,11 @@
   <div class="order">
     <!-- 头部 -->
     <AppHeader class="HomeNav SearchNav" title="确认订单" to=".app-header" left-arrow back></AppHeader>
-    <template v-if="tel == ''">
+    <template v-if="phone == ''">
       <van-contact-card type="add" @click="onAdd" />
     </template>
     <template v-else>
-      <van-contact-card type="edit" :tel="tel" :name="name" @click="onEdit" />
+      <van-contact-card type="edit" :tel="phone" :name="Name" @click="onEdit" />
     </template>
 
 
@@ -19,6 +19,7 @@
         </van-swipe-cell>
       </div>
     </template>
+
     <van-submit-bar :price="allPrice" button-text="提交订单" @submit="submitHandler" />
   </div>
 </template>
@@ -30,26 +31,37 @@ import { useUserStore } from '@/stores/user';
 import { useRouter, useRoute } from 'vue-router';
 import { getCartListAPI, clearCartAPI } from '@/api/cart';
 import { addOrderAPI } from '@/api/order';
+import { getDefaultAddressAPI } from '@/api/address';
+import { getProDetailAPI } from '@/api/pro';
 import { showFailToast } from 'vant';
 const router = useRouter()
 const route = useRoute()
 const user = useUserStore()
 const { userid, isLogin } = user
 const list = ref<any>([])
+const Name = ref('')
+const phone = ref('')
 
-let name = ref('')
-let tel = ref('')
+// 获取地址
+const getAddressList = async () => {
+  let res = await getDefaultAddressAPI({ userid })
+  console.log('查询默认地址', res)
+  let { name, tel, province, city, county, addressDetail } = res.data[0]
 
-if (route.query.info) {
-  let obj = JSON.parse((route.query.info as any))
+  if (route.query.info) {
+    let obj = JSON.parse((route.query.info as any))
 
-  name.value = obj.name
-  tel.value = obj.tel + obj.province + obj.city + obj.county
-} else {
-  name.value = ''
-  tel.value = ''
+    Name.value = obj.name
+    phone.value = obj.tel + obj.province + obj.city + obj.county
+  } else if (res.data[0]) {
+    Name.value = name
+    phone.value = tel + province + city + county + addressDetail
+  } else {
+    Name.value = ''
+    phone.value = ''
+  }
+
 }
-
 
 let allPrice = computed(() => {
   return list.value.reduce((prev: any, item: any) => {
@@ -62,17 +74,28 @@ let allPrice = computed(() => {
 
 // 获取购物车列表
 const getCartList = async () => {
-  let res = await getCartListAPI({
-    userid
-  })
-  console.log('购物车列表', res);
-  list.value = res.data
+  if (route.query.proid) {
+    let res = await getProDetailAPI({
+      proid: route.query.proid
+    })
+    list.value = [res.data]
+    console.log(11111111, list.value);
+
+  } else {
+    let res = await getCartListAPI({
+      userid
+    })
+    console.log('购物车列表', res);
+    list.value = res.data.filter((item: any) => item.flag)
+  }
+
 }
 
-
+// 点击编辑
 const onEdit = () => {
   router.push({ path: '/address', query: { time: route.query.time } })
 }
+
 // 点击新增地址跳转
 const onAdd = () => {
   router.push({ path: '/address', query: { time: route.query.time } })
@@ -81,8 +104,6 @@ const onAdd = () => {
 // 新增订单
 let submitHandler = async () => {
   try {
-
-    // console.log(userid,"cs");
 
     let res: any = await addOrderAPI({
       userid: userid
@@ -96,9 +117,12 @@ let submitHandler = async () => {
     showFailToast(err.message);
   }
 }
+
 onMounted(() => {
   getCartList()
+  getAddressList()
 })
+
 </script>
 
 <style lang="scss" scoped></style>

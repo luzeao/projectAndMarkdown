@@ -13,9 +13,11 @@
       <van-card class="goods-card" :title="item.proname" :price="(item.originprice * item.discount) / 10"
         :thumb="item.img1" :num="item.num">
       </van-card>
-      <van-cell title="商品小计" :value="(item.num * item.originprice * item.discount / 10).toFixed(2)" />
-      <van-cell title="下单时间" :value="item.time" />
+
     </van-swipe-cell>
+    <!-- :value="(item.num * item.originprice * item.discount / 10).toFixed(2)" -->
+    <van-cell title="下单时间" :value="time" />
+    <van-cell title="商品小计" :value="sum" />
 
   </div>
 </template>
@@ -30,13 +32,13 @@ import { ref, onMounted } from 'vue';
 const user = useUserStore()
 const route = useRoute()
 const router = useRouter()
-const time = ref(route.query.time)
+const time = ref<any>(route.query.time)
 let { userid } = user
 
 let list = ref<any>([])
 let name = ref('')
 let tel = ref('')
-
+let sum = ref<number>(0)
 
 const getconfirmOrder = async () => {
   let res = await confirmOrderAPI({
@@ -45,6 +47,9 @@ const getconfirmOrder = async () => {
   })
   console.log('获取确认订单', res);
   list.value = res.data
+  console.log(11111111111, list.value);
+  sum.value = list.value.reduce((prev: any, item: any) => prev + (item.num * item.originprice * item.discount) / 10, 0).toFixed(2)
+
   name.value = list.value[0].name
   tel.value = list.value[0].tel + list.value[0].province + list.value[0].city + list.value[0].county + list.value[0].addressDetail
 }

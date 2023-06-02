@@ -22,7 +22,7 @@ import CommonFooterView from '../layout/CommonFooter.vue'
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
 // import { useRoute } from 'vue-router'
 
-export default [
+export const routes = [
   {
     path: '/',
     redirect: '/home'
@@ -92,6 +92,9 @@ export default [
   {
     path: '/order',
     name: 'order',
+    meta: {
+      auth: true  // 是否需要登录
+    },
     component: OrderView
   },
   {
@@ -120,6 +123,9 @@ export default [
   {
     path: '/address',
     name: 'address',
+    meta: {
+      auth: true  // 是否需要登录
+    },
     component: AddressView
   },
   {

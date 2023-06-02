@@ -25,7 +25,8 @@
         <van-action-bar-icon icon="cart-o" text="购物车" :badge="badge" @click="router.push('/car')" />
         <van-action-bar-icon icon="shop-o" text="店铺" />
         <van-action-bar-button type="warning" text="加入购物车" @click="addToShoppingCar" />
-        <van-action-bar-button type="danger" text="立即购买" />
+        <van-action-bar-button type="danger" text="立即购买"
+          @click="router.push({ path: '/order', query: { proid: route.query.proid } })" />
       </van-action-bar>
 
       <!-- 评论弹出框 -->
@@ -34,7 +35,7 @@
         <h3 style="text-align: center;margin-top: 20px;margin-bottom: 10px;">商品评论</h3>
         <!-- 评论编辑框 -->
         <van-cell-group inset>
-          <van-field v-model="text" rows="5" border autosize type="textarea" maxlength="500" placeholder="请输入留言"
+          <van-field class="textbox" v-model="text" rows="5" autosize type="textarea" maxlength="500" placeholder="请输入留言"
             show-word-limit />
           <span>评分</span>
           <van-rate v-model="star" touchable />
@@ -202,7 +203,10 @@ onMounted(() => {
 .box {
   padding: 10px;
 }
-
+.textbox{
+  border: 1px solid #666;
+  border-radius: 10px;
+}
 .price {
   font-size: large;
   color: red;

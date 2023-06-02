@@ -5,9 +5,14 @@
     <AppHeader to=".app-header" title="购物车">
       <template #left>
 
-        <div @click="delAll">
+        <div @click="delAll" v-if="cartList.length">
           清除购物车
           <van-icon name="delete-o" />
+        </div>
+
+        <div v-else @click="router.go(-1)">
+          <van-icon name="arrow-left" />
+          <span>返回</span>
         </div>
       </template>
 

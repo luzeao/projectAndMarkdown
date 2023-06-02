@@ -1,0 +1,123 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../js/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <p>{{count}}</p>
+        <button @click="count++">count++</button>
+        <!-- 子组件count-down(自定义标签，vue会自动渲染成类名为组件名的div) -->
+        <count-down></count-down>
+        <aaa-bbb></aaa-bbb>
+    </div>
+</body>
+
+<script>
+
+    // 全局组件
+    Vue.component("count-down", {
+        name: "count-down",
+        data:function(){
+            return {
+                countTime: 100,  //倒计时的时间(s)
+                timer: null,
+            }
+        },
+        template: `<div class="count-down">
+            {{beauty(hour)}}:{{beauty(min)}}:{{beauty(sec)}}
+            countTime{{countTime}}
+        </div>`,
+        methods: {
+            beauty(num) {
+                return num < 10 ? "0" + num : num;
+            },
+            countDownHandler() {
+                clearInterval(this.timer);
+                this.timer = setInterval(() => {
+                    this.countTime--;
+                }, 1000)
+            }
+        },
+        computed: {
+            // 将倒计时的时间换算为天时分秒
+            day() {
+                return parseInt(this.countTime / (24 * 60 * 60));
+            },
+            hour() {
+                // 总的时间 % 一天的时间 =>  不满一天的时间
+                // 不满一天的时间 / 一小时
+                return parseInt(this.countTime % (24 * 60 * 60) / (60 * 60))
+            },
+            min() {
+                // 不满一小时 / 一分钟
+                return parseInt(this.countTime % (60 * 60) / 60);
+            },
+            sec() {
+                // 不满一小时 / 一分钟
+                return this.countTime % 60;
+            },
+        },
+        mounted() {
+            this.countDownHandler();
+        },
+        beforeCreate() {
+            console.log("子组件count-down:beforeCreate");
+        },
+        created() {
+            console.log("子组件count-down:created");
+        },
+        beforeMount() {
+            console.log("子组件count-down:beforeMount");
+        },
+        
+    })
+
+    Vue.component("aaa-bbb", {
+        template: `<div>
+                <div>aaaaa</div><div>bbbbbb</div>
+            </div>`,
+        beforeCreate() {
+            console.log("子组件aaa-bbb:beforeCreate");
+        },
+        created() {
+            console.log("子组件aaa-bbb:created");
+        },
+        beforeMount() {
+            console.log("子组件aaa-bbb:beforeMount");
+        },
+        mounted() {
+            console.log("子组件aaa-bbb:mounted");
+        },
+    })
+
+    // 根组件
+    let app = new Vue({
+        el: "#app",
+        data: {
+            count: 1,
+        },
+        beforeCreate() {
+            console.log("根组件:beforeCreate");
+        },
+        created() {
+            console.log("根组件:created");
+        },
+        beforeMount() {
+            console.log("根组件:beforeMount");
+        },
+        mounted() {
+            console.log("根组件:mounted", this);
+        },
+    })
+
+</script>
+
+</html>

@@ -1,5 +1,6 @@
 <template>
   <div>
+    <AppHeader title="地址列表" to=".app-header" left-arrow back></AppHeader>
     <!-- @add="onAdd" @edit="onEdit"  -->
     <van-address-list v-model="chosenAddressId" :list="list" default-tag-text="默认" @add="onAdd" @edit="onEdit"
       @select="selectHandler" />
@@ -7,11 +8,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watchEffect } from 'vue';
+import { ref, watchEffect } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useUserStore } from '@/stores/user';
 import { getAddressListAPI } from '@/api/address';
-import { showSuccessToast, showFailToast } from 'vant';
+import { showFailToast } from 'vant';
 import { updateOrderAddressAPI } from '@/api/order';
 
 
@@ -20,6 +21,9 @@ const router = useRouter()
 const route = useRoute()
 const chosenAddressId = ref<string | number>('');
 const list = ref([])
+const fromPath = localStorage.getItem('fromPath')
+const toPath = localStorage.getItem('toPath')
+
 
 // 获取地址列表
 const AddressList = async () => {
@@ -57,13 +61,13 @@ const onAdd = () => {
 const onEdit = async (item: any, index: any) => {
   router.push({ path: '/address/add', query: { info: JSON.stringify(item), returnUrl: route.fullPath } })
 }
+
 // 点击地址时跳转
 // console.log(1111111,route.query.returnUrl);
-
 const selectHandler = async (item: any) => {
-  if (route.query.returnUrl != undefined) {
-    console.log(1111111111111111, user.userid, item.name, item.tel, item.province, item.city, item.county, item.addressDetail, route.query.time);
+  console.log(11111, fromPath);
 
+  if (fromPath == '/order' || fromPath == '/order/detail') {
     let res1 = await updateOrderAddressAPI({
       userid: user.userid,
       name: item.name,
@@ -74,11 +78,7 @@ const selectHandler = async (item: any) => {
       addressDetail: item.addressDetail,
       time: route.query.time
     })
-    console.log('更新订单地址', res1);
-
-    router.replace({ path: (route.query.returnUrl as any), query: { time: route.query.time } })
-  } else {
-    router.replace({ path: '/order', query: { info: JSON.stringify(item) } })
+    router.replace({ path: fromPath, query: { time: route.query.time, info: JSON.stringify(item) } })
   }
 }
 

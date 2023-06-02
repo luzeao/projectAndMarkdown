@@ -27,7 +27,7 @@ router.post('/add', (req, res, next) => {
   insertData.addressid = 'address_' + uuid.v4()
   // 如果添加的当前地址是一个默认地址，应该先把所有的地址都修改为非默认地址，再插入该地址
   // 如果是第一个添加的地址，默认为默认地址
-  mysql.find(Address, {}, {_id:0, __v: 0}).then(data => {
+  mysql.find(Address, {}, { _id: 0, __v: 0 }).then(data => {
     if (data.length === 0) {
       insertData.isDefault = true
       mysql.insert(Address, insertData).then(data => {
@@ -38,7 +38,7 @@ router.post('/add', (req, res, next) => {
       })
     } else {
       if (insertData.isDefault) {
-        mysql.update(Address, {}, { $set: { isDefault: false }}, 1).then(() => {
+        mysql.update(Address, {}, { $set: { isDefault: false } }, 1).then(() => {
           mysql.insert(Address, insertData).then(data => {
             res.send({
               code: '200',
@@ -56,7 +56,7 @@ router.post('/add', (req, res, next) => {
       }
     }
   })
-  
+
 })
 /**
  * @api {get} /api/address/list 地址列表
@@ -107,6 +107,11 @@ router.post('/update', (req, res, next) => {
   let updateData = req.body
   const addressid = updateData.addressid
   console.log(addressid)
+  if (updateData.isDefault) {
+    mysql.update(Address, {}, { $set: { isDefault: false } }, 1).then(() => {
+      console.log("先设置其他的为默认");
+    })
+  }
   mysql.update(Address, { addressid }, { $set: updateData }).then(data => {
     res.send({
       code: '200',
@@ -128,7 +133,7 @@ router.post('/update', (req, res, next) => {
  */
 // 删除地址
 router.post('/delete', (req, res, next) => {
-  let {addressid} = req.body
+  let { addressid } = req.body
   mysql.delete(Address, { addressid }).then(data => {
     res.send({
       code: '200',
@@ -149,8 +154,8 @@ router.post('/delete', (req, res, next) => {
  *  }
  */
 router.post('/defaultAddress', (req, res, next) => {
-  let {userid} = req.body
-  mysql.find(Address, { userid, isDefault: true }, { _id:0, __v:0}).then(data => {
+  let { userid } = req.body
+  mysql.find(Address, { userid, isDefault: true }, { _id: 0, __v: 0 }).then(data => {
     res.send({
       code: '200',
       message: '查询默认地址',
