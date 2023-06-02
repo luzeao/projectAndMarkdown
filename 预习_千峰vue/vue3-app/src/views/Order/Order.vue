@@ -29,7 +29,6 @@ import { ref, onMounted, computed } from 'vue';
 import { useUserStore } from '@/stores/user';
 import { useRouter, useRoute } from 'vue-router';
 import { getCartListAPI, clearCartAPI } from '@/api/cart';
-import { updateOrderAddressAPI } from '@/api/order';
 import { addOrderAPI } from '@/api/order';
 import { showFailToast } from 'vant';
 const router = useRouter()
@@ -41,12 +40,11 @@ const list = ref<any>([])
 let name = ref('')
 let tel = ref('')
 
-
 if (route.query.info) {
   let obj = JSON.parse((route.query.info as any))
 
   name.value = obj.name
-  tel.value = obj.tel
+  tel.value = obj.tel + obj.province + obj.city + obj.county
 } else {
   name.value = ''
   tel.value = ''
