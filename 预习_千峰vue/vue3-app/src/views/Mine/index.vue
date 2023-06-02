@@ -22,8 +22,8 @@
     </van-row>
 
     <van-cell title="地址管理" is-link @click="addressHandler" v-if="isLogin" />
-    <van-cell title="修改密码" is-link v-if="isLogin" @click="router.push('/updatepass')"/>
-    <van-cell title="绑定用户名" is-link v-if="isLogin" @click="show = true" />
+    <van-cell title="修改密码" is-link v-if="isLogin" @click="router.push('/updatepass')" />
+    <van-cell title="绑定用户名" is-link :value="username" v-if="isLogin" @click="show = true" />
     <van-cell title="联系我们" is-link />
     <van-cell title="公司简介" />
     <van-cell title="清除缓存" />
@@ -50,10 +50,10 @@ import { showConfirmDialog } from 'vant';
 const router = useRouter()
 const user = useUserStore()
 const { userid, isLogin } = user
-const showPopover = ref(false);
 const tel = ref('')
-let show = ref<any>(false)
-let username = ref<any>('')
+const show = ref<any>(false)
+const username = ref<any>('')
+const showPopover = ref(false);
 
 const actions = [
   { text: '首页' },
@@ -80,7 +80,8 @@ const bindUserName = async () => {
     userid,
     username: username.value
   })
-  console.log('绑定用户名', res);
+  getUserInfo()
+  // console.log('绑定用户名', res);
 }
 
 // 获取当前登录用户的信息
@@ -88,9 +89,12 @@ const getUserInfo = async () => {
   let res = await getUserInfoAPI({
     userid,
   })
-
+  // console.log('用户登录信息', res);
+  username.value = res.data[0].username
+  
   tel.value = res.data[0].tel
 }
+
 // 点击去登录
 const goLogin = () => {
   router.replace('/login')

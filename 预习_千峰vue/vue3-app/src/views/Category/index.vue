@@ -2,7 +2,7 @@
   <teleport to='.app-header'>
     <van-nav-bar title="分类" fixed placeholder>
       <template #left>
-        <span @click="router.push('/city')">{{ route.query.city ? route.query.city : '选择城市' }}</span>
+        <span @click="router.push('/city')">{{ getcity() == '' ? '选择城市' : getcity() }}</span>
         <van-icon name="exchange" />
       </template>
     </van-nav-bar>
@@ -33,7 +33,7 @@ const route = useRoute()
 
 let CategoryList = ref([])
 let CategoryBrandlist = ref<any>([])
-let active = ref('')
+let active = ref(0)
 let cg = ref('')
 
 // 获取所有分类
@@ -41,6 +41,10 @@ const getProCategory = async () => {
   let res = await getProCategoryAPI()
   console.log('获取分类列表', res)
   CategoryList.value = res.data
+}
+// 获取点击的城市
+const getcity = () => {
+  return localStorage.getItem('city')
 }
 
 // 获取当前分类下的商品分类
@@ -59,6 +63,7 @@ const gobrand = (brand: any) => {
 }
 onMounted(() => {
   getProCategory()
+  getcity()
 })
 </script>
 

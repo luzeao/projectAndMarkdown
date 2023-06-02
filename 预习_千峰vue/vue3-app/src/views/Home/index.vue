@@ -5,7 +5,8 @@
     <AppHeader class="HomeNav" to=".app-header" title="主页">
       <template #left>
         <van-icon
-          name="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAgAgMAAAAdw9KTAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAMUExURUdwTP///////////waf0AoAAAADdFJOUwDjSYAlncUAAAAbSURBVBjTY5j/Hwq+MdTDmH+RmUgK6AuGhcsAU5tyB6Ji+x0AAAAASUVORK5CYII="></van-icon>
+          name="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAgAgMAAAAdw9KTAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAMUExURUdwTP///////////waf0AoAAAADdFJOUwDjSYAlncUAAAAbSURBVBjTY5j/Hwq+MdTDmH+RmUgK6AuGhcsAU5tyB6Ji+x0AAAAASUVORK5CYII="
+          @click="router.replace('/search')"></van-icon>
       </template>
       <template #title>
         <van-search v-model="kerWords" clearable placeholder="关键词" shape="round" @focus="$router.replace('/search')">
@@ -155,23 +156,19 @@
 
 import type { BannerItem } from '@/api/banner';  // 获取类型接口
 import type { pageParams } from '@/api/pro'  // 获取类型接口
-// import type { ProNs } from '@/@types/pro'
-
 import { ref, onMounted, reactive } from 'vue';  // 获取vue的方法
-
 import { getBannerListAPI } from '@/api/banner'  // api
 import { getProListAPI } from '@/api/pro'  // api
-
 import AppHeader from '@/components/AppHeader/index.vue'  // 引入组件
-
 import { useUserStore } from '@/stores/user'
+import { useRouter } from 'vue-router';
 
+const router = useRouter()
 const user = useUserStore()
-
 const kerWords = ref<string>('')
 // 轮播list
 const list = ref<BannerItem[]>([])
-// 商品列表 => !!!!!!!!!!!!!!!!!!!!!!!!!!!
+// 商品列表
 const proList = ref<any>([])
 // 初始页数
 const pageInfo = reactive<pageParams>({

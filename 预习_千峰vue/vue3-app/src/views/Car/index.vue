@@ -2,13 +2,27 @@
   <div class="car">
 
     <!-- 头部 -->
-    <AppHeader to=".app-header" title="购物车" left-arrow back></AppHeader>
+    <AppHeader to=".app-header" title="购物车">
+      <template #left>
+
+        <div @click="delAll">
+          清除购物车
+          <van-icon name="delete-o" />
+        </div>
+      </template>
+
+      <template #right>
+        <van-icon name="ellipsis" @click="showPopover = true" />
+      </template>
+    </AppHeader>
+    <van-popover v-model:show="showPopover" :actions="actions" theme="dark" close-on-click-action :offset="[300, -10]"
+      :show-arrow="false" @select="selectHandler"></van-popover>
 
     <!-- 购物车列表 -->
     <div class="car-list">
       <template v-if="isLogin && cartList.length != 0">
         <div class="car-list">
-          
+
           <van-swipe-cell v-for="item in cartList" :key="item.cartid" class="list-item">
             <van-checkbox @change="changeHandler(item.cartid, $event)" v-model="item.flag"></van-checkbox>
             <van-card class="goods-card" :title="item.proname" :price="(item.originprice * item.discount) / 10"
@@ -25,7 +39,7 @@
         </div>
       </template>
 
-      
+
       <template v-else>
         <van-empty image="http://img2.3png.com/8264ae8fd7ffe7829afbdcd9c1c6b241ec16.png/w260" image-size="80"
           description="您的购物车已经空了哦">
@@ -47,36 +61,75 @@
 
 <script setup lang="ts">
 import AppHeader from '@/components/AppHeader/index.vue'  // 头部组件
-
 import { useUserStore } from '@/stores/user';  // pinia实例
-
-import { showFailToast, showSuccessToast } from 'vant';
-
+import { showFailToast, showSuccessToast, showConfirmDialog, showToast } from 'vant';
 import { useRouter } from 'vue-router';
-
 import { delCartByIdAPI, clearCartAPI, updateCartOneCheckedStatusAPI, getCartListAPI, updateCartNumAPI } from '@/api/cart';
-
 import { ref, watchEffect, computed } from 'vue';
 
 const router = useRouter()
-
-
 // 获取pinia的数据
 const User = useUserStore()
 const { isLogin, userid } = User
+const cartList = ref<any>([]);
+const showPopover = ref(false);
 
-let cartList = ref<any>([]);
+const actions = [
+  { text: '首页' },
+  { text: '订单' },
+  { text: '个人中心' },
+  { text: '搜索' },
+];
+// 点击菜单每一项的跳转
+const selectHandler = (item: any, index: any) => {
+
+  if (index == 0) {
+    router.replace('/home')
+  } else if (index == 1) {
+    router.replace('/myorder')
+  } else if (index == 2) {
+    router.replace('/mine')
+  } else if (index == 3) {
+    router.replace('/search')
+  }
+}
 
 // 获取商品列表
 const getCartList = async () => {
   try {
-    var res = await getCartListAPI({ userid })
-    cartList.value = res.data
-    // console.log('cartList', cartList);
+    var res: any = await getCartListAPI({ userid })
+    if (res.code == '200') {
+      cartList.value = res.data
+
+    } else if (res.code == 10020) {
+      showFailToast('购物车暂时没有商品')
+      cartList.value = []
+    }
   } catch (err) {
-    cartList.value = []
     showFailToast('您的购物车空了哦')
   }
+}
+
+// 清除购物车数据
+const delAll = async () => {
+  if (cartList.value.length) {
+    showConfirmDialog({
+      title: '提示消息',
+      message:
+        '真的要清除你辛辛苦苦添加的购物车吗',
+    }).then(async () => {
+      let res = await clearCartAPI({
+        userid
+      })
+      // console.log('删除购物车所有数据', res);
+      cartList.value = []
+    }).catch(() => {
+      // on cancel
+    });
+  } else {
+    showToast('您的购物车还没有商品哦')
+  }
+
 }
 
 // 选中状态的计算属性
@@ -113,6 +166,7 @@ let changeHandler = async (cartid: any, flag: any) => {
     showFailToast(err.message);
   }
 }
+
 // 点击加减的事件
 const addHandler = async (cartid: any, num: any) => {
   // console.log("cartList.value", cartList.value)
@@ -125,13 +179,17 @@ const addHandler = async (cartid: any, num: any) => {
     showFailToast(err.message);
   }
 }
+
 // 删除事件
 const delHandler = async (cartid: any) => {
   try {
     await delCartByIdAPI({ cartid })
     // console.log('删除购物车数据', res);
-    getCartList()
+
+    await getCartList()
+    cartList.value = []
     showSuccessToast('删除成功')
+
   } catch (err: any) {
     showFailToast(err.message);
   }

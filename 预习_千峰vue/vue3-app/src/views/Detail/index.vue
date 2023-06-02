@@ -102,7 +102,7 @@ const orderlist = async () => {
     userid: User.userid
   })
   flag.value = res.data.findIndex((item: any, index: any) => item.proid == proid.value)
-  console.log(1111111111, flag.value);
+  // console.log(1111111111, flag.value);
 
 }
 
@@ -181,7 +181,12 @@ const getCartList = async () => {
   let res = await getCartListAPI({
     userid: User.userid
   })
-  badge.value = res.data.length || []
+  if (res.data) {
+    badge.value = res.data.length
+  } else {
+    badge.value = 0
+  }
+
 }
 
 onMounted(() => {

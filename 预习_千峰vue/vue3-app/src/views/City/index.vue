@@ -20,8 +20,7 @@
       <div v-for="item in cityList" :key="item.letter">
         <van-index-anchor :index="item.letter.toUpperCase()">
         </van-index-anchor>
-        <van-cell :title="city.name" v-for="(city, index) in item.data" :key="index"
-          @click="router.replace({ path: '/category', query: { city: city.name } })" />
+        <van-cell :title="city.name" v-for="(city, index) in item.data" :key="index" @click="goback(city.name)" />
       </div>
     </van-index-bar>
   </div>
@@ -57,6 +56,10 @@ const selectHandler = (item: any, index: any) => {
   }
 }
 
+const goback = (city: string) => {
+  localStorage.setItem('city', city)
+  router.go(-1)
+}
 
 const city = async () => {
   try {

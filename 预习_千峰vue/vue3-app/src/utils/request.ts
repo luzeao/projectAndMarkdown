@@ -62,6 +62,8 @@ request.interceptors.response.use(function (response: AxiosResponse) {
     const error = new Error(message)
     return Promise.reject(error);
 
+  } else if (code == 10020) {  // 购物车没有数据
+    return res
   } else {  // 10003  10005  100xx  响应成功 -> 操作失败 -> 登录失败/密码错误,用户未注册
     const error = new Error(message)
     return Promise.reject(error);

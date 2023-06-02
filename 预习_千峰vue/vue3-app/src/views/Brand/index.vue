@@ -14,7 +14,7 @@
       :show-arrow="false" @select="selectHandler"></van-popover>
 
     <template v-if="list.length != 0">
-      <van-cell-group inset v-for="item in list">
+      <van-cell-group inset v-for="item in list" class="brand-item">
         <van-card :title="item.proname" @click="goDetail(item.proid)">
           <template #desc>
             <img :src="item.img1">
@@ -96,5 +96,8 @@ onMounted(() => {
 
 .box22 {
   font-size: large;
+}
+.brand-item{
+  margin-bottom: 20px;
 }
 </style>
