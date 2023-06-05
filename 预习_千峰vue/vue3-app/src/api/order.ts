@@ -14,3 +14,6 @@ export const confirmOrderAPI = (params: any): AxiosPromise => request.get("/orde
 
 // 获取所有订单
 export const orderlistAPI = (params: any): AxiosPromise => request.post("/user/orderlist", params);
+
+// 清除购物车中选中的商品
+export const deleteCartItemAPI = (params: any): AxiosPromise => request.get("/order/deleteCartItem", {params});

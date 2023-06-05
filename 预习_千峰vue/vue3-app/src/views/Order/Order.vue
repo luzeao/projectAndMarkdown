@@ -29,8 +29,8 @@ import AppHeader from '@/components/AppHeader/index.vue'
 import { ref, onMounted, computed } from 'vue';
 import { useUserStore } from '@/stores/user';
 import { useRouter, useRoute } from 'vue-router';
-import { getCartListAPI, clearCartAPI } from '@/api/cart';
-import { addOrderAPI } from '@/api/order';
+import { getCartListAPI } from '@/api/cart';
+import { addOrderAPI,deleteCartItemAPI } from '@/api/order';
 import { getDefaultAddressAPI } from '@/api/address';
 import { getProDetailAPI } from '@/api/pro';
 import { showFailToast } from 'vant';
@@ -63,6 +63,7 @@ const getAddressList = async () => {
 
 }
 
+// 获取所有价格总计计算属性
 let allPrice = computed(() => {
   return list.value.reduce((prev: any, item: any) => {
     if (item.flag) {
@@ -109,9 +110,11 @@ let submitHandler = async () => {
       userid: userid
     });
     console.log("新增订单成功", res);
-    await clearCartAPI({
+    let res1 = await deleteCartItemAPI({
       userid,
     })
+    console.log('删除选中的商品',res1);
+    
     router.replace('/myorder')
   } catch (err: any) {
     showFailToast(err.message);
